@@ -24,7 +24,7 @@ export default function Login() {
       .then((userCredentials) => {
         const user = userCredentials.user;
         console.log(user.email);
-        navigation.navigate("Home");
+        navigation.navigate("AdminHome");
       })
       .catch((error) => alert(error.message));
   };
