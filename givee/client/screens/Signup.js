@@ -8,7 +8,8 @@ import {
   TouchableOpacity,
 } from "react-native";
 import React, { useState } from "react";
-import { FIREBASE_AUTH } from "../../firebaseConfig";
+import { FIREBASE_AUTH, FIREBASE_DB } from "../../firebaseConfig";
+import { doc, setDoc } from "firebase/firestore";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useNavigation } from "@react-navigation/native";
 
@@ -17,14 +18,23 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const auth = FIREBASE_AUTH;
+  const db = FIREBASE_DB;
 
   const navigation = useNavigation();
 
   const signUp = () => {
     createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredentials) => {
+      .then(async (userCredentials) => {
         const user = userCredentials.user;
-        console.log(user.email);
+
+        const isAdmin = false;
+
+        await setDoc(doc(db, "users", user.uid), {
+          fullName: fullName,
+          email: email,
+          isAdmin: isAdmin,
+        });
+
         setFullName("");
         setEmail("");
         setPassword("");

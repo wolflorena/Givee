@@ -8,7 +8,8 @@ import {
   TouchableOpacity,
 } from "react-native";
 import React, { useState } from "react";
-import { FIREBASE_AUTH } from "../../firebaseConfig";
+import { FIREBASE_AUTH, FIREBASE_DB } from "../../firebaseConfig";
+import { doc, getDoc } from "firebase/firestore";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigation } from "@react-navigation/native";
 
@@ -16,15 +17,30 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const auth = FIREBASE_AUTH;
+  const db = FIREBASE_DB;
 
   const navigation = useNavigation();
 
   const signIn = () => {
     signInWithEmailAndPassword(auth, email, password)
-      .then((userCredentials) => {
+      .then(async (userCredentials) => {
         const user = userCredentials.user;
-        console.log(user.email);
-        navigation.navigate("AdminHome");
+
+        const docRef = doc(db, "users", user.uid);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          const userData = docSnap.data();
+          const userRole = userData.isAdmin ? "admin" : "client";
+
+          if (userRole === "admin") {
+            navigation.navigate("AdminHome");
+          } else {
+            navigation.navigate("ClientHome");
+          }
+        } else {
+          console.log("User data not found!");
+        }
       })
       .catch((error) => alert(error.message));
   };
