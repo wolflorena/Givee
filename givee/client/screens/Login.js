@@ -12,8 +12,10 @@ import { FIREBASE_AUTH, FIREBASE_DB } from "../../firebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigation } from "@react-navigation/native";
+import { useLoginUpdateContext } from "./LoginContext";
 
 export default function Login() {
+  const { userLoggedIn } = useLoginUpdateContext();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const auth = FIREBASE_AUTH;
@@ -33,6 +35,7 @@ export default function Login() {
           const userData = docSnap.data();
           const userRole = userData.isAdmin ? "admin" : "client";
 
+          userLoggedIn(userData);
           if (userRole === "admin") {
             navigation.navigate("AdminHome");
           } else {

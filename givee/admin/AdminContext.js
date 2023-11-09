@@ -1,5 +1,4 @@
 import React, { useContext, useState } from "react";
-import { useNavigation } from "@react-navigation/native";
 
 const AdminContext = React.createContext();
 
