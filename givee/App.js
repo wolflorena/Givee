@@ -1,17 +1,19 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { AdminProvider } from "./admin/AdminContext";
-import { LoginProvider } from "./client/screens/LoginContext";
+import { LoginProvider } from "./client/LoginContext";
 import Login from "./client/screens/Login";
 import Signup from "./client/screens/Signup";
-
-import ClientHome from "./client/screens/Home";
-
+import Clothes from "./client/screens/Clothes";
+import Food from "./client/screens/Food";
+import Toys from "./client/screens/Toys";
+import History from "./client/screens/History";
 import AdminHome from "./admin/screens/Home";
 import AdminUsers from "./admin/screens/Users";
 import AdminDonations from "./admin/screens/Donations";
 import AdminCenters from "./admin/screens/Centers";
 import AdminCampaigns from "./admin/screens/Campaigns";
+import Home from "./client/screens/Home";
 
 const Stack = createNativeStackNavigator();
 
@@ -32,13 +34,33 @@ export default function App() {
               options={{ headerShown: false }}
             />
             <Stack.Screen
-              name="AdminHome"
-              component={AdminHome}
+              name="Home"
+              component={Home}
               options={{ headerShown: false }}
             />
             <Stack.Screen
-              name="ClientHome"
-              component={ClientHome}
+              name="Clothes"
+              component={Clothes}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Food"
+              component={Food}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Toys"
+              component={Toys}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="History"
+              component={History}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="AdminHome"
+              component={AdminHome}
               options={{ headerShown: false }}
             />
             <Stack.Screen

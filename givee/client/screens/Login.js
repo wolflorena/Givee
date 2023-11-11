@@ -12,7 +12,7 @@ import { FIREBASE_AUTH, FIREBASE_DB } from "../../firebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigation } from "@react-navigation/native";
-import { useLoginUpdateContext } from "./LoginContext";
+import { useLoginUpdateContext } from "../LoginContext";
 
 export default function Login() {
   const { userLoggedIn } = useLoginUpdateContext();
@@ -39,7 +39,7 @@ export default function Login() {
           if (userRole === "admin") {
             navigation.navigate("AdminHome");
           } else {
-            navigation.navigate("ClientHome");
+            navigation.navigate("Home");
           }
         } else {
           console.log("User data not found!");
