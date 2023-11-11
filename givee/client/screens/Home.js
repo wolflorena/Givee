@@ -12,19 +12,42 @@ export default function Home() {
 
   const navigation = useNavigation();
 
+  const renderContainer = (buttonType, image, label, message) => {
+    let imagePath;
+    switch (image) {
+      case "clothes.png":
+        imagePath = require("../../assets/clothes.png");
+        break;
+      case "food.png":
+        imagePath = require("../../assets/food.png");
+        break;
+      case "toys.png":
+        imagePath = require("../../assets/toys.png");
+        break;
+      case "history.png":
+        imagePath = require("../../assets/history.png");
+        break;
+      default:
+        console.error(`Image not recognized: ${image}`);
+        imagePath = require("../../assets/LogoDark.png");
+    }
+    return (
+      <TouchableOpacity
+        style={styles.selectionContainer}
+        onPress={() => {
+          navBarButtonsPressHandler(buttonType);
+          navigation.navigate(`${label}`);
+        }}
+      >
+        <Image style={styles.logo} source={imagePath}></Image>
+        <Text style={styles.logoText}>{message}</Text>
+      </TouchableOpacity>
+    );
+  };
   return (
     <View style={styles.container}>
       <View>
-        <TouchableOpacity
-          style={styles.goBackButton}
-          onPress={() => navigation.goBack()}
-        >
-          <FontAwesomeIcon
-            style={styles.goBackIcon}
-            icon={faCircleChevronLeft}
-            size={25}
-          />
-        </TouchableOpacity>
+        <TouchableOpacity style={styles.goBackButton}></TouchableOpacity>
         <View style={styles.messageContainer}>
           <Text style={styles.welcomeMessage}>
             Welcome{"\n"}
@@ -32,61 +55,20 @@ export default function Home() {
           </Text>
         </View>
         <View style={styles.menuContainer}>
-          <TouchableOpacity
-            style={styles.selectionContainer}
-            onPress={() => {
-              navBarButtonsPressHandler("clothesIsPressed");
-              navigation.navigate("Clothes");
-            }}
-          >
-            <Image
-              style={styles.logo}
-              source={require("../../assets/clothes.png")}
-            ></Image>
-            <Text style={styles.logoText}>Donate clothes</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.selectionContainer}
-            onPress={() => {
-              navBarButtonsPressHandler("foodIsPressed");
-              navigation.navigate("Food");
-            }}
-          >
-            <Image
-              style={styles.logo}
-              source={require("../../assets/food.png")}
-            ></Image>
-            <Text style={styles.logoText}>Donate food</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.selectionContainer}
-            onPress={() => {
-              navBarButtonsPressHandler("toysIsPressed");
-              navigation.navigate("Toys");
-            }}
-          >
-            <Image
-              style={styles.logo}
-              source={require("../../assets/toys.png")}
-            ></Image>
-            <Text style={styles.logoText}>Donate toys</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.selectionContainer}
-            onPress={() => {
-              navBarButtonsPressHandler("historyIsPressed");
-              navigation.navigate("History");
-            }}
-          >
-            <Image
-              style={styles.logo}
-              source={require("../../assets/history.png")}
-            ></Image>
-            <Text style={styles.logoText}>My Donations</Text>
-          </TouchableOpacity>
+          {renderContainer(
+            "clothesIsPressed",
+            "clothes.png",
+            "Clothes",
+            "Donate clothes"
+          )}
+          {renderContainer("foodIsPressed", "food.png", "Food", "Donate food")}
+          {renderContainer("toysIsPressed", "toys.png", "Toys", "Donate toys")}
+          {renderContainer(
+            "historyIsPressed",
+            "history.png",
+            "History",
+            "My donations"
+          )}
         </View>
       </View>
 
@@ -115,9 +97,6 @@ const styles = StyleSheet.create({
     marginTop: 70,
     marginRight: 330,
   },
-  goBackIcon: {
-    color: "#eaebed",
-  },
   menuContainer: {
     marginTop: 20,
     flexDirection: "row",
@@ -136,10 +115,13 @@ const styles = StyleSheet.create({
     gap: 10,
     backgroundColor: "#F4E096",
   },
-  icon: {
+  logo: {
     resizeMode: "stretch",
     width: 50,
     height: 50,
+  },
+  logoText: {
+    fontSize: 15,
   },
   navbar: {
     position: "absolute",
