@@ -22,7 +22,7 @@ export default function App() {
     <NavigationContainer>
       <AdminProvider>
         <LoginProvider>
-          <Stack.Navigator initialRouteName="Signup">
+          <Stack.Navigator initialRouteName="Clothes">
             <Stack.Screen
               name="Login"
               component={Login}

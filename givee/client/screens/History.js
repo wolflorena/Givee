@@ -4,15 +4,20 @@ import { useNavigation } from "@react-navigation/native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faCircleChevronLeft } from "@fortawesome/free-solid-svg-icons/faCircleChevronLeft";
 import NavBar from "../Navbar";
+import { useLoginUpdateContext } from "../LoginContext";
 
 export default function Centers() {
   const navigation = useNavigation();
+  const { navBarButtonsPressHandler } = useLoginUpdateContext();
 
   return (
     <View style={styles.container}>
       <TouchableOpacity
         style={styles.goBackButton}
-        onPress={() => navigation.goBack()}
+        onPress={() => {
+          navBarButtonsPressHandler("homeIsPressed");
+          navigation.goBack();
+        }}
       >
         <FontAwesomeIcon
           style={styles.goBackIcon}

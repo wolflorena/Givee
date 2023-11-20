@@ -1,18 +1,25 @@
-import React, { useEffect } from "react";
-import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
+import React from "react";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faCircleChevronLeft } from "@fortawesome/free-solid-svg-icons/faCircleChevronLeft";
+import { useLoginUpdateContext } from "../LoginContext";
+import Title from "../Title";
+import DonationForm from "../DonationForm";
 import NavBar from "../Navbar";
 
-export default function Centers() {
+export default function Toys() {
   const navigation = useNavigation();
+  const { navBarButtonsPressHandler } = useLoginUpdateContext();
 
   return (
     <View style={styles.container}>
       <TouchableOpacity
         style={styles.goBackButton}
-        onPress={() => navigation.goBack()}
+        onPress={() => {
+          navBarButtonsPressHandler("homeIsPressed");
+          navigation.goBack();
+        }}
       >
         <FontAwesomeIcon
           style={styles.goBackIcon}
@@ -21,6 +28,8 @@ export default function Centers() {
         />
       </TouchableOpacity>
 
+      <Title text="Donate Toys" />
+      <DonationForm product="Toys" />
       <NavBar />
     </View>
   );

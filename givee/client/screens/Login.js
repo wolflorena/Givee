@@ -13,6 +13,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigation } from "@react-navigation/native";
 import { useLoginUpdateContext } from "../LoginContext";
+import CustomButton from "../CustomButton";
 
 export default function Login() {
   const { userLoggedIn } = useLoginUpdateContext();

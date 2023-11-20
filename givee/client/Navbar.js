@@ -64,6 +64,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     bottom: 0,
+    position: "absolute",
   },
   navbarText: {
     fontSize: 10,
