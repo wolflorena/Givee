@@ -12,6 +12,7 @@ import { FIREBASE_AUTH, FIREBASE_DB } from "../../firebaseConfig";
 import { doc, setDoc } from "firebase/firestore";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useNavigation } from "@react-navigation/native";
+import CustomButton from "../CustomButton";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -87,11 +88,7 @@ export default function Login() {
         ></TextInput>
       </View>
 
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity onPress={signUp}>
-          <Text>Sign up</Text>
-        </TouchableOpacity>
-      </View>
+      <CustomButton text="Sign up" onPress={signUp} />
 
       <View style={styles.loginContainer}>
         <Text style={styles.text}>Have an account?</Text>
@@ -145,16 +142,6 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     width: "80%",
-  },
-  buttonContainer: {
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#ddb31b",
-    width: 100,
-    height: 30,
-    borderRadius: 15,
-    marginTop: 70,
-    marginBottom: 50,
   },
   loginContainer: {
     width: 300,

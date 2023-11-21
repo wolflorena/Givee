@@ -3,8 +3,8 @@ import React from "react";
 
 const BUTTON_SIZES = {
   small: {
-    width: 80,
-    height: 25,
+    width: 100,
+    height: 30,
     marginTop: 70,
     marginBottom: 50,
   },

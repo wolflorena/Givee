@@ -85,11 +85,7 @@ export default function Login() {
         ></TextInput>
       </View>
 
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity onPress={signIn}>
-          <Text>Login</Text>
-        </TouchableOpacity>
-      </View>
+      <CustomButton text="Login" onPress={signIn} />
 
       <View style={styles.signupContainer}>
         <Text style={styles.text}>Don't have an account?</Text>
@@ -143,16 +139,6 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     width: "80%",
-  },
-  buttonContainer: {
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#ddb31b",
-    width: 100,
-    height: 30,
-    borderRadius: 15,
-    marginTop: 70,
-    marginBottom: 50,
   },
   signupContainer: {
     width: 300,

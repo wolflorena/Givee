@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 25,
     backgroundColor: "#1f1f1f",
-    justifyContent: "space-between",
+    alignItems: "center",
     flex: 1,
   },
   welcomeMessage: {
@@ -122,10 +122,5 @@ const styles = StyleSheet.create({
   },
   logoText: {
     fontSize: 15,
-  },
-  navbar: {
-    position: "absolute",
-    bottom: 25,
-    left: 30,
   },
 });
