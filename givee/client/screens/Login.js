@@ -5,7 +5,6 @@ import {
   TextInput,
   Text,
   KeyboardAvoidingView,
-  TouchableOpacity,
 } from "react-native";
 import React, { useState } from "react";
 import { FIREBASE_AUTH, FIREBASE_DB } from "../../firebaseConfig";

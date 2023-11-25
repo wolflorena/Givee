@@ -14,6 +14,7 @@ import AdminDonations from "./admin/screens/Donations";
 import AdminCenters from "./admin/screens/Centers";
 import AdminCampaigns from "./admin/screens/Campaigns";
 import Home from "./client/screens/Home";
+import SuccessfulDonation from "./client/screens/SuccessfulDonation";
 
 const Stack = createNativeStackNavigator();
 
@@ -56,6 +57,11 @@ export default function App() {
             <Stack.Screen
               name="History"
               component={History}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="SuccessfulDonation"
+              component={SuccessfulDonation}
               options={{ headerShown: false }}
             />
             <Stack.Screen
