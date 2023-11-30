@@ -11,7 +11,7 @@ export default function Food() {
       <GoBackButton />
 
       <Title text="Donate Food" />
-      <DonationForm product="Food" />
+      <DonationForm product="food" />
       <NavBar />
     </View>
   );

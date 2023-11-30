@@ -11,7 +11,7 @@ export default function Toys() {
       <GoBackButton />
 
       <Title text="Donate Toys" />
-      <DonationForm product="Toys" />
+      <DonationForm product="toys" />
       <NavBar />
     </View>
   );

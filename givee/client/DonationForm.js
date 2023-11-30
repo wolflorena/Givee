@@ -1,25 +1,42 @@
 import { View, TextInput, StyleSheet } from "react-native";
-import React from "react";
+import React, { useState } from "react";
+import { useNavigation } from "@react-navigation/native";
 import CustomButton from "./CustomButton";
 
 export default function DonationForm(props) {
+  const [amount, setAmount] = useState("");
+  const [description, setDescription] = useState("");
+  const type = props.product;
+  const navigation = useNavigation();
+
   return (
     <View styles={styles.container}>
       <TextInput
+        value={amount}
         style={styles.input}
         placeholder={`Amount of ${props.product}`}
         placeholderTextColor={"#a6a6a6"}
         autoCapitalize="none"
+        onChangeText={(text) => setAmount(text)}
       ></TextInput>
       <TextInput
+        value={description}
         style={[styles.input, styles.secondInput]}
         placeholder={`${props.product} Description`}
         placeholderTextColor={"#a6a6a6"}
         autoCapitalize="none"
         multiline
+        onChangeText={(text) => setDescription(text)}
       ></TextInput>
 
-      <CustomButton text="Next" size="large" onPress={() => alert("...")} />
+      <CustomButton
+        text="Next"
+        size="large"
+        onPress={() => {
+          const formData = { amount, description, type };
+          navigation.navigate("Location", formData);
+        }}
+      />
     </View>
   );
 }

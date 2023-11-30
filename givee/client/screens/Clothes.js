@@ -10,7 +10,7 @@ export default function Clothes() {
     <View style={styles.container}>
       <GoBackButton />
       <Title text="Donate clothes" />
-      <DonationForm product="Clothes" />
+      <DonationForm product="clothes" />
       <NavBar />
     </View>
   );
