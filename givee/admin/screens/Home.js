@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   View,
   StyleSheet,
@@ -6,8 +6,11 @@ import {
   TouchableOpacity,
   FlatList,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { useLoginContext } from "../../client/LoginContext";
+
+import { collection, query, getDocs } from "firebase/firestore";
+import { doc, updateDoc } from "firebase/firestore";
+import { FIREBASE_DB } from "../../firebaseConfig";
+
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faCircleChevronLeft } from "@fortawesome/free-solid-svg-icons/faCircleChevronLeft";
 import { faShirt } from "@fortawesome/free-solid-svg-icons/faShirt";
@@ -16,19 +19,21 @@ import { faFootball } from "@fortawesome/free-solid-svg-icons/faFootball";
 import { faCheck } from "@fortawesome/free-solid-svg-icons/faCheck";
 import { faBan } from "@fortawesome/free-solid-svg-icons/faBan";
 import { faFaceFrown } from "@fortawesome/free-solid-svg-icons/faFaceFrown";
-import { StatusBar } from "react-native";
-import NavBar from "../Navbar";
-import { collection, query, getDocs } from "firebase/firestore";
-import { FIREBASE_DB } from "../../firebaseConfig";
-import { doc, updateDoc } from "firebase/firestore";
+
 import { useFocusEffect } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
+import { StatusBar } from "react-native";
+
+import NavBar from "../Navbar";
 import { useAdminUpdateContext } from "../AdminContext";
+import { useLoginContext } from "../../client/LoginContext";
 
 export default function Home() {
-  const { currentUser } = useLoginContext();
-  const navigation = useNavigation();
-  const [donationsData, setDonationsData] = useState([]);
   const db = FIREBASE_DB;
+  const navigation = useNavigation();
+
+  const [donationsData, setDonationsData] = useState([]);
+  const { currentUser } = useLoginContext();
   const { navBarButtonsPressHandler } = useAdminUpdateContext();
 
   useEffect(() => {

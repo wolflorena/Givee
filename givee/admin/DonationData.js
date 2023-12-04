@@ -1,6 +1,9 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { FIREBASE_DB } from "../firebaseConfig";
+
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faCircleChevronLeft } from "@fortawesome/free-solid-svg-icons/faCircleChevronLeft";
 import { faAudioDescription } from "@fortawesome/free-solid-svg-icons/faAudioDescription";
@@ -9,18 +12,18 @@ import { faUser } from "@fortawesome/free-solid-svg-icons/faUser";
 import { faListOl } from "@fortawesome/free-solid-svg-icons/faListOl";
 import { faCheck } from "@fortawesome/free-solid-svg-icons/faCheck";
 import { faBan } from "@fortawesome/free-solid-svg-icons/faBan";
+
+import { useNavigation } from "@react-navigation/native";
 import { StatusBar } from "react-native";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { FIREBASE_DB } from "../firebaseConfig";
 
 export default function CenterData({ route }) {
+  const db = FIREBASE_DB;
   const navigation = useNavigation();
+
   const [donationData, setDonationData] = useState([]);
   const [centerData, setCenterData] = useState([]);
 
   const donationId = route.params ? route.params.donationId : null;
-
-  const db = FIREBASE_DB;
 
   useEffect(() => {
     StatusBar.setBarStyle("light-content");
@@ -29,7 +32,6 @@ export default function CenterData({ route }) {
 
   const getDonation = useCallback(async () => {
     try {
-      const db = FIREBASE_DB;
       const docRef = doc(db, "donations", donationId);
       const docSnap = await getDoc(docRef);
 
@@ -46,7 +48,6 @@ export default function CenterData({ route }) {
 
   const getCenter = useCallback(async (centerId) => {
     try {
-      const db = FIREBASE_DB;
       const docRef = doc(db, "centers", centerId);
       const docSnap = await getDoc(docRef);
 

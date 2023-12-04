@@ -1,6 +1,4 @@
 import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
-import { useAdminContext, useAdminUpdateContext } from "./AdminContext";
-import { useNavigation } from "@react-navigation/native";
 
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons/faUser";
@@ -9,13 +7,19 @@ import { faBox } from "@fortawesome/free-solid-svg-icons/faBox";
 import { faBuilding } from "@fortawesome/free-solid-svg-icons/faBuilding";
 import { faHeart } from "@fortawesome/free-solid-svg-icons/faHeart";
 
+import { useNavigation } from "@react-navigation/native";
+
+import { useAdminContext, useAdminUpdateContext } from "./AdminContext";
+
 export default function Navbar() {
   const navigation = useNavigation();
+
   const { navBarButtons } = useAdminContext();
   const { navBarButtonsPressHandler } = useAdminUpdateContext();
 
   const renderNavbarButton = (buttonType, faIcon, label) => {
     const isPressed = navBarButtons[buttonType];
+
     return (
       <TouchableOpacity
         style={styles.navbarButton}

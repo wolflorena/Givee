@@ -6,19 +6,25 @@ import {
   TouchableOpacity,
   FlatList,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+
+import { collection, query, getDocs } from "firebase/firestore";
+import { FIREBASE_DB } from "../../firebaseConfig";
+
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faCircleChevronLeft } from "@fortawesome/free-solid-svg-icons/faCircleChevronLeft";
 import { faCircleUser } from "@fortawesome/free-solid-svg-icons/faCircleUser";
-import { StatusBar } from "react-native";
-import NavBar from "../Navbar";
-import { collection, query, getDocs } from "firebase/firestore";
-import { FIREBASE_DB } from "../../firebaseConfig";
+
 import { useFocusEffect } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
+import { StatusBar } from "react-native";
+
 import { useAdminUpdateContext } from "../AdminContext";
+import NavBar from "../Navbar";
 
 export default function Users() {
+  const db = FIREBASE_DB;
   const navigation = useNavigation();
+
   const [usersData, setUsersData] = useState([]);
   const { navBarButtonsPressHandler } = useAdminUpdateContext();
 
@@ -35,7 +41,6 @@ export default function Users() {
 
   const getUsers = useCallback(async () => {
     try {
-      const db = FIREBASE_DB;
       const q = query(collection(db, "users"));
       const querySnapshot = await getDocs(q);
 

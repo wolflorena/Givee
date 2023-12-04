@@ -6,19 +6,22 @@ import {
   TouchableOpacity,
   TextInput,
 } from "react-native";
-import Checkbox from "expo-checkbox";
-import { useNavigation } from "@react-navigation/native";
+
+import { collection } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
+import { FIREBASE_DB } from "../firebaseConfig";
+
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faMapPin } from "@fortawesome/free-solid-svg-icons/faMapPin";
 import { faPhone } from "@fortawesome/free-solid-svg-icons/faPhone";
 import { faCircleChevronLeft } from "@fortawesome/free-solid-svg-icons/faCircleChevronLeft";
-import { FIREBASE_DB } from "../firebaseConfig";
-import { collection } from "firebase/firestore";
-import { doc, setDoc } from "firebase/firestore";
+
+import { useNavigation } from "@react-navigation/native";
+import Checkbox from "expo-checkbox";
 
 export default function CenterForm() {
-  const navigation = useNavigation();
   const db = FIREBASE_DB;
+  const navigation = useNavigation();
 
   const [centerData, setCenterData] = useState({
     address: "",

@@ -1,6 +1,9 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+
+import { doc, getDoc } from "firebase/firestore";
+import { FIREBASE_DB } from "../firebaseConfig";
+
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faCircleChevronLeft } from "@fortawesome/free-solid-svg-icons/faCircleChevronLeft";
 import { faMapPin } from "@fortawesome/free-solid-svg-icons/faMapPin";
@@ -8,12 +11,14 @@ import { faPhone } from "@fortawesome/free-solid-svg-icons/faPhone";
 import { faShirt } from "@fortawesome/free-solid-svg-icons/faShirt";
 import { faUtensils } from "@fortawesome/free-solid-svg-icons/faUtensils";
 import { faFootball } from "@fortawesome/free-solid-svg-icons/faFootball";
+
+import { useNavigation } from "@react-navigation/native";
 import { StatusBar } from "react-native";
-import { doc, getDoc } from "firebase/firestore";
-import { FIREBASE_DB } from "../firebaseConfig";
 
 export default function CenterData({ route }) {
+  const db = FIREBASE_DB;
   const navigation = useNavigation();
+
   const [centerData, setCenterData] = useState([]);
 
   const centerId = route.params ? route.params.centerId : null;
@@ -25,7 +30,6 @@ export default function CenterData({ route }) {
 
   const getCenter = useCallback(async () => {
     try {
-      const db = FIREBASE_DB;
       const docRef = doc(db, "centers", centerId);
       const docSnap = await getDoc(docRef);
 

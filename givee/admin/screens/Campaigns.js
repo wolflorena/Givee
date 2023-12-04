@@ -1,12 +1,15 @@
 import React, { useEffect } from "react";
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faCircleChevronLeft } from "@fortawesome/free-solid-svg-icons/faCircleChevronLeft";
-import { StatusBar } from "react-native";
-import NavBar from "../Navbar";
+
 import { useFocusEffect } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
+import { StatusBar } from "react-native";
+
 import { useAdminUpdateContext } from "../AdminContext";
+import NavBar from "../Navbar";
 
 export default function Campaigns() {
   const navigation = useNavigation();
