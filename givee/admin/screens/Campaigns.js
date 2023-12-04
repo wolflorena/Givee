@@ -5,13 +5,22 @@ import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faCircleChevronLeft } from "@fortawesome/free-solid-svg-icons/faCircleChevronLeft";
 import { StatusBar } from "react-native";
 import NavBar from "../Navbar";
+import { useFocusEffect } from "@react-navigation/native";
+import { useAdminUpdateContext } from "../AdminContext";
 
 export default function Campaigns() {
   const navigation = useNavigation();
+  const { navBarButtonsPressHandler } = useAdminUpdateContext();
 
   useEffect(() => {
     StatusBar.setBarStyle("light-content");
   }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      navBarButtonsPressHandler("campaignsIsPressed");
+    }, [])
+  );
 
   return (
     <View style={styles.container}>

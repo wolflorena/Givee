@@ -14,15 +14,24 @@ import { StatusBar } from "react-native";
 import NavBar from "../Navbar";
 import { collection, query, getDocs } from "firebase/firestore";
 import { FIREBASE_DB } from "../../firebaseConfig";
+import { useFocusEffect } from "@react-navigation/native";
+import { useAdminUpdateContext } from "../AdminContext";
 
 export default function Users() {
   const navigation = useNavigation();
   const [usersData, setUsersData] = useState([]);
+  const { navBarButtonsPressHandler } = useAdminUpdateContext();
 
   useEffect(() => {
     StatusBar.setBarStyle("light-content");
     getUsers();
   }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      navBarButtonsPressHandler("usersIsPressed");
+    }, [])
+  );
 
   const getUsers = useCallback(async () => {
     try {

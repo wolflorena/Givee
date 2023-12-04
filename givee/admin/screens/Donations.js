@@ -18,15 +18,25 @@ import { StatusBar } from "react-native";
 import NavBar from "../Navbar";
 import { collection, query, getDocs } from "firebase/firestore";
 import { FIREBASE_DB } from "../../firebaseConfig";
+import { doc, updateDoc } from "firebase/firestore";
+import { useFocusEffect } from "@react-navigation/native";
+import { useAdminUpdateContext } from "../AdminContext";
 
 export default function Donations() {
   const navigation = useNavigation();
   const [donationsData, setDonationsData] = useState([]);
+  const { navBarButtonsPressHandler } = useAdminUpdateContext();
 
   useEffect(() => {
     StatusBar.setBarStyle("light-content");
     getDonations();
   }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      navBarButtonsPressHandler("donationsIsPressed");
+    }, [])
+  );
 
   const getDonations = useCallback(async () => {
     try {
@@ -70,6 +80,26 @@ export default function Donations() {
     </View>
   );
 
+  const completeDonationHandler = async () => {
+    const donationRef = doc(db, "donations", donationId);
+
+    await updateDoc(donationRef, {
+      status: "completed",
+    });
+
+    navigation.navigate("AdminDonations");
+  };
+
+  const cancelDonationHandler = async () => {
+    const donationRef = doc(db, "donations", donationId);
+
+    await updateDoc(donationRef, {
+      status: "canceled",
+    });
+
+    navigation.navigate("AdminDonations");
+  };
+
   const viewDonationDataHandler = (donationId) => {
     navigation.navigate("DonationData", { donationId });
   };
@@ -99,22 +129,22 @@ export default function Donations() {
                 onPress={() => viewDonationDataHandler(item.id)}
               >
                 {donationIcon(item.type)}
-                <View style={styles.centerData}>
-                  <Text style={styles.centerField}>
+                <View style={styles.donationData}>
+                  <Text style={styles.donationField}>
                     <Text style={{ fontWeight: "bold" }}>
                       User email {"\n"}
                     </Text>
                     {item.userEmail}
                   </Text>
                   <View>
-                    {item.status === "pending" && (
+                    {item.status === "pending" ? (
                       <View style={styles.donationButtons}>
                         <TouchableOpacity
                           style={styles.completedButton}
                           onPress={() => completeDonationHandler()}
                         >
                           <FontAwesomeIcon
-                            style={styles.completeIcon}
+                            style={styles.cardButtonIcon}
                             icon={faCheck}
                             size={20}
                           />
@@ -125,12 +155,19 @@ export default function Donations() {
                           onPress={() => cancelDonationHandler()}
                         >
                           <FontAwesomeIcon
-                            style={styles.cancelIcon}
+                            style={styles.cardButtonIcon}
                             icon={faBan}
                             size={20}
                           />
                         </TouchableOpacity>
                       </View>
+                    ) : (
+                      <Text style={styles.donationField}>
+                        <Text style={{ fontWeight: "bold" }}>
+                          Status {"\n"}
+                        </Text>
+                        {item.status}
+                      </Text>
                     )}
                   </View>
                 </View>
@@ -217,10 +254,7 @@ const styles = StyleSheet.create({
   donationButtons: {
     flexDirection: "row",
   },
-  completeIcon: {
-    color: "#ffffff",
-  },
-  cancelIcon: {
+  cardButtonIcon: {
     color: "#ffffff",
   },
 });
