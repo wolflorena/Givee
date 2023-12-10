@@ -70,6 +70,7 @@ export default function CenterData({ route }) {
 
     navigation.navigate("AdminDonations");
   };
+
   const cancelDonationHandler = async () => {
     const donationRef = doc(db, "donations", donationId);
 

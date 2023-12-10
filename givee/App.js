@@ -15,7 +15,9 @@ import AdminCenters from "./admin/screens/Centers";
 import AdminCampaigns from "./admin/screens/Campaigns";
 import CenterData from "./admin/CenterData";
 import CenterForm from "./admin/CenterForm";
+import CampaignForm from "./admin/CampaignForm";
 import DonationData from "./admin/DonationData";
+import CampaignData from "./admin/CampaignData";
 import Home from "./client/screens/Home";
 import SuccessfulDonation from "./client/screens/SuccessfulDonation";
 import Location from "./client/screens/Location";
@@ -27,7 +29,7 @@ export default function App() {
     <NavigationContainer>
       <AdminProvider>
         <LoginProvider>
-          <Stack.Navigator initialRouteName="Login">
+          <Stack.Navigator initialRouteName="AdminCampaigns">
             <Stack.Screen
               name="Login"
               component={Login}
@@ -109,8 +111,18 @@ export default function App() {
               options={{ headerShown: false }}
             />
             <Stack.Screen
+              name="CampaignForm"
+              component={CampaignForm}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
               name="DonationData"
               component={DonationData}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="CampaignData"
+              component={CampaignData}
               options={{ headerShown: false }}
             />
           </Stack.Navigator>
