@@ -36,7 +36,7 @@ export default function Donations() {
   useEffect(() => {
     StatusBar.setBarStyle("light-content");
     getDonations();
-  }, []);
+  });
 
   useFocusEffect(
     React.useCallback(() => {
@@ -85,24 +85,20 @@ export default function Donations() {
     </View>
   );
 
-  const completeDonationHandler = async () => {
+  const completeDonationHandler = async (donationId) => {
     const donationRef = doc(db, "donations", donationId);
 
     await updateDoc(donationRef, {
       status: "completed",
     });
-
-    navigation.navigate("AdminDonations");
   };
 
-  const cancelDonationHandler = async () => {
+  const cancelDonationHandler = async (donationId) => {
     const donationRef = doc(db, "donations", donationId);
 
     await updateDoc(donationRef, {
       status: "canceled",
     });
-
-    navigation.navigate("AdminDonations");
   };
 
   const viewDonationDataHandler = (donationId) => {
@@ -146,7 +142,7 @@ export default function Donations() {
                       <View style={styles.donationButtons}>
                         <TouchableOpacity
                           style={styles.completedButton}
-                          onPress={() => completeDonationHandler()}
+                          onPress={() => completeDonationHandler(item.id)}
                         >
                           <FontAwesomeIcon
                             style={styles.cardButtonIcon}
@@ -157,7 +153,7 @@ export default function Donations() {
 
                         <TouchableOpacity
                           style={styles.canceledButton}
-                          onPress={() => cancelDonationHandler()}
+                          onPress={() => cancelDonationHandler(item.id)}
                         >
                           <FontAwesomeIcon
                             style={styles.cardButtonIcon}

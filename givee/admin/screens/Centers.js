@@ -7,13 +7,15 @@ import {
   FlatList,
 } from "react-native";
 
-import { collection, query, getDocs } from "firebase/firestore";
+import { collection, query, getDocs, doc, deleteDoc } from "firebase/firestore";
 import { FIREBASE_DB } from "../../firebaseConfig";
 
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faCircleChevronLeft } from "@fortawesome/free-solid-svg-icons/faCircleChevronLeft";
 import { faMapPin } from "@fortawesome/free-solid-svg-icons/faMapPin";
 import { faPlus } from "@fortawesome/free-solid-svg-icons/faPlus";
+import { faTrash } from "@fortawesome/free-solid-svg-icons/faTrash";
+import { faPenToSquare } from "@fortawesome/free-solid-svg-icons/faPenToSquare";
 
 import { useFocusEffect } from "@react-navigation/native";
 import { useNavigation } from "@react-navigation/native";
@@ -32,7 +34,7 @@ export default function Centers() {
   useEffect(() => {
     StatusBar.setBarStyle("light-content");
     getCenters();
-  }, []);
+  });
 
   useFocusEffect(
     React.useCallback(() => {
@@ -63,6 +65,14 @@ export default function Centers() {
 
   const addCenterHandler = () => {
     navigation.navigate("CenterForm");
+  };
+
+  const deleteCenterHandler = async (centerId) => {
+    await deleteDoc(doc(db, "centers", centerId));
+  };
+
+  const editCenterHandler = (centerId) => {
+    navigation.navigate("EditCenter", { centerId });
   };
 
   return (
@@ -108,6 +118,28 @@ export default function Centers() {
                     <Text style={{ fontWeight: "bold" }}>Address {"\n"}</Text>
                     {item.address}
                   </Text>
+                  <View style={styles.centerButtons}>
+                    <TouchableOpacity
+                      style={styles.deleteCenterButton}
+                      onPress={() => deleteCenterHandler(item.id)}
+                    >
+                      <FontAwesomeIcon
+                        style={styles.centerButtonIcon}
+                        icon={faTrash}
+                        size={15}
+                      />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.editCenterButton}
+                      onPress={() => editCenterHandler(item.id)}
+                    >
+                      <FontAwesomeIcon
+                        style={styles.centerButtonIcon}
+                        icon={faPenToSquare}
+                        size={15}
+                      />
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </TouchableOpacity>
             )}
@@ -156,7 +188,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     borderRadius: 10,
-    height: 70,
+    height: 110,
     width: 350,
   },
   centerIcon: {
@@ -167,7 +199,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   centerData: {
-    height: 70,
+    height: 110,
     width: 250,
     justifyContent: "space-evenly",
   },
@@ -177,5 +209,31 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
+  },
+  centerButtons: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: 80,
+    height: 20,
+  },
+  deleteCenterButton: {
+    backgroundColor: "#D2042D",
+    height: 35,
+    width: 35,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 5,
+  },
+  editCenterButton: {
+    backgroundColor: "#1f1f1f",
+    height: 35,
+    width: 35,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 5,
+  },
+  centerButtonIcon: {
+    color: "#ffffff",
   },
 });
