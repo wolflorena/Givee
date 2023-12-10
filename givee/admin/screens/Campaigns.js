@@ -7,13 +7,15 @@ import {
   FlatList,
 } from "react-native";
 
-import { collection, query, getDocs } from "firebase/firestore";
+import { collection, query, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { FIREBASE_DB } from "../../firebaseConfig";
 
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faCircleChevronLeft } from "@fortawesome/free-solid-svg-icons/faCircleChevronLeft";
 import { faPlus } from "@fortawesome/free-solid-svg-icons/faPlus";
 import { faGift } from "@fortawesome/free-solid-svg-icons/faGift";
+import { faTrash } from "@fortawesome/free-solid-svg-icons/faTrash";
+import { faPenToSquare } from "@fortawesome/free-solid-svg-icons/faPenToSquare";
 
 import { useFocusEffect } from "@react-navigation/native";
 import { useNavigation } from "@react-navigation/native";
@@ -32,7 +34,7 @@ export default function Campaigns() {
   useEffect(() => {
     StatusBar.setBarStyle("light-content");
     getCampaigns();
-  }, []);
+  });
 
   useFocusEffect(
     React.useCallback(() => {
@@ -63,6 +65,14 @@ export default function Campaigns() {
 
   const addCampaignHandler = () => {
     navigation.navigate("CampaignForm");
+  };
+
+  const deleteCampaignHandler = async (campaignId) => {
+    await deleteDoc(doc(db, "campaigns", campaignId));
+  };
+
+  const editCampaignHandler = (campaignId) => {
+    navigation.navigate("EditCampaign", { campaignId });
   };
 
   return (
@@ -104,16 +114,41 @@ export default function Campaigns() {
                   size={30}
                 />
                 <View style={styles.campaignData}>
-                  <Text style={styles.campaignField}>
-                    <Text style={{ fontWeight: "bold" }}>Name {"\n"}</Text>
-                    {item.name}
-                  </Text>
-                  <Text style={styles.campaignField}>
-                    <Text style={{ fontWeight: "bold" }}>
-                      Expire Date {"\n"}
+                  <View style={styles.campaignContent}>
+                    <Text style={styles.campaignField}>
+                      <Text style={{ fontWeight: "bold" }}>Name {"\n"}</Text>
+                      {item.name}
                     </Text>
-                    {item.expireDate}
-                  </Text>
+                    <Text style={styles.campaignField}>
+                      <Text style={{ fontWeight: "bold" }}>
+                        Expire Date {"\n"}
+                      </Text>
+                      {item.expireDate}
+                    </Text>
+                  </View>
+
+                  <View style={styles.campaignsButtons}>
+                    <TouchableOpacity
+                      style={styles.deleteCampaignButton}
+                      onPress={() => deleteCampaignHandler(item.id)}
+                    >
+                      <FontAwesomeIcon
+                        style={styles.campaignButtonIcon}
+                        icon={faTrash}
+                        size={15}
+                      />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.editCampaignButton}
+                      onPress={() => editCampaignHandler(item.id)}
+                    >
+                      <FontAwesomeIcon
+                        style={styles.campaignButtonIcon}
+                        icon={faPenToSquare}
+                        size={15}
+                      />
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </TouchableOpacity>
             )}
@@ -174,8 +209,10 @@ const styles = StyleSheet.create({
   },
   campaignData: {
     height: 100,
-    width: 250,
-    justifyContent: "space-evenly",
+    width: 280,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   addCampaignIcon: {
     color: "#ddb31b",
@@ -183,5 +220,31 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
+  },
+  campaignsButtons: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: 80,
+    height: 30,
+  },
+  deleteCampaignButton: {
+    backgroundColor: "#D2042D",
+    height: 35,
+    width: 35,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 5,
+  },
+  editCampaignButton: {
+    backgroundColor: "#1f1f1f",
+    height: 35,
+    width: 35,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 5,
+  },
+  campaignButtonIcon: {
+    color: "#ffffff",
   },
 });
