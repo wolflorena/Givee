@@ -6,11 +6,19 @@ const BUTTON_SIZES = {
     width: 100,
     height: 30,
     marginTop: 70,
-    marginBottom: 50,
+    marginBottom: 20,
   },
   large: {
     width: 350,
     height: 50,
+  },
+  medium: {
+    width: 150,
+    height: 30,
+  },
+  auto: {
+    with: "auto",
+    height: "auto",
   },
 };
 

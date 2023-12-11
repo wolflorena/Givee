@@ -41,6 +41,8 @@ export default function Login() {
           if (userRole === "admin") {
             navigation.navigate("AdminHome");
           } else {
+            setEmail("");
+            setPassword("");
             navigation.navigate("Home");
             navBarButtonsPressHandler("homeIsPressed");
           }
@@ -87,7 +89,15 @@ export default function Login() {
         ></TextInput>
       </View>
 
-      <CustomButton text="Login" onPress={signIn} />
+      <View style={styles.loginContainer}>
+        <CustomButton text="Login" onPress={signIn} />
+        <Text
+          style={styles.text}
+          onPress={() => navigation.navigate("ChangePassword")}
+        >
+          Forgot password?
+        </Text>
+      </View>
 
       <View style={styles.signupContainer}>
         <Text style={styles.text}>Don't have an account?</Text>
@@ -148,5 +158,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     position: "absolute",
     bottom: 50,
+  },
+  loginContainer: {
+    alignItems: "center",
   },
 });

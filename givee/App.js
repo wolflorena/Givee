@@ -25,6 +25,7 @@ import Location from "./client/screens/Location";
 import EditCenter from "./admin/EditCenter";
 import EditCampaign from "./admin/EditCampaign";
 import AboutUs from "./client/screens/AboutUs";
+import ChangePassword from "./client/screens/ChangePassword";
 
 const Stack = createNativeStackNavigator();
 
@@ -33,10 +34,15 @@ export default function App() {
     <NavigationContainer>
       <AdminProvider>
         <LoginProvider>
-          <Stack.Navigator initialRouteName="AboutUs">
+          <Stack.Navigator initialRouteName="ChangePassword">
             <Stack.Screen
               name="Login"
               component={Login}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="ChangePassword"
+              component={ChangePassword}
               options={{ headerShown: false }}
             />
             <Stack.Screen

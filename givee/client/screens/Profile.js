@@ -14,12 +14,14 @@ import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { useLoginUpdateContext } from "../LoginContext";
 import { useFocusEffect } from "@react-navigation/native";
+import { FIREBASE_AUTH } from "../../firebaseConfig";
 
 export default function Profile() {
   const navigation = useNavigation();
   const { userLoggedOut } = useLoginUpdateContext();
   const { navBarButtonsPressHandler } = useLoginUpdateContext();
   const [selectedOption, setSelectedOption] = useState("");
+  const auth = FIREBASE_AUTH;
 
   useFocusEffect(
     React.useCallback(() => {
@@ -29,6 +31,7 @@ export default function Profile() {
 
   const handleLogout = () => {
     userLoggedOut();
+    auth.signOut();
     navigation.navigate("Login");
   };
 
