@@ -17,7 +17,14 @@ export default function Home() {
     }, [])
   );
 
-  const renderContainer = (buttonType, image, label, message) => {
+  const renderContainer = (
+    buttonType,
+    image,
+    label,
+    message,
+    color,
+    colorCircle
+  ) => {
     let imagePath;
     switch (image) {
       case "clothes.png":
@@ -38,13 +45,15 @@ export default function Home() {
     }
     return (
       <TouchableOpacity
-        style={styles.selectionContainer}
+        style={[styles.selectionContainer, { backgroundColor: color }]}
         onPress={() => {
           navBarButtonsPressHandler(buttonType);
           navigation.navigate(`${label}`);
         }}
       >
-        <Image style={styles.logo} source={imagePath}></Image>
+        <View style={[styles.circle, { backgroundColor: colorCircle }]}>
+          <Image style={styles.logo} source={imagePath}></Image>
+        </View>
         <Text style={styles.logoText}>{message}</Text>
       </TouchableOpacity>
     );
@@ -64,15 +73,33 @@ export default function Home() {
             "clothesIsPressed",
             "clothes.png",
             "Clothes",
-            "Donate clothes"
+            "Donate clothes",
+            "#F4E096",
+            "#E1DCC9"
           )}
-          {renderContainer("foodIsPressed", "food.png", "Food", "Donate food")}
-          {renderContainer("toysIsPressed", "toys.png", "Toys", "Donate toys")}
+          {renderContainer(
+            "foodIsPressed",
+            "food.png",
+            "Food",
+            "Donate food",
+            "#94BDB4",
+            "#779891"
+          )}
+          {renderContainer(
+            "toysIsPressed",
+            "toys.png",
+            "Toys",
+            "Donate toys",
+            "#C4C58B",
+            "#9FA064"
+          )}
           {renderContainer(
             "historyIsPressed",
             "history.png",
             "History",
-            "My donations"
+            "My donations",
+            "#E7A561",
+            "#3E2C00"
           )}
         </View>
       </View>
@@ -118,7 +145,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 15,
     gap: 10,
-    backgroundColor: "#F4E096",
   },
   logo: {
     resizeMode: "stretch",
@@ -127,5 +153,12 @@ const styles = StyleSheet.create({
   },
   logoText: {
     fontSize: 15,
+  },
+  circle: {
+    borderRadius: 50,
+    height: 75,
+    width: 75,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
