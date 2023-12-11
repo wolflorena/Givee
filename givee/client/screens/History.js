@@ -4,6 +4,7 @@ import {
   FlatList,
   TouchableOpacity,
   Text,
+  Image,
 } from "react-native";
 import NavBar from "../Navbar";
 import GoBackButton from "../GoBackButton";
@@ -57,30 +58,40 @@ export default function Centers() {
       <GoBackButton />
       <Title text="My Donations" />
       <View style={styles.donationsContainer}>
-        <View style={styles.donations}>
-          <FlatList
-            data={donationsData}
-            keyExtractor={(donation) => donation.id}
-            renderItem={({ item }) => (
-              <TouchableOpacity style={styles.donationCard}>
-                <View style={styles.donationData}>
-                  <Text style={styles.donationField}>
-                    <Text style={{ fontWeight: "bold" }}>Donation: </Text>
-                    {item.type}
-                  </Text>
-                  <Text style={styles.donationField}>
-                    <Text style={{ fontWeight: "bold" }}>Time: </Text>
-                    {item.timestamp}
-                  </Text>
-                  <Text style={styles.donationField}>
-                    <Text style={{ fontWeight: "bold" }}>Status: </Text>
-                    {item.status}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            )}
-          ></FlatList>
-        </View>
+        {donationsData.length === 0 ? (
+          <View style={styles.emptyContainer}>
+            <Image
+              source={require("../../assets/noDonations.png")} // Update with your image path
+              style={styles.emptyImage}
+            />
+            <Text style={styles.emptyText}>No donations made yet. 🙁</Text>
+          </View>
+        ) : (
+          <View style={styles.donations}>
+            <FlatList
+              data={donationsData}
+              keyExtractor={(donation) => donation.id}
+              renderItem={({ item }) => (
+                <TouchableOpacity style={styles.donationCard}>
+                  <View style={styles.donationData}>
+                    <Text style={styles.donationField}>
+                      <Text style={{ fontWeight: "bold" }}>Donation: </Text>
+                      {item.type}
+                    </Text>
+                    <Text style={styles.donationField}>
+                      <Text style={{ fontWeight: "bold" }}>Time: </Text>
+                      {item.timestamp}
+                    </Text>
+                    <Text style={styles.donationField}>
+                      <Text style={{ fontWeight: "bold" }}>Status: </Text>
+                      {item.status}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              )}
+            ></FlatList>
+          </View>
+        )}
       </View>
       <NavBar />
     </View>
@@ -122,5 +133,21 @@ const styles = StyleSheet.create({
     height: 100,
     width: 250,
     justifyContent: "space-evenly",
+  },
+  emptyContainer: {
+    width: 350,
+    height: 600,
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 50,
+    // backgroundColor: "red",
+  },
+  emptyImage: {
+    height: 250,
+    width: 250,
+  },
+  emptyText: {
+    color: "#DDB31B",
+    fontSize: 25,
   },
 });
