@@ -16,6 +16,8 @@ import CustomButton from "../CustomButton";
 
 export default function Login() {
   const { userLoggedIn } = useLoginUpdateContext();
+  const { navBarButtonsPressHandler } = useLoginUpdateContext();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const auth = FIREBASE_AUTH;
@@ -40,6 +42,7 @@ export default function Login() {
             navigation.navigate("AdminHome");
           } else {
             navigation.navigate("Home");
+            navBarButtonsPressHandler("homeIsPressed");
           }
         } else {
           console.log("User data not found!");

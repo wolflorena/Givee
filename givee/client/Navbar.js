@@ -1,14 +1,13 @@
 import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
 import { useLoginContext, useLoginUpdateContext } from "./LoginContext";
 import { useNavigation } from "@react-navigation/native";
-
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faShirt } from "@fortawesome/free-solid-svg-icons/faShirt";
 import { faHouse } from "@fortawesome/free-solid-svg-icons/faHouse";
 import { faBowlFood } from "@fortawesome/free-solid-svg-icons/faBowlFood";
 import {
   faCircle,
-  faClockRotateLeft,
+  faUser,
   faPuzzlePiece,
 } from "@fortawesome/free-solid-svg-icons";
 
@@ -50,7 +49,7 @@ export default function Navbar() {
       {renderNavbarButton("clothesIsPressed", faShirt, "Clothes")}
       {renderNavbarButton("foodIsPressed", faBowlFood, "Food")}
       {renderNavbarButton("toysIsPressed", faPuzzlePiece, "Toys")}
-      {renderNavbarButton("historyIsPressed", faClockRotateLeft, "History")}
+      {renderNavbarButton("myProfileIsPressed", faUser, "Profile")}
     </View>
   );
 }

@@ -19,12 +19,16 @@ export function LoginProvider(props) {
     setCurrentUser(user);
   };
 
+  const userLoggedOut = () => {
+    setCurrentUser(null);
+  };
+
   const [navBarButtons, setNavBarButtons] = useState({
     homeIsPressed: true,
     clothesIsPressed: false,
     foodIsPressed: false,
     toysIsPressed: false,
-    historyIsPressed: false,
+    myProfileIsPressed: false,
   });
 
   const navBarButtonsPressHandler = (buttonType) => {
@@ -37,7 +41,7 @@ export function LoginProvider(props) {
   return (
     <LoginContext.Provider value={{ currentUser, navBarButtons }}>
       <LoginUpdateContext.Provider
-        value={{ userLoggedIn, navBarButtonsPressHandler }}
+        value={{ userLoggedIn, userLoggedOut, navBarButtonsPressHandler }}
       >
         {props.children}
       </LoginUpdateContext.Provider>

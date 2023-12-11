@@ -7,6 +7,7 @@ import Signup from "./client/screens/Signup";
 import Clothes from "./client/screens/Clothes";
 import Food from "./client/screens/Food";
 import Toys from "./client/screens/Toys";
+import Profile from "./client/screens/Profile";
 import History from "./client/screens/History";
 import AdminHome from "./admin/screens/Home";
 import AdminUsers from "./admin/screens/Users";
@@ -31,7 +32,7 @@ export default function App() {
     <NavigationContainer>
       <AdminProvider>
         <LoginProvider>
-          <Stack.Navigator initialRouteName="Login">
+          <Stack.Navigator initialRouteName="Profile">
             <Stack.Screen
               name="Login"
               component={Login}
@@ -60,6 +61,11 @@ export default function App() {
             <Stack.Screen
               name="Toys"
               component={Toys}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Profile"
+              component={Profile}
               options={{ headerShown: false }}
             />
             <Stack.Screen
