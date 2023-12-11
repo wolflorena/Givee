@@ -8,24 +8,28 @@ import {
 import NavBar from "../Navbar";
 import GoBackButton from "../GoBackButton";
 import Title from "../Title";
-import { useLoginContext } from "../LoginContext";
+import { useLoginContext, useLoginUpdateContext } from "../LoginContext";
 import React, { useState, useCallback, useEffect } from "react";
 import { StatusBar } from "react-native";
 import { FIREBASE_DB } from "../../firebaseConfig";
-import {
-  collection,
-  query,
-  getDocs,
-  serverTimestamp,
-} from "firebase/firestore";
+import { collection, query, getDocs } from "firebase/firestore";
+import { useFocusEffect } from "@react-navigation/native";
+
 export default function Centers() {
   const [donationsData, setDonationsData] = useState([]);
   const { currentUser } = useLoginContext();
+  const { navBarButtonsPressHandler } = useLoginUpdateContext();
 
   useEffect(() => {
     StatusBar.setBarStyle("light-content");
     getDonations();
   }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      navBarButtonsPressHandler("myProfileIsPressed");
+    }, [])
+  );
 
   const getDonations = useCallback(async () => {
     try {

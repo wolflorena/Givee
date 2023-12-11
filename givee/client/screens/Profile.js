@@ -13,6 +13,7 @@ import Navbar from "../Navbar";
 import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { useLoginUpdateContext } from "../LoginContext";
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function Profile() {
   const navigation = useNavigation();
@@ -20,10 +21,15 @@ export default function Profile() {
   const { navBarButtonsPressHandler } = useLoginUpdateContext();
   const [selectedOption, setSelectedOption] = useState("");
 
+  useFocusEffect(
+    React.useCallback(() => {
+      navBarButtonsPressHandler("myProfileIsPressed");
+    }, [])
+  );
+
   const handleLogout = () => {
     userLoggedOut();
     navigation.navigate("Login");
-    navBarButtonsPressHandler("");
   };
 
   const renderOption = (faIcon, label, path) => {

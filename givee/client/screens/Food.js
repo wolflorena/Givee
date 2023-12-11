@@ -4,8 +4,18 @@ import Title from "../Title";
 import DonationForm from "../DonationForm";
 import NavBar from "../Navbar";
 import GoBackButton from "../GoBackButton";
+import { useLoginUpdateContext } from "../LoginContext";
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function Food() {
+  const { navBarButtonsPressHandler } = useLoginUpdateContext();
+
+  useFocusEffect(
+    React.useCallback(() => {
+      navBarButtonsPressHandler("foodIsPressed");
+    }, [])
+  );
+
   return (
     <View style={styles.container}>
       <GoBackButton />

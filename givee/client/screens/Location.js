@@ -19,12 +19,14 @@ import CustomButton from "../CustomButton";
 import Title from "../Title";
 import { useLoginContext } from "../LoginContext";
 import { doc, setDoc } from "firebase/firestore";
+import { useNavigation } from "@react-navigation/native";
 
 export default function Location({ route }) {
   let formData = route.params;
   const [centersData, setCentersData] = useState([]);
   const [selectedCenter, setSelectedCenter] = useState("");
   const { currentUser } = useLoginContext();
+  const navigation = useNavigation();
 
   useEffect(() => {
     StatusBar.setBarStyle("light-content");
@@ -64,6 +66,8 @@ export default function Location({ route }) {
       await setDoc(newDonationRef, donationData);
 
       console.log("Donation submitted successfully!");
+      navigation.navigate("SuccessfulDonation");
+      na;
     } catch (error) {
       console.error("Error submitting donation:", error);
     }

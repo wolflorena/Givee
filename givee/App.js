@@ -24,6 +24,7 @@ import SuccessfulDonation from "./client/screens/SuccessfulDonation";
 import Location from "./client/screens/Location";
 import EditCenter from "./admin/EditCenter";
 import EditCampaign from "./admin/EditCampaign";
+import AboutUs from "./client/screens/AboutUs";
 
 const Stack = createNativeStackNavigator();
 
@@ -32,7 +33,7 @@ export default function App() {
     <NavigationContainer>
       <AdminProvider>
         <LoginProvider>
-          <Stack.Navigator initialRouteName="Profile">
+          <Stack.Navigator initialRouteName="AboutUs">
             <Stack.Screen
               name="Login"
               component={Login}
@@ -71,6 +72,11 @@ export default function App() {
             <Stack.Screen
               name="History"
               component={History}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="AboutUs"
+              component={AboutUs}
               options={{ headerShown: false }}
             />
             <Stack.Screen
