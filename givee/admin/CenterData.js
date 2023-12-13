@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
+import MapView, { Marker } from "react-native-maps";
 
 import { doc, getDoc } from "firebase/firestore";
 import { FIREBASE_DB } from "../firebaseConfig";
@@ -26,7 +27,7 @@ export default function CenterData({ route }) {
   useEffect(() => {
     StatusBar.setBarStyle("light-content");
     getCenter();
-  }, []);
+  }, [centerData]);
 
   const getCenter = useCallback(async () => {
     try {
@@ -108,7 +109,27 @@ export default function CenterData({ route }) {
             )}
         </View>
 
-        <View style={styles.centerMap}></View>
+        {centerData.latitude && centerData.longitude && (
+          <View style={styles.mapContainer}>
+            <MapView
+              style={styles.map}
+              initialRegion={{
+                latitude: centerData.latitude,
+                longitude: centerData.longitude,
+                latitudeDelta: 0.03,
+                longitudeDelta: 0.03,
+              }}
+              provider="google"
+            >
+              <Marker
+                coordinate={{
+                  latitude: centerData.latitude,
+                  longitude: centerData.longitude,
+                }}
+              ></Marker>
+            </MapView>
+          </View>
+        )}
       </View>
     </View>
   );
@@ -154,5 +175,14 @@ const styles = StyleSheet.create({
   },
   openProgram: {
     marginTop: 40,
+  },
+  map: {
+    width: "100%",
+    height: "100%",
+  },
+  mapContainer: {
+    width: 350,
+    height: 500,
+    marginTop: 30,
   },
 });

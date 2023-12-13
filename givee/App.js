@@ -34,7 +34,7 @@ export default function App() {
     <NavigationContainer>
       <AdminProvider>
         <LoginProvider>
-          <Stack.Navigator initialRouteName="ChangePassword">
+          <Stack.Navigator initialRouteName="AdminCenters">
             <Stack.Screen
               name="Login"
               component={Login}

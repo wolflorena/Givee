@@ -6,6 +6,8 @@ import {
   TouchableOpacity,
   TextInput,
 } from "react-native";
+import MapView, { Marker } from "react-native-maps";
+import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 
 import { collection } from "firebase/firestore";
 import { doc, setDoc } from "firebase/firestore";
@@ -22,6 +24,11 @@ import Checkbox from "expo-checkbox";
 export default function CenterForm() {
   const db = FIREBASE_DB;
   const navigation = useNavigation();
+
+  const [pin, setPin] = useState({
+    latitude: 45.7538355,
+    longitude: 21.2257474,
+  });
 
   const [centerData, setCenterData] = useState({
     address: "",
@@ -155,7 +162,79 @@ export default function CenterForm() {
             </View>
           </View>
 
-          <View style={styles.openProgram}></View>
+          <View style={styles.mapContainer}>
+            <GooglePlacesAutocomplete
+              styles={{
+                container: {
+                  flex: 0,
+                  position: "absolute",
+                  width: "100%",
+                  zIndex: 1,
+                },
+              }}
+              placeholder="Search"
+              fetchDetails={true}
+              GooglePlacesSearchQuery={{ rankby: "distance" }}
+              onPress={(data, details = null) => {
+                const newPin = {
+                  latitude: details.geometry.location.lat,
+                  longitude: details.geometry.location.lng,
+                };
+
+                setPin((prevPin) => ({
+                  ...prevPin,
+                  latitude: newPin.latitude,
+                  longitude: newPin.longitude,
+                }));
+
+                setCenterData((prevData) => ({
+                  ...prevData,
+                  latitude: newPin.latitude,
+                  longitude: newPin.longitude,
+                }));
+              }}
+              query={{
+                key: "AIzaSyBh4e7r-F87Yy5bbWVmG_jRJfL8dPabl2I",
+                language: "en",
+              }}
+            />
+            <MapView
+              style={styles.map}
+              initialRegion={{
+                latitude: pin.latitude,
+                longitude: pin.longitude,
+                latitudeDelta: 0.05,
+                longitudeDelta: 0.05,
+              }}
+              provider="google"
+            >
+              <Marker
+                coordinate={pin}
+                draggable={true}
+                onDragStart={(e) => {
+                  console.log("Drag start", e.nativeEvent.coordinate);
+                }}
+                onDragEnd={(e) => {
+                  const newPin = {
+                    latitude: e.nativeEvent.coordinate.latitude,
+                    longitude: e.nativeEvent.coordinate.longitude,
+                  };
+
+                  setPin((prevPin) => ({
+                    ...prevPin,
+                    latitude: newPin.latitude,
+                    longitude: newPin.longitude,
+                  }));
+
+                  setCenterData((prevData) => ({
+                    ...prevData,
+                    latitude: newPin.latitude,
+                    longitude: newPin.longitude,
+                  }));
+                }}
+              ></Marker>
+            </MapView>
+          </View>
         </View>
 
         <View style={styles.addCenterButtonContainer}>
@@ -199,7 +278,7 @@ const styles = StyleSheet.create({
     height: 40,
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 50,
+    marginBottom: 30,
     borderRadius: 10,
     fontSize: 15,
   },
@@ -248,5 +327,14 @@ const styles = StyleSheet.create({
   },
   checkboxContainerProgram: {
     flexDirection: "row",
+  },
+  map: {
+    width: "100%",
+    height: "100%",
+  },
+  mapContainer: {
+    width: 350,
+    height: 450,
+    marginTop: 30,
   },
 });
