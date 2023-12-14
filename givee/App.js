@@ -34,7 +34,7 @@ export default function App() {
     <NavigationContainer>
       <AdminProvider>
         <LoginProvider>
-          <Stack.Navigator initialRouteName="AdminCenters">
+          <Stack.Navigator initialRouteName="Food">
             <Stack.Screen
               name="Login"
               component={Login}
