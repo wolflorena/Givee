@@ -2,26 +2,105 @@ import { View, TextInput, Text, StyleSheet } from "react-native";
 import React, { useState } from "react";
 import CustomButton from "../CustomButton";
 import { FIREBASE_AUTH } from "../../firebaseConfig";
-import { sendPasswordResetEmail } from "firebase/auth";
+import {
+  sendPasswordResetEmail,
+  fetchSignInMethodsForEmail,
+} from "firebase/auth";
 import { useNavigation } from "@react-navigation/native";
+import AwesomeAlert from "react-native-awesome-alerts";
 
 export default function ChangePassword() {
   const [email, setEmail] = useState("");
+  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+  const [showNoAccountAlert, setshowNoAccountAlert] = useState(false);
+  const [showInvalidEmail, setShowInvalidEmail] = useState(false);
+
   const auth = FIREBASE_AUTH;
   const navigation = useNavigation();
 
   const resetPassword = () => {
+    // fetchSignInMethodsForEmail(auth, email)
+    //   .then((signInMethods) => {
+    //     console.log(signInMethods);
+
+    //     if (signInMethods.length === 0) {
+    //       console.log(signInMethods);
+
+    //       setshowNoAccountAlert(true);
+    //       return;
+    //     }
+
     sendPasswordResetEmail(auth, email)
       .then(() => {
-        alert("Password reset email sent");
+        setShowSuccessAlert(true);
         setEmail("");
       })
       .catch((error) => {
-        alert(error);
+        if (
+          error.code == "auth/invalid-email" ||
+          error.code == "auth/missing-email"
+        )
+          setShowInvalidEmail(true);
       });
+    // })
+    // .catch((error) => {
+    //   if (error.code == "auth/invalid-email") setShowInvalidEmail(true);
+    // });
   };
   return (
     <View style={styles.container}>
+      <AwesomeAlert
+        show={showSuccessAlert}
+        showProgress={false}
+        title="Succes!"
+        message="Password reset email sent"
+        closeOnTouchOutside={true}
+        closeOnHardwareBackPress={false}
+        showConfirmButton={true}
+        confirmText="Ok"
+        confirmButtonColor="rgba(221, 179, 27,0.7)"
+        alertContainerStyle={{ backgroundColor: "rgba(31,31,31,0.5)" }}
+        contentContainerStyle={{ backgroundColor: "#1f1f1f" }}
+        titleStyle={{ color: "#ddb31b" }}
+        messageStyle={{ color: "#eaebed" }}
+        onConfirmPressed={() => {
+          setShowSuccessAlert(false);
+        }}
+      />
+      <AwesomeAlert
+        show={showNoAccountAlert}
+        showProgress={false}
+        title="Invalid email"
+        message="No account was found with this email"
+        closeOnTouchOutside={true}
+        closeOnHardwareBackPress={false}
+        showConfirmButton={true}
+        confirmText="Ok"
+        confirmButtonColor="rgba(221, 179, 27,0.7)"
+        alertContainerStyle={{ backgroundColor: "rgba(31,31,31,0.5)" }}
+        contentContainerStyle={{ backgroundColor: "#1f1f1f" }}
+        titleStyle={{ color: "#ddb31b" }}
+        messageStyle={{ color: "#eaebed" }}
+        onConfirmPressed={() => {
+          setshowNoAccountAlert(false);
+        }}
+      />
+      <AwesomeAlert
+        show={showInvalidEmail}
+        showProgress={false}
+        title="Invalid email format"
+        closeOnTouchOutside={true}
+        closeOnHardwareBackPress={false}
+        showConfirmButton={true}
+        confirmText="Ok"
+        confirmButtonColor="rgba(221, 179, 27,0.7)"
+        alertContainerStyle={{ backgroundColor: "rgba(31,31,31,0.5)" }}
+        contentContainerStyle={{ backgroundColor: "#1f1f1f" }}
+        titleStyle={{ color: "#eaebed" }}
+        onConfirmPressed={() => {
+          setShowInvalidEmail(false);
+        }}
+      />
       <View style={styles.inputContainer}>
         <Text style={[styles.text, styles.firstText]}>
           Write your email address

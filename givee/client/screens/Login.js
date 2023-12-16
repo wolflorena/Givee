@@ -13,12 +13,14 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigation } from "@react-navigation/native";
 import { useLoginUpdateContext } from "../LoginContext";
 import CustomButton from "../CustomButton";
+import AwesomeAlert from "react-native-awesome-alerts";
 
 export default function Login() {
   const { userLoggedIn } = useLoginUpdateContext();
   const { navBarButtonsPressHandler } = useLoginUpdateContext();
 
   const [email, setEmail] = useState("");
+  const [showAlert, setShowAlert] = useState(false);
   const [password, setPassword] = useState("");
   const auth = FIREBASE_AUTH;
   const db = FIREBASE_DB;
@@ -47,14 +49,31 @@ export default function Login() {
             navBarButtonsPressHandler("homeIsPressed");
           }
         } else {
-          console.log("User data not found!");
+          setShowAlert(true);
         }
       })
-      .catch((error) => alert(error.message));
+      .catch((error) => setShowAlert(true));
   };
-
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
+      <AwesomeAlert
+        show={showAlert}
+        showProgress={false}
+        title="Wrong credentials"
+        message="Email or password incorect"
+        closeOnTouchOutside={true}
+        closeOnHardwareBackPress={false}
+        showConfirmButton={true}
+        confirmText="Ok"
+        confirmButtonColor="rgba(221, 179, 27,0.7)"
+        alertContainerStyle={{ backgroundColor: "rgba(31,31,31,0.5)" }}
+        contentContainerStyle={{ backgroundColor: "#1f1f1f" }}
+        titleStyle={{ color: "#ddb31b" }}
+        messageStyle={{ color: "#eaebed" }}
+        onConfirmPressed={() => {
+          setShowAlert(false);
+        }}
+      />
       <View>
         <Image
           style={styles.logo}

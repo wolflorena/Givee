@@ -12,9 +12,15 @@ import { doc, setDoc } from "firebase/firestore";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useNavigation } from "@react-navigation/native";
 import CustomButton from "../CustomButton";
+import AwesomeAlert from "react-native-awesome-alerts";
 
 export default function Login() {
   const [email, setEmail] = useState("");
+  const [showInvalidEmailAlert, setshowInvalidEmailAlert] = useState(false);
+  const [showMissingFieldAlert, setshowMissingFieldAlert] = useState(false);
+  const [showWeakPassword, setshowWeakPassword] = useState(false);
+  const [showEmailAlreadyUsedAlert, setshowEmailAlreadyUsedAlert] =
+    useState(false);
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const auth = FIREBASE_AUTH;
@@ -28,7 +34,6 @@ export default function Login() {
         const user = userCredentials.user;
 
         const isAdmin = false;
-
         await setDoc(doc(db, "users", user.uid), {
           fullName: fullName,
           email: email,
@@ -40,11 +45,87 @@ export default function Login() {
         setPassword("");
         navigation.navigate("Login");
       })
-      .catch((error) => alert(error.message));
+      .catch((error) => {
+        if (error.code == "auth/invalid-email") setshowInvalidEmailAlert(true);
+        if (error.code == "auth/weak-password") setshowWeakPassword(true);
+        if (error.code == "auth/email-already-in-use")
+          setshowEmailAlreadyUsedAlert(true);
+        else alert(error.code);
+      });
   };
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
+      <AwesomeAlert
+        show={showInvalidEmailAlert}
+        showProgress={false}
+        title="Invalid email"
+        message="Please type in a valid email address"
+        closeOnTouchOutside={true}
+        closeOnHardwareBackPress={false}
+        showConfirmButton={true}
+        confirmText="Ok"
+        confirmButtonColor="rgba(221, 179, 27,0.7)"
+        alertContainerStyle={{ backgroundColor: "rgba(31,31,31,0.5)" }}
+        contentContainerStyle={{ backgroundColor: "#1f1f1f" }}
+        titleStyle={{ color: "#ddb31b" }}
+        messageStyle={{ color: "#eaebed" }}
+        onConfirmPressed={() => {
+          setshowInvalidEmailAlert(false);
+        }}
+      />
+      <AwesomeAlert
+        show={showMissingFieldAlert}
+        showProgress={false}
+        title="All the fields are required"
+        closeOnTouchOutside={true}
+        closeOnHardwareBackPress={false}
+        showConfirmButton={true}
+        confirmText="Ok"
+        confirmButtonColor="rgba(221, 179, 27,0.7)"
+        alertContainerStyle={{ backgroundColor: "rgba(31,31,31,0.5)" }}
+        contentContainerStyle={{ backgroundColor: "#1f1f1f" }}
+        titleStyle={{ color: "#eaebed" }}
+        onConfirmPressed={() => {
+          setshowMissingFieldAlert(false);
+        }}
+      />
+      <AwesomeAlert
+        show={showWeakPassword}
+        showProgress={false}
+        title="Weak password"
+        message="The password should have min. 6 characters"
+        closeOnTouchOutside={true}
+        closeOnHardwareBackPress={false}
+        showConfirmButton={true}
+        confirmText="Ok"
+        confirmButtonColor="rgba(221, 179, 27,0.7)"
+        alertContainerStyle={{ backgroundColor: "rgba(31,31,31,0.5)" }}
+        contentContainerStyle={{ backgroundColor: "#1f1f1f" }}
+        titleStyle={{ color: "#ddb31b" }}
+        messageStyle={{ color: "#eaebed" }}
+        onConfirmPressed={() => {
+          setshowWeakPassword(false);
+        }}
+      />
+      <AwesomeAlert
+        show={showEmailAlreadyUsedAlert}
+        showProgress={false}
+        title="Error"
+        message="An account with this email already exists"
+        closeOnTouchOutside={true}
+        closeOnHardwareBackPress={false}
+        showConfirmButton={true}
+        confirmText="Ok"
+        confirmButtonColor="rgba(221, 179, 27,0.7)"
+        alertContainerStyle={{ backgroundColor: "rgba(31,31,31,0.5)" }}
+        contentContainerStyle={{ backgroundColor: "#1f1f1f" }}
+        titleStyle={{ color: "#ddb31b" }}
+        messageStyle={{ color: "#eaebed" }}
+        onConfirmPressed={() => {
+          setshowEmailAlreadyUsedAlert(false);
+        }}
+      />
       <View>
         <Image
           style={styles.logo}
@@ -87,7 +168,13 @@ export default function Login() {
         ></TextInput>
       </View>
 
-      <CustomButton text="Sign up" onPress={signUp} />
+      <CustomButton
+        text="Sign up"
+        onPress={() => {
+          if (fullName && email && password) signUp();
+          else setshowMissingFieldAlert(true);
+        }}
+      />
 
       <View style={styles.loginContainer}>
         <Text style={styles.text}>Have an account?</Text>
