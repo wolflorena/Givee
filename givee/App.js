@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { AdminProvider } from "./admin/AdminContext";
@@ -26,15 +27,25 @@ import EditCenter from "./admin/EditCenter";
 import EditCampaign from "./admin/EditCampaign";
 import AboutUs from "./client/screens/AboutUs";
 import ChangePassword from "./client/screens/ChangePassword";
+import { FIREBASE_AUTH } from "./firebaseConfig";
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(null);
+  useEffect(() => {
+    const unsubscribe = FIREBASE_AUTH.onAuthStateChanged((user) => {
+      setIsUserLoggedIn(!!user);
+    });
+
+    return unsubscribe;
+  }, []);
+
   return (
     <NavigationContainer>
       <AdminProvider>
         <LoginProvider>
-          <Stack.Navigator initialRouteName="Signup">
+          <Stack.Navigator initialRouteName={isUserLoggedIn ? "Home" : "Login"}>
             <Stack.Screen
               name="Login"
               component={Login}

@@ -140,7 +140,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     gap: 50,
-    // backgroundColor: "red",
   },
   emptyImage: {
     height: 250,
