@@ -17,6 +17,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faMapPin } from "@fortawesome/free-solid-svg-icons/faMapPin";
 import { faPhone } from "@fortawesome/free-solid-svg-icons/faPhone";
 import { faCircleChevronLeft } from "@fortawesome/free-solid-svg-icons/faCircleChevronLeft";
+import AwesomeAlert from "react-native-awesome-alerts";
 
 import { useNavigation } from "@react-navigation/native";
 import Checkbox from "expo-checkbox";
@@ -24,6 +25,8 @@ import Checkbox from "expo-checkbox";
 export default function CenterForm() {
   const db = FIREBASE_DB;
   const navigation = useNavigation();
+
+  const [showAlertAdd, setShowAlertAdd] = useState(false);
 
   const [pin, setPin] = useState({
     latitude: 45.7538355,
@@ -85,6 +88,31 @@ export default function CenterForm() {
 
   return (
     <View style={styles.container}>
+      <AwesomeAlert
+        show={showAlertAdd}
+        showProgress={false}
+        title="Confirm Addition"
+        message="Are you sure you want to add this center?"
+        closeOnTouchOutside={true}
+        closeOnHardwareBackPress={false}
+        showCancelButton={true}
+        showConfirmButton={true}
+        confirmText="Yes"
+        cancelText="No"
+        cancelButtonColor="rgba(210, 4, 45, 0.7)"
+        confirmButtonColor="rgba(221, 179, 27,0.7)"
+        alertContainerStyle={{ backgroundColor: "rgba(31,31,31,0.5)" }}
+        contentContainerStyle={{ backgroundColor: "#1f1f1f" }}
+        titleStyle={{ color: "#ddb31b" }}
+        messageStyle={{ color: "#eaebed" }}
+        onConfirmPressed={() => {
+          setShowAlertAdd(false);
+          addCenterHandler();
+        }}
+        onCancelPressed={() => {
+          setShowAlertAdd(false);
+        }}
+      />
       <TouchableOpacity
         style={styles.goBackButton}
         onPress={() => navigation.goBack()}
@@ -241,7 +269,7 @@ export default function CenterForm() {
           <TouchableOpacity
             style={styles.addCenterButton}
             onPress={() => {
-              addCenterHandler();
+              setShowAlertAdd(true);
             }}
           >
             <Text style={{ fontWeight: "bold" }}>Add Center</Text>

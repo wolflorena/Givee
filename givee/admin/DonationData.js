@@ -12,11 +12,12 @@ import { faUser } from "@fortawesome/free-solid-svg-icons/faUser";
 import { faListOl } from "@fortawesome/free-solid-svg-icons/faListOl";
 import { faCheck } from "@fortawesome/free-solid-svg-icons/faCheck";
 import { faBan } from "@fortawesome/free-solid-svg-icons/faBan";
+import AwesomeAlert from "react-native-awesome-alerts";
 
 import { useNavigation } from "@react-navigation/native";
 import { StatusBar } from "react-native";
 
-export default function CenterData({ route }) {
+export default function DonationData({ route }) {
   const db = FIREBASE_DB;
   const navigation = useNavigation();
 
@@ -24,6 +25,10 @@ export default function CenterData({ route }) {
   const [centerData, setCenterData] = useState([]);
 
   const donationId = route.params ? route.params.donationId : null;
+  const parentComponentName = route.params ? route.params.componentName : null;
+
+  const [showAlertCancel, setShowAlertCancel] = useState(false);
+  const [showAlertComplete, setShowAlertComplete] = useState(false);
 
   useEffect(() => {
     StatusBar.setBarStyle("light-content");
@@ -68,7 +73,11 @@ export default function CenterData({ route }) {
       status: "completed",
     });
 
-    navigation.navigate("AdminDonations");
+    if (parentComponentName === "Donations") {
+      navigation.navigate("AdminDonations");
+    } else if (parentComponentName === "Home") {
+      navigation.navigate("AdminHome");
+    }
   };
 
   const cancelDonationHandler = async () => {
@@ -78,7 +87,11 @@ export default function CenterData({ route }) {
       status: "canceled",
     });
 
-    navigation.navigate("AdminDonations");
+    if (parentComponentName === "Donations") {
+      navigation.navigate("AdminDonations");
+    } else if (parentComponentName === "Home") {
+      navigation.navigate("AdminHome");
+    }
   };
 
   const statusType = (status) => (
@@ -105,6 +118,61 @@ export default function CenterData({ route }) {
 
   return (
     <View style={styles.container}>
+      <AwesomeAlert
+        show={showAlertCancel}
+        showProgress={false}
+        title="Confirm Cancel"
+        message="Are you sure you want to cancel this donation?"
+        closeOnTouchOutside={true}
+        closeOnHardwareBackPress={false}
+        showCancelButton={true}
+        showConfirmButton={true}
+        confirmText="Yes"
+        cancelText="No"
+        cancelButtonColor="rgba(210, 4, 45, 0.7)"
+        confirmButtonColor="rgba(221, 179, 27,0.7)"
+        alertContainerStyle={{ backgroundColor: "rgba(31,31,31,0.5)" }}
+        contentContainerStyle={{ backgroundColor: "#1f1f1f" }}
+        titleStyle={{ color: "#ddb31b" }}
+        messageStyle={{ color: "#eaebed" }}
+        onConfirmPressed={() => {
+          setShowAlertCancel(false);
+          if (donationId) {
+            cancelDonationHandler(donationId);
+          }
+        }}
+        onCancelPressed={() => {
+          setShowAlertCancel(false);
+        }}
+      />
+
+      <AwesomeAlert
+        show={showAlertComplete}
+        showProgress={false}
+        title="Confirm Completion"
+        message="Are you sure you want to mark this donation as complete?"
+        closeOnTouchOutside={true}
+        closeOnHardwareBackPress={false}
+        showCancelButton={true}
+        showConfirmButton={true}
+        confirmText="Yes"
+        cancelText="No"
+        cancelButtonColor="rgba(210, 4, 45, 0.7)"
+        confirmButtonColor="rgba(221, 179, 27,0.7)"
+        alertContainerStyle={{ backgroundColor: "rgba(31,31,31,0.5)" }}
+        contentContainerStyle={{ backgroundColor: "#1f1f1f" }}
+        titleStyle={{ color: "#ddb31b" }}
+        messageStyle={{ color: "#eaebed" }}
+        onConfirmPressed={() => {
+          setShowAlertComplete(false);
+          if (donationId) {
+            completeDonationHandler(donationId);
+          }
+        }}
+        onCancelPressed={() => {
+          setShowAlertComplete(false);
+        }}
+      />
       <TouchableOpacity
         style={styles.goBackButton}
         onPress={() => navigation.goBack()}
@@ -154,14 +222,18 @@ export default function CenterData({ route }) {
             <View style={styles.donationButtons}>
               <TouchableOpacity
                 style={styles.completedButton}
-                onPress={() => completeDonationHandler()}
+                onPress={() => {
+                  setShowAlertComplete(true);
+                }}
               >
                 <Text style={styles.completeTextButton}>Complete</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
                 style={styles.canceledButton}
-                onPress={() => cancelDonationHandler()}
+                onPress={() => {
+                  setShowAlertCancel(true);
+                }}
               >
                 <Text style={styles.cancelTextButton}>Cancel</Text>
               </TouchableOpacity>

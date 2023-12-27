@@ -16,6 +16,7 @@ import { faMapPin } from "@fortawesome/free-solid-svg-icons/faMapPin";
 import { faPlus } from "@fortawesome/free-solid-svg-icons/faPlus";
 import { faTrash } from "@fortawesome/free-solid-svg-icons/faTrash";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons/faPenToSquare";
+import AwesomeAlert from "react-native-awesome-alerts";
 
 import { useFocusEffect } from "@react-navigation/native";
 import { useNavigation } from "@react-navigation/native";
@@ -31,14 +32,19 @@ export default function Centers() {
   const [centersData, setCentersData] = useState([]);
   const { navBarButtonsPressHandler } = useAdminUpdateContext();
 
+  const [showAlertDelete, setShowAlertDelete] = useState(false);
+
+  const [selectedDonationId, setSelectedDonationId] = useState(null);
+
   useEffect(() => {
     StatusBar.setBarStyle("light-content");
     getCenters();
-  });
+  }, []);
 
   useFocusEffect(
     React.useCallback(() => {
       navBarButtonsPressHandler("centersIsPressed");
+      getCenters();
     }, [])
   );
 
@@ -68,7 +74,17 @@ export default function Centers() {
   };
 
   const deleteCenterHandler = async (centerId) => {
-    await deleteDoc(doc(db, "centers", centerId));
+    try {
+      await deleteDoc(doc(db, "centers", centerId));
+
+      console.log("Center successfully deleted!");
+
+      setCentersData((prevData) =>
+        prevData.filter((center) => center.id !== centerId)
+      );
+    } catch (error) {
+      console.error("Error deleting center:", error.message);
+    }
   };
 
   const editCenterHandler = (centerId) => {
@@ -77,6 +93,33 @@ export default function Centers() {
 
   return (
     <View style={styles.container}>
+      <AwesomeAlert
+        show={showAlertDelete}
+        showProgress={false}
+        title="Confirm Deletion"
+        message="Are you sure you want to delete this center?"
+        closeOnTouchOutside={true}
+        closeOnHardwareBackPress={false}
+        showCancelButton={true}
+        showConfirmButton={true}
+        confirmText="Yes"
+        cancelText="No"
+        cancelButtonColor="rgba(210, 4, 45, 0.7)"
+        confirmButtonColor="rgba(221, 179, 27,0.7)"
+        alertContainerStyle={{ backgroundColor: "rgba(31,31,31,0.5)" }}
+        contentContainerStyle={{ backgroundColor: "#1f1f1f" }}
+        titleStyle={{ color: "#ddb31b" }}
+        messageStyle={{ color: "#eaebed" }}
+        onConfirmPressed={() => {
+          setShowAlertDelete(false);
+          if (selectedDonationId) {
+            deleteCenterHandler(selectedDonationId);
+          }
+        }}
+        onCancelPressed={() => {
+          setShowAlertDelete(false);
+        }}
+      />
       <TouchableOpacity
         style={styles.goBackButton}
         onPress={() => navigation.goBack()}
@@ -121,7 +164,10 @@ export default function Centers() {
                   <View style={styles.centerButtons}>
                     <TouchableOpacity
                       style={styles.deleteCenterButton}
-                      onPress={() => deleteCenterHandler(item.id)}
+                      onPress={() => {
+                        setSelectedDonationId(item.id);
+                        setShowAlertDelete(true);
+                      }}
                     >
                       <FontAwesomeIcon
                         style={styles.centerButtonIcon}

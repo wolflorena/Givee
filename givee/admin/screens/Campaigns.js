@@ -16,6 +16,7 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons/faPlus";
 import { faGift } from "@fortawesome/free-solid-svg-icons/faGift";
 import { faTrash } from "@fortawesome/free-solid-svg-icons/faTrash";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons/faPenToSquare";
+import AwesomeAlert from "react-native-awesome-alerts";
 
 import { useFocusEffect } from "@react-navigation/native";
 import { useNavigation } from "@react-navigation/native";
@@ -31,14 +32,19 @@ export default function Campaigns() {
   const [campaignsData, setCampaignsData] = useState([]);
   const { navBarButtonsPressHandler } = useAdminUpdateContext();
 
+  const [showAlertDelete, setShowAlertDelete] = useState(false);
+
+  const [selectedCampaignId, setSelectedCampaignId] = useState(null);
+
   useEffect(() => {
     StatusBar.setBarStyle("light-content");
     getCampaigns();
-  });
+  }, []);
 
   useFocusEffect(
     React.useCallback(() => {
       navBarButtonsPressHandler("campaignsIsPressed");
+      getCampaigns();
     }, [])
   );
 
@@ -68,7 +74,17 @@ export default function Campaigns() {
   };
 
   const deleteCampaignHandler = async (campaignId) => {
-    await deleteDoc(doc(db, "campaigns", campaignId));
+    try {
+      await deleteDoc(doc(db, "campaigns", campaignId));
+
+      console.log("Campaign successfully deleted!");
+
+      setCampaignsData((prevData) =>
+        prevData.filter((campaign) => campaign.id !== campaignId)
+      );
+    } catch (error) {
+      console.error("Error deleting center:", error.message);
+    }
   };
 
   const editCampaignHandler = (campaignId) => {
@@ -77,6 +93,33 @@ export default function Campaigns() {
 
   return (
     <View style={styles.container}>
+      <AwesomeAlert
+        show={showAlertDelete}
+        showProgress={false}
+        title="Confirm Deletion"
+        message="Are you sure you want to delete this campaign?"
+        closeOnTouchOutside={true}
+        closeOnHardwareBackPress={false}
+        showCancelButton={true}
+        showConfirmButton={true}
+        confirmText="Yes"
+        cancelText="No"
+        cancelButtonColor="rgba(210, 4, 45, 0.7)"
+        confirmButtonColor="rgba(221, 179, 27,0.7)"
+        alertContainerStyle={{ backgroundColor: "rgba(31,31,31,0.5)" }}
+        contentContainerStyle={{ backgroundColor: "#1f1f1f" }}
+        titleStyle={{ color: "#ddb31b" }}
+        messageStyle={{ color: "#eaebed" }}
+        onConfirmPressed={() => {
+          setShowAlertDelete(false);
+          if (selectedCampaignId) {
+            deleteCampaignHandler(selectedCampaignId);
+          }
+        }}
+        onCancelPressed={() => {
+          setShowAlertDelete(false);
+        }}
+      />
       <TouchableOpacity
         style={styles.goBackButton}
         onPress={() => navigation.goBack()}
@@ -130,7 +173,10 @@ export default function Campaigns() {
                   <View style={styles.campaignsButtons}>
                     <TouchableOpacity
                       style={styles.deleteCampaignButton}
-                      onPress={() => deleteCampaignHandler(item.id)}
+                      onPress={() => {
+                        setSelectedCampaignId(item.id);
+                        setShowAlertDelete(true);
+                      }}
                     >
                       <FontAwesomeIcon
                         style={styles.campaignButtonIcon}

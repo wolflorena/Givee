@@ -19,6 +19,7 @@ import { faFootball } from "@fortawesome/free-solid-svg-icons/faFootball";
 import { faCheck } from "@fortawesome/free-solid-svg-icons/faCheck";
 import { faBan } from "@fortawesome/free-solid-svg-icons/faBan";
 import { faFaceFrown } from "@fortawesome/free-solid-svg-icons/faFaceFrown";
+import AwesomeAlert from "react-native-awesome-alerts";
 
 import { useFocusEffect } from "@react-navigation/native";
 import { useNavigation } from "@react-navigation/native";
@@ -36,6 +37,11 @@ export default function Home() {
   const { currentUser } = useLoginContext();
   const { navBarButtonsPressHandler } = useAdminUpdateContext();
 
+  const [showAlertCancel, setShowAlertCancel] = useState(false);
+  const [showAlertComplete, setShowAlertComplete] = useState(false);
+
+  const [selectedDonationId, setSelectedDonationId] = useState(null);
+
   useEffect(() => {
     StatusBar.setBarStyle("light-content");
     getDonations();
@@ -44,6 +50,7 @@ export default function Home() {
   useFocusEffect(
     React.useCallback(() => {
       navBarButtonsPressHandler("homeIsPressed");
+      getDonations();
     }, [])
   );
 
@@ -91,28 +98,111 @@ export default function Home() {
   const completeDonationHandler = async (donationId) => {
     const donationRef = doc(db, "donations", donationId);
 
-    await updateDoc(donationRef, {
-      status: "completed",
-    });
+    try {
+      await updateDoc(donationRef, {
+        status: "completed",
+      });
 
-    navigation.navigate("AdminDonations");
+      console.log("Donation successfully completed!");
+
+      setDonationsData((prevData) =>
+        prevData.map((donation) =>
+          donation.id === donationId
+            ? { ...donation, status: "completed" }
+            : donation
+        )
+      );
+    } catch (error) {
+      console.error("Error completing donation:", error.message);
+    }
   };
+
   const cancelDonationHandler = async (donationId) => {
     const donationRef = doc(db, "donations", donationId);
 
-    await updateDoc(donationRef, {
-      status: "canceled",
-    });
+    try {
+      await updateDoc(donationRef, {
+        status: "canceled",
+      });
 
-    navigation.navigate("AdminDonations");
+      console.log("Donation successfully canceled!");
+
+      setDonationsData((prevData) =>
+        prevData.map((donation) =>
+          donation.id === donationId
+            ? { ...donation, status: "canceled" }
+            : donation
+        )
+      );
+    } catch (error) {
+      console.error("Error canceling donation:", error.message);
+    }
   };
 
   const viewDonationDataHandler = (donationId) => {
-    navigation.navigate("DonationData", { donationId });
+    navigation.navigate("DonationData", {
+      donationId,
+      componentName: "Home",
+    });
   };
 
   return (
     <View style={styles.container}>
+      <AwesomeAlert
+        show={showAlertCancel}
+        showProgress={false}
+        title="Confirm Cancel"
+        message="Are you sure you want to cancel this donation?"
+        closeOnTouchOutside={true}
+        closeOnHardwareBackPress={false}
+        showCancelButton={true}
+        showConfirmButton={true}
+        confirmText="Yes"
+        cancelText="No"
+        cancelButtonColor="rgba(210, 4, 45, 0.7)"
+        confirmButtonColor="rgba(221, 179, 27,0.7)"
+        alertContainerStyle={{ backgroundColor: "rgba(31,31,31,0.5)" }}
+        contentContainerStyle={{ backgroundColor: "#1f1f1f" }}
+        titleStyle={{ color: "#ddb31b" }}
+        messageStyle={{ color: "#eaebed" }}
+        onConfirmPressed={() => {
+          setShowAlertCancel(false);
+          if (selectedDonationId) {
+            cancelDonationHandler(selectedDonationId);
+          }
+        }}
+        onCancelPressed={() => {
+          setShowAlertCancel(false);
+        }}
+      />
+
+      <AwesomeAlert
+        show={showAlertComplete}
+        showProgress={false}
+        title="Confirm Completion"
+        message="Are you sure you want to mark this donation as complete?"
+        closeOnTouchOutside={true}
+        closeOnHardwareBackPress={false}
+        showCancelButton={true}
+        showConfirmButton={true}
+        confirmText="Yes"
+        cancelText="No"
+        cancelButtonColor="rgba(210, 4, 45, 0.7)"
+        confirmButtonColor="rgba(221, 179, 27,0.7)"
+        alertContainerStyle={{ backgroundColor: "rgba(31,31,31,0.5)" }}
+        contentContainerStyle={{ backgroundColor: "#1f1f1f" }}
+        titleStyle={{ color: "#ddb31b" }}
+        messageStyle={{ color: "#eaebed" }}
+        onConfirmPressed={() => {
+          setShowAlertComplete(false);
+          if (selectedDonationId) {
+            completeDonationHandler(selectedDonationId);
+          }
+        }}
+        onCancelPressed={() => {
+          setShowAlertComplete(false);
+        }}
+      />
       <TouchableOpacity
         style={styles.goBackButton}
         onPress={() => navigation.goBack()}
@@ -154,7 +244,10 @@ export default function Home() {
                           <View style={styles.donationButtons}>
                             <TouchableOpacity
                               style={styles.completedButton}
-                              onPress={() => completeDonationHandler(item.id)}
+                              onPress={() => {
+                                setSelectedDonationId(item.id);
+                                setShowAlertComplete(true);
+                              }}
                             >
                               <FontAwesomeIcon
                                 style={styles.cardButtonIcon}
@@ -165,7 +258,10 @@ export default function Home() {
 
                             <TouchableOpacity
                               style={styles.canceledButton}
-                              onPress={() => cancelDonationHandler(item.id)}
+                              onPress={() => {
+                                setSelectedDonationId(item.id);
+                                setShowAlertCancel(true);
+                              }}
                             >
                               <FontAwesomeIcon
                                 style={styles.cardButtonIcon}

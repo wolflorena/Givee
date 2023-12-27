@@ -16,6 +16,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faMapPin } from "@fortawesome/free-solid-svg-icons/faMapPin";
 import { faPhone } from "@fortawesome/free-solid-svg-icons/faPhone";
 import { faCircleChevronLeft } from "@fortawesome/free-solid-svg-icons/faCircleChevronLeft";
+import AwesomeAlert from "react-native-awesome-alerts";
 
 import { useNavigation } from "@react-navigation/native";
 import Checkbox from "expo-checkbox";
@@ -25,6 +26,8 @@ export default function EditCenter({ route }) {
   const navigation = useNavigation();
 
   const centerId = route.params ? route.params.centerId : null;
+
+  const [showAlertEdit, setShowAlertEdit] = useState(false);
 
   const [centerData, setCenterData] = useState({
     address: "",
@@ -99,6 +102,31 @@ export default function EditCenter({ route }) {
 
   return (
     <View style={styles.container}>
+      <AwesomeAlert
+        show={showAlertEdit}
+        showProgress={false}
+        title="Confirm Edit"
+        message="Save changes to this center?"
+        closeOnTouchOutside={true}
+        closeOnHardwareBackPress={false}
+        showCancelButton={true}
+        showConfirmButton={true}
+        confirmText="Yes"
+        cancelText="No"
+        cancelButtonColor="rgba(210, 4, 45, 0.7)"
+        confirmButtonColor="rgba(221, 179, 27,0.7)"
+        alertContainerStyle={{ backgroundColor: "rgba(31,31,31,0.5)" }}
+        contentContainerStyle={{ backgroundColor: "#1f1f1f" }}
+        titleStyle={{ color: "#ddb31b" }}
+        messageStyle={{ color: "#eaebed" }}
+        onConfirmPressed={() => {
+          setShowAlertEdit(false);
+          editCenterHandler();
+        }}
+        onCancelPressed={() => {
+          setShowAlertEdit(false);
+        }}
+      />
       <TouchableOpacity
         style={styles.goBackButton}
         onPress={() => navigation.goBack()}
@@ -183,7 +211,7 @@ export default function EditCenter({ route }) {
           <TouchableOpacity
             style={styles.editCenterButton}
             onPress={() => {
-              editCenterHandler();
+              setShowAlertEdit(true);
             }}
           >
             <Text style={{ fontWeight: "bold" }}>Edit Center</Text>

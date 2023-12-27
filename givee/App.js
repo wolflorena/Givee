@@ -33,6 +33,7 @@ const Stack = createNativeStackNavigator();
 
 export default function App() {
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(null);
+
   useEffect(() => {
     const unsubscribe = FIREBASE_AUTH.onAuthStateChanged((user) => {
       setIsUserLoggedIn(!!user);
@@ -45,7 +46,9 @@ export default function App() {
     <NavigationContainer>
       <AdminProvider>
         <LoginProvider>
-          <Stack.Navigator initialRouteName={isUserLoggedIn ? "Home" : "Login"}>
+          {/* <Stack.Navigator initialRouteName={isUserLoggedIn ? "Home" : "Login"}>
+           */}
+          <Stack.Navigator initialRouteName="AdminCampaigns">
             <Stack.Screen
               name="Login"
               component={Login}
