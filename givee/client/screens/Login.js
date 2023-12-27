@@ -41,6 +41,8 @@ export default function Login() {
 
           userLoggedIn(userData);
           if (userRole === "admin") {
+            setEmail("");
+            setPassword("");
             navigation.navigate("AdminHome");
           } else {
             setEmail("");

@@ -46,9 +46,7 @@ export default function App() {
     <NavigationContainer>
       <AdminProvider>
         <LoginProvider>
-          {/* <Stack.Navigator initialRouteName={isUserLoggedIn ? "Home" : "Login"}>
-           */}
-          <Stack.Navigator initialRouteName="AdminCampaigns">
+          <Stack.Navigator initialRouteName={isUserLoggedIn ? "Home" : "Login"}>
             <Stack.Screen
               name="Login"
               component={Login}

@@ -28,6 +28,7 @@ import { StatusBar } from "react-native";
 import NavBar from "../Navbar";
 import { useAdminUpdateContext } from "../AdminContext";
 import { useLoginContext } from "../../client/LoginContext";
+import { useLoginUpdateContext } from "../../client/LoginContext";
 
 export default function Home() {
   const db = FIREBASE_DB;
@@ -35,6 +36,8 @@ export default function Home() {
 
   const [donationsData, setDonationsData] = useState([]);
   const { currentUser } = useLoginContext();
+  const { userLoggedOut } = useLoginUpdateContext();
+
   const { navBarButtonsPressHandler } = useAdminUpdateContext();
 
   const [showAlertCancel, setShowAlertCancel] = useState(false);
@@ -146,6 +149,11 @@ export default function Home() {
     });
   };
 
+  const handleLogout = () => {
+    userLoggedOut();
+    navigation.navigate("Login");
+  };
+
   return (
     <View style={styles.container}>
       <AwesomeAlert
@@ -215,10 +223,20 @@ export default function Home() {
       </TouchableOpacity>
 
       <View style={styles.homeContent}>
-        <Text style={styles.welcomeMessage}>
-          Welcome{"\n"}
-          <Text style={styles.welcomeName}>{currentUser.fullName}!</Text>
-        </Text>
+        <View style={styles.header}>
+          <Text style={styles.welcomeMessage}>
+            Welcome{"\n"}
+            <Text style={styles.welcomeName}>{currentUser.fullName}!</Text>
+          </Text>
+          <TouchableOpacity
+            style={styles.logoutButton}
+            onPress={() => {
+              handleLogout();
+            }}
+          >
+            <Text style={styles.logoutTextButton}>Logout</Text>
+          </TouchableOpacity>
+        </View>
 
         <View style={styles.donations}>
           {donationsData.some((donation) => donation.status === "pending") ? (
@@ -386,5 +404,23 @@ const styles = StyleSheet.create({
     marginTop: 20,
     color: "#ffffff",
     fontSize: 18,
+  },
+  logoutTextButton: {
+    color: "#000000",
+    fontSize: 15,
+    fontWeight: "700",
+  },
+  logoutButton: {
+    backgroundColor: "#ddb31b",
+    width: 90,
+    marginTop: 20,
+    height: 35,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
 });
