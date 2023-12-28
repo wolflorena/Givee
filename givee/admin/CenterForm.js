@@ -201,6 +201,7 @@ export default function CenterForm() {
                 },
               }}
               placeholder="Search"
+              textInputProps={{ placeholderTextColor: "grey" }}
               fetchDetails={true}
               GooglePlacesSearchQuery={{ rankby: "distance" }}
               onPress={(data, details = null) => {

@@ -18,6 +18,7 @@ import { faUtensils } from "@fortawesome/free-solid-svg-icons/faUtensils";
 import { faFootball } from "@fortawesome/free-solid-svg-icons/faFootball";
 import { faCheck } from "@fortawesome/free-solid-svg-icons/faCheck";
 import { faBan } from "@fortawesome/free-solid-svg-icons/faBan";
+import { faFaceFrown } from "@fortawesome/free-solid-svg-icons/faFaceFrown";
 import AwesomeAlert from "react-native-awesome-alerts";
 
 import DropDownPicker from "react-native-dropdown-picker";
@@ -167,6 +168,21 @@ export default function Donations() {
     });
   };
 
+  const renderEmptyMessage = () => {
+    switch (selectedStatus) {
+      case "all":
+        return "No donations available!";
+      case "pending":
+        return "You don't have pending donations!";
+      case "completed":
+        return "You don't have completed donations!";
+      case "canceled":
+        return "You don't have canceled donations!";
+      default:
+        return "";
+    }
+  };
+
   return (
     <View style={styles.container}>
       <AwesomeAlert
@@ -253,73 +269,84 @@ export default function Donations() {
               textStyle={{ color: "black", fontSize: 15, fontWeight: "500" }}
               dropDownContainerStyle={{
                 backgroundColor: "#D3D3D3",
-                width: 120,
+                width: 130,
               }}
             />
           </View>
         </View>
 
         <View style={styles.donations}>
-          <FlatList
-            keyExtractor={(donation) => donation.id}
-            data={donationsData}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                style={styles.donationCard}
-                onPress={() => viewDonationDataHandler(item.id)}
-              >
-                {donationIcon(item.type)}
-                <View style={styles.donationData}>
-                  <Text style={styles.donationField}>
-                    <Text style={{ fontWeight: "bold" }}>
-                      User email {"\n"}
-                    </Text>
-                    {item.userEmail}
-                  </Text>
-                  <View>
-                    {item.status === "pending" ? (
-                      <View style={styles.donationButtons}>
-                        <TouchableOpacity
-                          style={styles.completedButton}
-                          onPress={() => {
-                            setSelectedDonationId(item.id);
-                            setShowAlertComplete(true);
-                          }}
-                        >
-                          <FontAwesomeIcon
-                            style={styles.cardButtonIcon}
-                            icon={faCheck}
-                            size={20}
-                          />
-                        </TouchableOpacity>
-
-                        <TouchableOpacity
-                          style={styles.canceledButton}
-                          onPress={() => {
-                            setSelectedDonationId(item.id);
-                            setShowAlertCancel(true);
-                          }}
-                        >
-                          <FontAwesomeIcon
-                            style={styles.cardButtonIcon}
-                            icon={faBan}
-                            size={20}
-                          />
-                        </TouchableOpacity>
-                      </View>
-                    ) : (
-                      <Text style={styles.donationField}>
-                        <Text style={{ fontWeight: "bold" }}>
-                          Status {"\n"}
-                        </Text>
-                        {item.status}
+          {donationsData.length ? (
+            <FlatList
+              keyExtractor={(donation) => donation.id}
+              data={donationsData}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={styles.donationCard}
+                  onPress={() => viewDonationDataHandler(item.id)}
+                >
+                  {donationIcon(item.type)}
+                  <View style={styles.donationData}>
+                    <Text style={styles.donationField}>
+                      <Text style={{ fontWeight: "bold" }}>
+                        User email {"\n"}
                       </Text>
-                    )}
+                      {item.userEmail}
+                    </Text>
+                    <View>
+                      {item.status === "pending" ? (
+                        <View style={styles.donationButtons}>
+                          <TouchableOpacity
+                            style={styles.completedButton}
+                            onPress={() => {
+                              setSelectedDonationId(item.id);
+                              setShowAlertComplete(true);
+                            }}
+                          >
+                            <FontAwesomeIcon
+                              style={styles.cardButtonIcon}
+                              icon={faCheck}
+                              size={20}
+                            />
+                          </TouchableOpacity>
+
+                          <TouchableOpacity
+                            style={styles.canceledButton}
+                            onPress={() => {
+                              setSelectedDonationId(item.id);
+                              setShowAlertCancel(true);
+                            }}
+                          >
+                            <FontAwesomeIcon
+                              style={styles.cardButtonIcon}
+                              icon={faBan}
+                              size={20}
+                            />
+                          </TouchableOpacity>
+                        </View>
+                      ) : (
+                        <Text style={styles.donationField}>
+                          <Text style={{ fontWeight: "bold" }}>
+                            Status {"\n"}
+                          </Text>
+                          {item.status}
+                        </Text>
+                      )}
+                    </View>
                   </View>
-                </View>
-              </TouchableOpacity>
-            )}
-          ></FlatList>
+                </TouchableOpacity>
+              )}
+            ></FlatList>
+          ) : (
+            <View style={styles.noContentMessage}>
+              <FontAwesomeIcon
+                style={styles.donationIcon}
+                icon={faFaceFrown}
+                size={25}
+              />
+              <Text style={styles.noContentText}>{renderEmptyMessage()}</Text>
+            </View>
+          )}
         </View>
       </View>
 
@@ -411,7 +438,18 @@ const styles = StyleSheet.create({
   },
   dropdown: {
     backgroundColor: "#D3D3D3",
-    width: 120,
+    width: 130,
     zIndex: 100,
+  },
+  noContentMessage: {
+    height: 320,
+    width: 350,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  noContentText: {
+    marginTop: 20,
+    color: "#ffffff",
+    fontSize: 18,
   },
 });

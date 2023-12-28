@@ -16,6 +16,7 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons/faPlus";
 import { faGift } from "@fortawesome/free-solid-svg-icons/faGift";
 import { faTrash } from "@fortawesome/free-solid-svg-icons/faTrash";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons/faPenToSquare";
+import { faFaceFrown } from "@fortawesome/free-solid-svg-icons/faFaceFrown";
 import AwesomeAlert from "react-native-awesome-alerts";
 
 import { useFocusEffect } from "@react-navigation/native";
@@ -143,62 +144,75 @@ export default function Campaigns() {
         </View>
 
         <View style={styles.campaigns}>
-          <FlatList
-            keyExtractor={(campaign) => campaign.id}
-            data={campaignsData}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                style={styles.campaignCard}
-                onPress={() => viewCampaignDataHandler(item.id)}
-              >
-                <FontAwesomeIcon
-                  style={styles.campaignIcon}
-                  icon={faGift}
-                  size={30}
-                />
-                <View style={styles.campaignData}>
-                  <View style={styles.campaignContent}>
-                    <Text style={styles.campaignField}>
-                      <Text style={{ fontWeight: "bold" }}>Name {"\n"}</Text>
-                      {item.name}
-                    </Text>
-                    <Text style={styles.campaignField}>
-                      <Text style={{ fontWeight: "bold" }}>
-                        Expire Date {"\n"}
+          {campaignsData.length ? (
+            <FlatList
+              keyExtractor={(campaign) => campaign.id}
+              data={campaignsData}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={styles.campaignCard}
+                  onPress={() => viewCampaignDataHandler(item.id)}
+                >
+                  <FontAwesomeIcon
+                    style={styles.campaignIcon}
+                    icon={faGift}
+                    size={30}
+                  />
+                  <View style={styles.campaignData}>
+                    <View style={styles.campaignContent}>
+                      <Text style={styles.campaignField}>
+                        <Text style={{ fontWeight: "bold" }}>Name {"\n"}</Text>
+                        {item.name}
                       </Text>
-                      {item.expireDate}
-                    </Text>
-                  </View>
+                      <Text style={styles.campaignField}>
+                        <Text style={{ fontWeight: "bold" }}>
+                          Expire Date {"\n"}
+                        </Text>
+                        {item.expireDate}
+                      </Text>
+                    </View>
 
-                  <View style={styles.campaignsButtons}>
-                    <TouchableOpacity
-                      style={styles.deleteCampaignButton}
-                      onPress={() => {
-                        setSelectedCampaignId(item.id);
-                        setShowAlertDelete(true);
-                      }}
-                    >
-                      <FontAwesomeIcon
-                        style={styles.campaignButtonIcon}
-                        icon={faTrash}
-                        size={15}
-                      />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      style={styles.editCampaignButton}
-                      onPress={() => editCampaignHandler(item.id)}
-                    >
-                      <FontAwesomeIcon
-                        style={styles.campaignButtonIcon}
-                        icon={faPenToSquare}
-                        size={15}
-                      />
-                    </TouchableOpacity>
+                    <View style={styles.campaignsButtons}>
+                      <TouchableOpacity
+                        style={styles.deleteCampaignButton}
+                        onPress={() => {
+                          setSelectedCampaignId(item.id);
+                          setShowAlertDelete(true);
+                        }}
+                      >
+                        <FontAwesomeIcon
+                          style={styles.campaignButtonIcon}
+                          icon={faTrash}
+                          size={15}
+                        />
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={styles.editCampaignButton}
+                        onPress={() => editCampaignHandler(item.id)}
+                      >
+                        <FontAwesomeIcon
+                          style={styles.campaignButtonIcon}
+                          icon={faPenToSquare}
+                          size={15}
+                        />
+                      </TouchableOpacity>
+                    </View>
                   </View>
-                </View>
-              </TouchableOpacity>
-            )}
-          ></FlatList>
+                </TouchableOpacity>
+              )}
+            ></FlatList>
+          ) : (
+            <View style={styles.noContentMessage}>
+              <FontAwesomeIcon
+                style={styles.campaignIcon}
+                icon={faFaceFrown}
+                size={25}
+              />
+              <Text style={styles.noContentText}>
+                You don't have campaigns!
+              </Text>
+            </View>
+          )}
         </View>
       </View>
 
@@ -292,5 +306,16 @@ const styles = StyleSheet.create({
   },
   campaignButtonIcon: {
     color: "#ffffff",
+  },
+  noContentMessage: {
+    height: 320,
+    width: 350,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  noContentText: {
+    marginTop: 20,
+    color: "#ffffff",
+    fontSize: 18,
   },
 });

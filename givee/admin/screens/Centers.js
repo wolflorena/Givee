@@ -16,6 +16,7 @@ import { faMapPin } from "@fortawesome/free-solid-svg-icons/faMapPin";
 import { faPlus } from "@fortawesome/free-solid-svg-icons/faPlus";
 import { faTrash } from "@fortawesome/free-solid-svg-icons/faTrash";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons/faPenToSquare";
+import { faFaceFrown } from "@fortawesome/free-solid-svg-icons/faFaceFrown";
 import AwesomeAlert from "react-native-awesome-alerts";
 
 import { useFocusEffect } from "@react-navigation/native";
@@ -143,53 +144,64 @@ export default function Centers() {
         </View>
 
         <View style={styles.centers}>
-          <FlatList
-            keyExtractor={(center) => center.id}
-            data={centersData}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                style={styles.centerCard}
-                onPress={() => viewCenterDataHandler(item.id)}
-              >
-                <FontAwesomeIcon
-                  style={styles.centerIcon}
-                  icon={faMapPin}
-                  size={30}
-                />
-                <View style={styles.centerData}>
-                  <Text style={styles.centerField}>
-                    <Text style={{ fontWeight: "bold" }}>Address {"\n"}</Text>
-                    {item.address}
-                  </Text>
-                  <View style={styles.centerButtons}>
-                    <TouchableOpacity
-                      style={styles.deleteCenterButton}
-                      onPress={() => {
-                        setSelectedDonationId(item.id);
-                        setShowAlertDelete(true);
-                      }}
-                    >
-                      <FontAwesomeIcon
-                        style={styles.centerButtonIcon}
-                        icon={faTrash}
-                        size={15}
-                      />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      style={styles.editCenterButton}
-                      onPress={() => editCenterHandler(item.id)}
-                    >
-                      <FontAwesomeIcon
-                        style={styles.centerButtonIcon}
-                        icon={faPenToSquare}
-                        size={15}
-                      />
-                    </TouchableOpacity>
+          {centersData.length ? (
+            <FlatList
+              keyExtractor={(center) => center.id}
+              data={centersData}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={styles.centerCard}
+                  onPress={() => viewCenterDataHandler(item.id)}
+                >
+                  <FontAwesomeIcon
+                    style={styles.centerIcon}
+                    icon={faMapPin}
+                    size={30}
+                  />
+                  <View style={styles.centerData}>
+                    <Text style={styles.centerField}>
+                      <Text style={{ fontWeight: "bold" }}>Address {"\n"}</Text>
+                      {item.address}
+                    </Text>
+                    <View style={styles.centerButtons}>
+                      <TouchableOpacity
+                        style={styles.deleteCenterButton}
+                        onPress={() => {
+                          setSelectedDonationId(item.id);
+                          setShowAlertDelete(true);
+                        }}
+                      >
+                        <FontAwesomeIcon
+                          style={styles.centerButtonIcon}
+                          icon={faTrash}
+                          size={15}
+                        />
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={styles.editCenterButton}
+                        onPress={() => editCenterHandler(item.id)}
+                      >
+                        <FontAwesomeIcon
+                          style={styles.centerButtonIcon}
+                          icon={faPenToSquare}
+                          size={15}
+                        />
+                      </TouchableOpacity>
+                    </View>
                   </View>
-                </View>
-              </TouchableOpacity>
-            )}
-          ></FlatList>
+                </TouchableOpacity>
+              )}
+            ></FlatList>
+          ) : (
+            <View style={styles.noContentMessage}>
+              <FontAwesomeIcon
+                style={styles.centerIcon}
+                icon={faFaceFrown}
+                size={25}
+              />
+              <Text style={styles.noContentText}>You don't have centers!</Text>
+            </View>
+          )}
         </View>
       </View>
 
@@ -281,5 +293,16 @@ const styles = StyleSheet.create({
   },
   centerButtonIcon: {
     color: "#ffffff",
+  },
+  noContentMessage: {
+    height: 320,
+    width: 350,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  noContentText: {
+    marginTop: 20,
+    color: "#ffffff",
+    fontSize: 18,
   },
 });
