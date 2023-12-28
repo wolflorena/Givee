@@ -20,6 +20,7 @@ import { faCheck } from "@fortawesome/free-solid-svg-icons/faCheck";
 import { faBan } from "@fortawesome/free-solid-svg-icons/faBan";
 import AwesomeAlert from "react-native-awesome-alerts";
 
+import DropDownPicker from "react-native-dropdown-picker";
 import { useFocusEffect } from "@react-navigation/native";
 import { useNavigation } from "@react-navigation/native";
 import { StatusBar } from "react-native";
@@ -38,20 +39,22 @@ export default function Donations() {
   const [showAlertComplete, setShowAlertComplete] = useState(false);
 
   const [selectedDonationId, setSelectedDonationId] = useState(null);
+  const [selectedStatus, setSelectedStatus] = useState("all");
+  const [dropdownIsOpen, setDropdownIsOpen] = useState(false);
 
   useEffect(() => {
     StatusBar.setBarStyle("light-content");
-    getDonations();
-  }, []);
+    getDonations(selectedStatus);
+  }, [selectedStatus]);
 
   useFocusEffect(
     React.useCallback(() => {
       navBarButtonsPressHandler("donationsIsPressed");
-      getDonations();
-    }, [])
+      getDonations(selectedStatus);
+    }, [selectedStatus])
   );
 
-  const getDonations = useCallback(async () => {
+  const getDonations = useCallback(async (status) => {
     try {
       const q = query(collection(db, "donations"));
       const querySnapshot = await getDocs(q);
@@ -62,7 +65,28 @@ export default function Donations() {
         data.push({ id: doc.id, ...doc.data() });
       });
 
-      setDonationsData(data);
+      let filteredData;
+
+      if (status === "all") {
+        // If 'All' is selected, show all donations without filtering
+        filteredData = data;
+      } else {
+        // Filter donations based on the selected status
+        filteredData = data.filter((donation) => donation.status === status);
+      }
+
+      // Sort the filtered data
+      const sortedData = filteredData.sort((a, b) => {
+        if (a.status === "pending" && b.status !== "pending") {
+          return -1;
+        } else if (a.status !== "pending" && b.status === "pending") {
+          return 1;
+        } else {
+          return 0;
+        }
+      });
+
+      setDonationsData(sortedData);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -211,7 +235,29 @@ export default function Donations() {
         />
       </TouchableOpacity>
       <View style={styles.donationsContent}>
-        <Text style={styles.pageTitle}>Donations</Text>
+        <View style={styles.header}>
+          <Text style={styles.pageTitle}>Donations</Text>
+          <View>
+            <DropDownPicker
+              items={[
+                { label: "All", value: "all" },
+                { label: "Pending", value: "pending" },
+                { label: "Completed", value: "completed" },
+                { label: "Canceled", value: "canceled" },
+              ]}
+              open={dropdownIsOpen}
+              setOpen={() => setDropdownIsOpen(!dropdownIsOpen)}
+              value={selectedStatus}
+              setValue={(val) => setSelectedStatus(val)}
+              style={styles.dropdown}
+              textStyle={{ color: "black", fontSize: 15, fontWeight: "500" }}
+              dropDownContainerStyle={{
+                backgroundColor: "#D3D3D3",
+                width: 120,
+              }}
+            />
+          </View>
+        </View>
 
         <View style={styles.donations}>
           <FlatList
@@ -356,5 +402,16 @@ const styles = StyleSheet.create({
   },
   cardButtonIcon: {
     color: "#ffffff",
+  },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    zIndex: 1,
+  },
+  dropdown: {
+    backgroundColor: "#D3D3D3",
+    width: 120,
+    zIndex: 100,
   },
 });
