@@ -76,7 +76,12 @@ export default function Users() {
             keyExtractor={(user) => user.id}
             data={usersData}
             renderItem={({ item }) => (
-              <View style={styles.userCard}>
+              <TouchableOpacity
+                style={styles.userCard}
+                onPress={() => {
+                  navigation.navigate("AdminChat", { email: item.email });
+                }}
+              >
                 <FontAwesomeIcon
                   style={styles.userIcon}
                   icon={faCircleUser}
@@ -92,7 +97,7 @@ export default function Users() {
                     {item.email}
                   </Text>
                 </View>
-              </View>
+              </TouchableOpacity>
             )}
           ></FlatList>
         </View>

@@ -27,6 +27,8 @@ import EditCenter from "./admin/EditCenter";
 import EditCampaign from "./admin/EditCampaign";
 import AboutUs from "./client/screens/AboutUs";
 import ChangePassword from "./client/screens/ChangePassword";
+import Chat from "./client/screens/Chat";
+import AdminChat from "./admin/screens/AdminChat";
 import { FIREBASE_AUTH } from "./firebaseConfig";
 
 const Stack = createNativeStackNavigator();
@@ -47,6 +49,7 @@ export default function App() {
       <AdminProvider>
         <LoginProvider>
           <Stack.Navigator initialRouteName={isUserLoggedIn ? "Home" : "Login"}>
+            {/* <Stack.Navigator initialRouteName="Chat"> */}
             <Stack.Screen
               name="Login"
               component={Login}
@@ -90,6 +93,11 @@ export default function App() {
             <Stack.Screen
               name="History"
               component={History}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Chat"
+              component={Chat}
               options={{ headerShown: false }}
             />
             <Stack.Screen
@@ -165,6 +173,11 @@ export default function App() {
             <Stack.Screen
               name="EditCampaign"
               component={EditCampaign}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="AdminChat"
+              component={AdminChat}
               options={{ headerShown: false }}
             />
           </Stack.Navigator>

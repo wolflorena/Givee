@@ -74,7 +74,7 @@ export default function Profile() {
       <View style={styles.options}>
         {renderOption(faInfo, "About us", "AboutUs")}
         {renderOption(faClockRotateLeft, "My Donations", "History")}
-        {renderOption(faCommentDots, "Contact Us", "Contact")}
+        {renderOption(faCommentDots, "Contact Us", "Chat")}
         {renderOption(faGear, "Settings", "Settings")}
         {renderOption(faRightFromBracket, "Log Out", "Login")}
       </View>
