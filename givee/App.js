@@ -49,7 +49,6 @@ export default function App() {
       <AdminProvider>
         <LoginProvider>
           <Stack.Navigator initialRouteName={isUserLoggedIn ? "Home" : "Login"}>
-            {/* <Stack.Navigator initialRouteName="Chat"> */}
             <Stack.Screen
               name="Login"
               component={Login}

@@ -20,6 +20,7 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 import Navbar from "../Navbar";
 import { useFocusEffect } from "@react-navigation/native";
+import GoBackButton from "../GoBackButton";
 
 export default function AboutUs() {
   const { navBarButtonsPressHandler } = useLoginUpdateContext();
@@ -67,56 +68,64 @@ export default function AboutUs() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.headerText}>Welcome to GIVEE</Text>
-      <Text style={styles.text}>
-        A dedicated platform that simplifies the act of giving. In a world where
-        resources can be unevenly distributed, our app bridges the gap between
-        those who want to give and those in need.
-      </Text>
-      <View style={styles.iconContainer}>
-        <FontAwesomeIcon icon={faTshirt} size={24} style={styles.icon} />
-        <FontAwesomeIcon icon={faAppleWhole} size={24} style={styles.icon} />
-        <FontAwesomeIcon icon={faPuzzlePiece} size={24} style={styles.icon} />
+    <View style={styles.containerFull}>
+      <GoBackButton />
+      <View style={styles.container}>
+        <Text style={styles.headerText}>Welcome to GIVEE</Text>
+        <Text style={styles.text}>
+          A dedicated platform that simplifies the act of giving. In a world
+          where resources can be unevenly distributed, our app bridges the gap
+          between those who want to give and those in need.
+        </Text>
+        <View style={styles.iconContainer}>
+          <FontAwesomeIcon icon={faTshirt} size={24} style={styles.icon} />
+          <FontAwesomeIcon icon={faAppleWhole} size={24} style={styles.icon} />
+          <FontAwesomeIcon icon={faPuzzlePiece} size={24} style={styles.icon} />
+        </View>
+        <Text style={styles.text}>
+          Our app serves as a comprehensive guide for finding donation centers
+          based on specific needs – be it clothes, food, or toys. We recognize
+          that each donation type holds its unique significance and cater to
+          this diversity. Whether you're decluttering your wardrobe, sharing
+          surplus food, or passing on cherished toys, we connect you with the
+          right place to donate.
+        </Text>
+        <Text style={[styles.text, styles.footerText]}>Contact us on: </Text>
+        <View style={styles.footer}>
+          <TouchableOpacity onPress={openFacebookPage}>
+            <FontAwesomeIcon
+              icon={faFacebook}
+              size={24}
+              style={styles.socialIcon}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={openTwitterPage}>
+            <FontAwesomeIcon
+              icon={faTwitter}
+              size={24}
+              style={styles.socialIcon}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={openInstagramPage}>
+            <FontAwesomeIcon
+              icon={faInstagram}
+              size={24}
+              style={styles.socialIcon}
+            />
+          </TouchableOpacity>
+        </View>
+        <Navbar />
       </View>
-      <Text style={styles.text}>
-        Our app serves as a comprehensive guide for finding donation centers
-        based on specific needs – be it clothes, food, or toys. We recognize
-        that each donation type holds its unique significance and cater to this
-        diversity. Whether you're decluttering your wardrobe, sharing surplus
-        food, or passing on cherished toys, we connect you with the right place
-        to donate.
-      </Text>
-      <Text style={[styles.text, styles.footerText]}>Contact us on: </Text>
-      <View style={styles.footer}>
-        <TouchableOpacity onPress={openFacebookPage}>
-          <FontAwesomeIcon
-            icon={faFacebook}
-            size={24}
-            style={styles.socialIcon}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={openTwitterPage}>
-          <FontAwesomeIcon
-            icon={faTwitter}
-            size={24}
-            style={styles.socialIcon}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={openInstagramPage}>
-          <FontAwesomeIcon
-            icon={faInstagram}
-            size={24}
-            style={styles.socialIcon}
-          />
-        </TouchableOpacity>
-      </View>
-      <Navbar />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  containerFull: {
+    backgroundColor: "#1f1f1f",
+    alignItems: "center",
+    flex: 1,
+  },
   container: {
     backgroundColor: "#1f1f1f",
     alignItems: "center",

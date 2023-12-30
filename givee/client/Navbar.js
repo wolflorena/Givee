@@ -31,11 +31,13 @@ export default function Navbar() {
           icon={faIcon}
           size={20}
         />
-        <FontAwesomeIcon
-          style={[styles.navbarCircle, isPressed && { color: "#ddb31b" }]}
-          icon={faCircle}
-          size={5}
-        />
+        {isPressed && (
+          <FontAwesomeIcon
+            style={[styles.navbarCircle, { color: "#ddb31b" }]}
+            icon={faCircle}
+            size={5}
+          />
+        )}
         <Text style={[styles.navbarText, isPressed && { color: "#ddb31b" }]}>
           {label}
         </Text>
