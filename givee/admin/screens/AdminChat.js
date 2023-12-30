@@ -1,8 +1,6 @@
-import { View, Text, StyleSheet } from "react-native";
-import { GiftedChat } from "react-native-gifted-chat";
 import React, { useEffect, useState, useCallback } from "react";
-import { useLoginContext } from "../../client/LoginContext";
-import { FIREBASE_DB } from "../../firebaseConfig";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
+
 import {
   doc,
   setDoc,
@@ -11,11 +9,19 @@ import {
   getDocs,
   where,
 } from "firebase/firestore";
+import { FIREBASE_DB } from "../../firebaseConfig";
+
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { faCircleChevronLeft } from "@fortawesome/free-solid-svg-icons/faCircleChevronLeft";
+
+import { useNavigation } from "@react-navigation/native";
+import { GiftedChat } from "react-native-gifted-chat";
 
 export default function AdminChat({ route }) {
-  const [messages, setMessages] = useState([]);
-  const { currentUser } = useLoginContext();
   const db = FIREBASE_DB;
+  const navigation = useNavigation();
+
+  const [messages, setMessages] = useState([]);
   const recipientEmail = route.params ? route.params.email : null;
 
   const adminUser = {
@@ -82,6 +88,16 @@ export default function AdminChat({ route }) {
 
   return (
     <View style={styles.container}>
+      <TouchableOpacity
+        style={styles.goBackButton}
+        onPress={() => navigation.goBack()}
+      >
+        <FontAwesomeIcon
+          style={styles.goBackIcon}
+          icon={faCircleChevronLeft}
+          size={25}
+        />
+      </TouchableOpacity>
       <GiftedChat
         messages={messages}
         showAvatarForEveryMessage={true}
@@ -97,7 +113,17 @@ export default function AdminChat({ route }) {
 
 const styles = StyleSheet.create({
   container: {
+    paddingBottom: 55,
+    backgroundColor: "#1f1f1f",
     justifyContent: "space-between",
     flex: 1,
+  },
+  goBackButton: {
+    marginTop: 70,
+    marginRight: 330,
+    marginLeft: 20,
+  },
+  goBackIcon: {
+    color: "#eaebed",
   },
 });

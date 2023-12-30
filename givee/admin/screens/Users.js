@@ -13,6 +13,7 @@ import { FIREBASE_DB } from "../../firebaseConfig";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faCircleChevronLeft } from "@fortawesome/free-solid-svg-icons/faCircleChevronLeft";
 import { faCircleUser } from "@fortawesome/free-solid-svg-icons/faCircleUser";
+import { faComment } from "@fortawesome/free-solid-svg-icons/faComment";
 
 import { useFocusEffect } from "@react-navigation/native";
 import { useNavigation } from "@react-navigation/native";
@@ -56,6 +57,10 @@ export default function Users() {
     }
   });
 
+  const viewChatHandler = (email) => {
+    navigation.navigate("AdminChat", { email });
+  };
+
   return (
     <View style={styles.container}>
       <TouchableOpacity
@@ -76,12 +81,7 @@ export default function Users() {
             keyExtractor={(user) => user.id}
             data={usersData}
             renderItem={({ item }) => (
-              <TouchableOpacity
-                style={styles.userCard}
-                onPress={() => {
-                  navigation.navigate("AdminChat", { email: item.email });
-                }}
-              >
+              <View style={styles.userCard}>
                 <FontAwesomeIcon
                   style={styles.userIcon}
                   icon={faCircleUser}
@@ -97,7 +97,15 @@ export default function Users() {
                     {item.email}
                   </Text>
                 </View>
-              </TouchableOpacity>
+
+                <TouchableOpacity onPress={() => viewChatHandler(item.email)}>
+                  <FontAwesomeIcon
+                    style={styles.userIcon}
+                    icon={faComment}
+                    size={30}
+                  />
+                </TouchableOpacity>
+              </View>
             )}
           ></FlatList>
         </View>
@@ -155,7 +163,7 @@ const styles = StyleSheet.create({
   },
   userData: {
     height: 100,
-    width: 250,
+    width: 230,
     justifyContent: "space-evenly",
   },
 });
