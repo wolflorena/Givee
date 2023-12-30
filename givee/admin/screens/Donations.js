@@ -363,6 +363,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   donationsContent: {
+    justifyContent: "space-between",
     height: 680,
     width: 380,
     padding: 15,
@@ -435,6 +436,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     zIndex: 1,
+    height: 30,
   },
   dropdown: {
     backgroundColor: "#D3D3D3",
