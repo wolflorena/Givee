@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { KeyboardAvoidingView, StyleSheet } from "react-native";
 import Title from "../Title";
 import DonationForm from "../DonationForm";
 import NavBar from "../Navbar";
@@ -17,13 +17,13 @@ export default function Food() {
   );
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView style={styles.container} behavior="height">
       <GoBackButton />
 
       <Title text="Donate Food" />
       <DonationForm product="food" />
       <NavBar />
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 

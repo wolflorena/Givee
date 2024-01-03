@@ -10,7 +10,7 @@ export default function DonationForm(props) {
   const navigation = useNavigation();
 
   return (
-    <View styles={styles.container}>
+    <View>
       <TextInput
         value={amount}
         style={styles.input}
@@ -42,10 +42,6 @@ export default function DonationForm(props) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "#1f1f1f",
-    flex: 1,
-  },
   input: {
     marginVertical: 15,
     height: 50,
@@ -59,7 +55,7 @@ const styles = StyleSheet.create({
   },
   secondInput: {
     height: 150,
-    marginBottom: 300,
     paddingTop: 15,
+    marginBottom: 20,
   },
 });
