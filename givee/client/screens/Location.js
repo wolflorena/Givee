@@ -21,14 +21,16 @@ import CustomButton from "../CustomButton";
 import Title from "../Title";
 import { useLoginContext } from "../LoginContext";
 import { doc, setDoc } from "firebase/firestore";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import * as ExpoLocation from "expo-location";
 import MapView, { Marker, Callout } from "react-native-maps";
+import Spinner from "react-native-loading-spinner-overlay";
 
 export default function Location({ route }) {
   let formData = route.params;
   const [centersData, setCentersData] = useState([]);
   const [selectedCenter, setSelectedCenter] = useState("");
+  const [loading, setLoading] = useState(false);
   const { currentUser } = useLoginContext();
   const navigation = useNavigation();
 
@@ -44,6 +46,7 @@ export default function Location({ route }) {
   }, []);
 
   const getCenters = useCallback(async () => {
+    setLoading(true);
     try {
       const db = FIREBASE_DB;
       const q = query(collection(db, "centers"));
@@ -69,12 +72,15 @@ export default function Location({ route }) {
       data.sort((a, b) => parseFloat(b.distance) - parseFloat(a.distance));
 
       setCentersData(data);
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       console.error("Error fetching data:", error);
     }
   });
 
   const submitDonation = async () => {
+    setLoading(true);
     try {
       const donationData = {
         ...formData,
@@ -87,9 +93,10 @@ export default function Location({ route }) {
       const newDonationRef = doc(collection(FIREBASE_DB, "donations"));
       await setDoc(newDonationRef, donationData);
 
-      console.log("Donation submitted successfully!");
+      setLoading(false);
       navigation.navigate("SuccessfulDonation");
     } catch (error) {
+      setLoading(false);
       console.error("Error submitting donation:", error);
     }
   };
@@ -144,6 +151,11 @@ export default function Location({ route }) {
 
   return (
     <View style={styles.container}>
+      <Spinner
+        visible={loading}
+        color="#ddb31b"
+        overlayColor="rgba(0,0,0,0.5)"
+      />
       <GoBackButton />
       <Title text="Location" />
       <View style={styles.centersContent}>
@@ -169,9 +181,13 @@ export default function Location({ route }) {
                         item.id === selectedCenter ? styles.selected : null,
                       ]}
                       onPress={() => {
-                        setSelectedCenter(
-                          selectedCenter === item.id ? "" : item.id
-                        );
+                        if (selectedCenter === item.id) {
+                          setSelectedCenter("");
+                          setLoading(false);
+                        } else {
+                          setSelectedCenter(item.id);
+                          setLoading(true);
+                        }
                       }}
                     >
                       <View style={styles.centerData}>
@@ -215,6 +231,7 @@ export default function Location({ route }) {
                             longitudeDelta: 0.03,
                           }}
                           provider="google"
+                          onMapLoaded={() => setLoading(false)}
                         >
                           <Marker
                             coordinate={{

@@ -14,6 +14,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useLoginUpdateContext } from "../LoginContext";
 import CustomButton from "../CustomButton";
 import AwesomeAlert from "react-native-awesome-alerts";
+import Spinner from "react-native-loading-spinner-overlay";
 
 export default function Login() {
   const { userLoggedIn } = useLoginUpdateContext();
@@ -21,6 +22,7 @@ export default function Login() {
 
   const [email, setEmail] = useState("");
   const [showAlert, setShowAlert] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [password, setPassword] = useState("");
   const auth = FIREBASE_AUTH;
   const db = FIREBASE_DB;
@@ -28,6 +30,7 @@ export default function Login() {
   const navigation = useNavigation();
 
   const signIn = () => {
+    setLoading(true);
     signInWithEmailAndPassword(auth, email, password)
       .then(async (userCredentials) => {
         const user = userCredentials.user;
@@ -50,14 +53,24 @@ export default function Login() {
             navigation.navigate("Home");
             navBarButtonsPressHandler("homeIsPressed");
           }
+          setLoading(false);
         } else {
+          setLoading(false);
           setShowAlert(true);
         }
       })
-      .catch((error) => setShowAlert(true));
+      .catch((error) => {
+        setLoading(false);
+        setShowAlert(true);
+      });
   };
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
+      <Spinner
+        visible={loading}
+        color="#ddb31b"
+        overlayColor="rgba(0,0,0,0.5)"
+      />
       <AwesomeAlert
         show={showAlert}
         showProgress={false}
@@ -124,7 +137,9 @@ export default function Login() {
         <Text style={styles.text}>Don't have an account?</Text>
         <Text
           style={[styles.text, { color: "#ddb31b" }]}
-          onPress={() => navigation.navigate("Signup")}
+          onPress={() => {
+            navigation.navigate("Signup");
+          }}
         >
           Signup here
         </Text>

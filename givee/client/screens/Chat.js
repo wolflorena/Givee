@@ -1,8 +1,11 @@
-import { View, Text, StyleSheet } from "react-native";
-import { GiftedChat } from "react-native-gifted-chat";
 import React, { useEffect, useState, useCallback } from "react";
-import { useLoginContext, useLoginUpdateContext } from "../LoginContext";
-import { FIREBASE_DB } from "../../firebaseConfig";
+import { View, StyleSheet } from "react-native";
+import {
+  GiftedChat,
+  InputToolbar,
+  Bubble,
+  Time,
+} from "react-native-gifted-chat";
 import {
   doc,
   setDoc,
@@ -11,6 +14,9 @@ import {
   getDocs,
   where,
 } from "firebase/firestore";
+
+import { useLoginContext } from "../LoginContext";
+import { FIREBASE_DB } from "../../firebaseConfig";
 import GoBackButton from "../GoBackButton";
 
 export default function Chat() {
@@ -114,6 +120,63 @@ export default function Chat() {
     [db]
   );
 
+  const renderInputToolbar = (props) => {
+    return (
+      <InputToolbar
+        {...props}
+        containerStyle={{
+          backgroundColor: "#1f1f1f",
+          borderTopColor: "#e2e2e2",
+          borderTopWidth: 1,
+          padding: 8,
+        }}
+      />
+    );
+  };
+
+  const renderChatFooter = () => {
+    return <View style={{ height: 20 }} />;
+  };
+
+  const renderBubble = (props) => {
+    return (
+      <Bubble
+        {...props}
+        wrapperStyle={{
+          right: {
+            backgroundColor: "#ddb31b",
+          },
+          left: {
+            backgroundColor: "#a6a6a6",
+          },
+        }}
+        textStyle={{
+          right: {
+            color: "#1f1f1f",
+          },
+          left: {
+            color: "#1f1f1f",
+          },
+        }}
+      />
+    );
+  };
+
+  const renderTime = (props) => {
+    return (
+      <Time
+        {...props}
+        timeTextStyle={{
+          right: {
+            color: "#1f1f1f",
+          },
+          left: {
+            color: "#1f1f1f",
+          },
+        }}
+      />
+    );
+  };
   return (
     <View style={styles.container}>
       <GoBackButton />
@@ -125,6 +188,10 @@ export default function Chat() {
           _id: currentUser.email,
           name: currentUser.fullName,
         }}
+        renderInputToolbar={renderInputToolbar}
+        renderChatFooter={renderChatFooter}
+        renderBubble={renderBubble}
+        renderTime={renderTime}
       />
     </View>
   );
@@ -132,7 +199,10 @@ export default function Chat() {
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: "#1f1f1f",
     justifyContent: "space-between",
+    paddingLeft: 10,
+    paddingRight: 10,
     flex: 1,
   },
 });

@@ -2,53 +2,45 @@ import { View, TextInput, Text, StyleSheet } from "react-native";
 import React, { useState } from "react";
 import CustomButton from "../CustomButton";
 import { FIREBASE_AUTH } from "../../firebaseConfig";
-import {
-  sendPasswordResetEmail,
-  fetchSignInMethodsForEmail,
-} from "firebase/auth";
+import { sendPasswordResetEmail } from "firebase/auth";
 import { useNavigation } from "@react-navigation/native";
 import AwesomeAlert from "react-native-awesome-alerts";
+import Spinner from "react-native-loading-spinner-overlay";
 
 export default function ChangePassword() {
   const [email, setEmail] = useState("");
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   const [showNoAccountAlert, setshowNoAccountAlert] = useState(false);
   const [showInvalidEmail, setShowInvalidEmail] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const auth = FIREBASE_AUTH;
   const navigation = useNavigation();
 
   const resetPassword = () => {
-    // fetchSignInMethodsForEmail(auth, email)
-    //   .then((signInMethods) => {
-    //     console.log(signInMethods);
-
-    //     if (signInMethods.length === 0) {
-    //       console.log(signInMethods);
-
-    //       setshowNoAccountAlert(true);
-    //       return;
-    //     }
-
+    setLoading(true);
     sendPasswordResetEmail(auth, email)
       .then(() => {
+        setLoading(false);
         setShowSuccessAlert(true);
         setEmail("");
       })
       .catch((error) => {
+        setLoading(false);
         if (
           error.code == "auth/invalid-email" ||
           error.code == "auth/missing-email"
         )
           setShowInvalidEmail(true);
       });
-    // })
-    // .catch((error) => {
-    //   if (error.code == "auth/invalid-email") setShowInvalidEmail(true);
-    // });
   };
   return (
     <View style={styles.container}>
+      <Spinner
+        visible={loading}
+        color="#ddb31b"
+        overlayColor="rgba(0,0,0,0.5)"
+      />
       <AwesomeAlert
         show={showSuccessAlert}
         showProgress={false}

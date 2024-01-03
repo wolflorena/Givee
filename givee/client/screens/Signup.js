@@ -13,6 +13,7 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useNavigation } from "@react-navigation/native";
 import CustomButton from "../CustomButton";
 import AwesomeAlert from "react-native-awesome-alerts";
+import Spinner from "react-native-loading-spinner-overlay";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -21,6 +22,8 @@ export default function Login() {
   const [showWeakPassword, setshowWeakPassword] = useState(false);
   const [showEmailAlreadyUsedAlert, setshowEmailAlreadyUsedAlert] =
     useState(false);
+  const [loading, setLoading] = useState(false);
+
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const auth = FIREBASE_AUTH;
@@ -29,6 +32,7 @@ export default function Login() {
   const navigation = useNavigation();
 
   const signUp = () => {
+    setLoading(true);
     createUserWithEmailAndPassword(auth, email, password)
       .then(async (userCredentials) => {
         const user = userCredentials.user;
@@ -44,8 +48,11 @@ export default function Login() {
         setEmail("");
         setPassword("");
         navigation.navigate("Login");
+        setLoading(false);
       })
       .catch((error) => {
+        setLoading(false);
+
         if (error.code == "auth/invalid-email") setshowInvalidEmailAlert(true);
         if (error.code == "auth/weak-password") setshowWeakPassword(true);
         if (error.code == "auth/email-already-in-use")
@@ -56,6 +63,11 @@ export default function Login() {
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
+      <Spinner
+        visible={loading}
+        color="#ddb31b"
+        overlayColor="rgba(0,0,0,0.5)"
+      />
       <AwesomeAlert
         show={showInvalidEmailAlert}
         showProgress={false}
