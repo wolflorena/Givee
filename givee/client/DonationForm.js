@@ -2,15 +2,35 @@ import { View, TextInput, StyleSheet } from "react-native";
 import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import CustomButton from "./CustomButton";
+import AwesomeAlert from "react-native-awesome-alerts";
 
 export default function DonationForm(props) {
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
+  const [showAlert, setShowAlert] = useState(false);
   const type = props.product;
   const navigation = useNavigation();
 
   return (
     <View>
+      <AwesomeAlert
+        show={showAlert}
+        showProgress={false}
+        title="All fields are required"
+        message="Please fill in all the fields."
+        closeOnTouchOutside={true}
+        closeOnHardwareBackPress={false}
+        showConfirmButton={true}
+        confirmText="Ok"
+        confirmButtonColor="rgba(221, 179, 27,0.7)"
+        alertContainerStyle={{ backgroundColor: "rgba(31,31,31,0.5)" }}
+        contentContainerStyle={{ backgroundColor: "#1f1f1f" }}
+        titleStyle={{ color: "#ddb31b" }}
+        messageStyle={{ color: "#eaebed" }}
+        onConfirmPressed={() => {
+          setShowAlert(false);
+        }}
+      />
       <TextInput
         value={amount}
         style={styles.input}
@@ -33,8 +53,12 @@ export default function DonationForm(props) {
         text="Next"
         size="large"
         onPress={() => {
-          const formData = { amount, description, type };
-          navigation.navigate("Location", formData);
+          if (amount && description) {
+            const formData = { amount, description, type };
+            navigation.navigate("Location", formData);
+          } else {
+            setShowAlert(true);
+          }
         }}
       />
     </View>

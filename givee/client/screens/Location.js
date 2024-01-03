@@ -6,6 +6,7 @@ import {
   FlatList,
   Image,
 } from "react-native";
+import Svg, { Ellipse } from "react-native-svg";
 import React, { useState, useCallback, useEffect } from "react";
 import {
   collection,
@@ -125,6 +126,22 @@ export default function Location({ route }) {
     return distance.toFixed(1);
   };
 
+  const icon = () => {
+    return (
+      <Svg height={20} width={20}>
+        <Ellipse
+          cx="10"
+          cy="10"
+          rx="10"
+          ry="10"
+          fill="blue"
+          stroke="#fff"
+          strokeWidth="2"
+        />
+      </Svg>
+    );
+  };
+
   return (
     <View style={styles.container}>
       <GoBackButton />
@@ -211,14 +228,14 @@ export default function Location({ route }) {
                           </Marker>
 
                           <Marker
-                            pinColor="black"
                             coordinate={{
                               latitude: currentLocation.latitude,
                               longitude: currentLocation.longitude,
                             }}
                           >
+                            <View>{icon()}</View>
                             <Callout style={styles.calloutContainer}>
-                              <Text>You</Text>
+                              <Text>You are here</Text>
                             </Callout>
                           </Marker>
                         </MapView>
@@ -245,6 +262,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#1f1f1f",
     alignItems: "center",
     flex: 1,
+  },
+  customMarker: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: "blue",
   },
   emptyContainer: {
     width: 350,
