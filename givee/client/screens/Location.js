@@ -17,7 +17,7 @@ import {
   doc,
   setDoc,
 } from "firebase/firestore";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import MapView, { Marker, Callout } from "react-native-maps";
 import * as ExpoLocation from "expo-location";
 import Spinner from "react-native-loading-spinner-overlay";

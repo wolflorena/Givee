@@ -31,6 +31,7 @@ import AboutUs from "./client/screens/AboutUs";
 import ChangePassword from "./client/screens/ChangePassword";
 import Chat from "./client/screens/Chat";
 import AdminChat from "./admin/screens/AdminChat";
+import Settings from "./client/screens/Settings";
 
 const Stack = createNativeStackNavigator();
 
@@ -49,7 +50,8 @@ export default function App() {
     <NavigationContainer>
       <AdminProvider>
         <LoginProvider>
-          <Stack.Navigator initialRouteName={isUserLoggedIn ? "Home" : "Login"}>
+          <Stack.Navigator initialRouteName="Settings">
+            {/* <Stack.Navigator initialRouteName={isUserLoggedIn ? "Home" : "Login"}> */}
             <Stack.Screen
               name="Login"
               component={Login}
@@ -108,6 +110,11 @@ export default function App() {
             <Stack.Screen
               name="Location"
               component={Location}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Settings"
+              component={Settings}
               options={{ headerShown: false }}
             />
             <Stack.Screen

@@ -8,6 +8,10 @@ const BUTTON_SIZES = {
     marginTop: 70,
     marginBottom: 20,
   },
+  little: {
+    width: 100,
+    height: 30,
+  },
   large: {
     width: 350,
     height: 50,
