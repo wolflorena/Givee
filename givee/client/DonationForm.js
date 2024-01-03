@@ -1,8 +1,9 @@
-import { View, TextInput, StyleSheet } from "react-native";
 import React, { useState } from "react";
+import { View, TextInput, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import CustomButton from "./CustomButton";
 import AwesomeAlert from "react-native-awesome-alerts";
+
+import CustomButton from "./CustomButton";
 
 export default function DonationForm(props) {
   const [amount, setAmount] = useState("");

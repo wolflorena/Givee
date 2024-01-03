@@ -1,3 +1,4 @@
+import React, { useState, useCallback, useEffect } from "react";
 import {
   View,
   StyleSheet,
@@ -5,19 +6,21 @@ import {
   TouchableOpacity,
   Text,
   Image,
+  StatusBar,
 } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
+import { collection, query, getDocs } from "firebase/firestore";
+import Spinner from "react-native-loading-spinner-overlay";
+
 import NavBar from "../Navbar";
 import GoBackButton from "../GoBackButton";
 import Title from "../Title";
 import { useLoginContext, useLoginUpdateContext } from "../LoginContext";
-import React, { useState, useCallback, useEffect } from "react";
-import { StatusBar } from "react-native";
 import { FIREBASE_DB } from "../../firebaseConfig";
-import { collection, query, getDocs } from "firebase/firestore";
-import { useFocusEffect } from "@react-navigation/native";
 
 export default function Centers() {
   const [donationsData, setDonationsData] = useState([]);
+  const [loading, setLoading] = useState(false);
   const { currentUser } = useLoginContext();
   const { navBarButtonsPressHandler } = useLoginUpdateContext();
 
@@ -33,6 +36,7 @@ export default function Centers() {
   );
 
   const getDonations = useCallback(async () => {
+    setLoading(true);
     try {
       const db = FIREBASE_DB;
       const q = query(collection(db, "donations"));
@@ -49,12 +53,19 @@ export default function Centers() {
       });
 
       setDonationsData(data);
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       console.error("Error fetching data:", error);
     }
   });
   return (
     <View style={styles.container}>
+      <Spinner
+        visible={loading}
+        color="#ddb31b"
+        overlayColor="rgba(0,0,0,0.5)"
+      />
       <GoBackButton />
       <Title text="My Donations" />
       <View style={styles.donationsContainer}>

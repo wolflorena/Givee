@@ -1,3 +1,4 @@
+import React, { useState, useCallback, useEffect } from "react";
 import {
   View,
   Text,
@@ -5,26 +6,27 @@ import {
   TouchableOpacity,
   FlatList,
   Image,
+  StatusBar,
 } from "react-native";
 import Svg, { Ellipse } from "react-native-svg";
-import React, { useState, useCallback, useEffect } from "react";
 import {
   collection,
   query,
   getDocs,
   serverTimestamp,
+  doc,
+  setDoc,
 } from "firebase/firestore";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import MapView, { Marker, Callout } from "react-native-maps";
+import * as ExpoLocation from "expo-location";
+import Spinner from "react-native-loading-spinner-overlay";
+
 import { FIREBASE_DB } from "../../firebaseConfig";
-import { StatusBar } from "react-native";
 import GoBackButton from "../GoBackButton";
 import CustomButton from "../CustomButton";
 import Title from "../Title";
 import { useLoginContext } from "../LoginContext";
-import { doc, setDoc } from "firebase/firestore";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import * as ExpoLocation from "expo-location";
-import MapView, { Marker, Callout } from "react-native-maps";
-import Spinner from "react-native-loading-spinner-overlay";
 
 export default function Location({ route }) {
   let formData = route.params;

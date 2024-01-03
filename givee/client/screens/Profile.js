@@ -1,5 +1,5 @@
+import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import {
   faCircleUser,
@@ -9,11 +9,10 @@ import {
   faGear,
   faRightFromBracket,
 } from "@fortawesome/free-solid-svg-icons";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
+
 import Navbar from "../Navbar";
-import { useState } from "react";
-import { useNavigation } from "@react-navigation/native";
 import { useLoginUpdateContext } from "../LoginContext";
-import { useFocusEffect } from "@react-navigation/native";
 import { FIREBASE_AUTH } from "../../firebaseConfig";
 
 export default function Profile() {

@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   View,
   Image,
@@ -6,14 +7,14 @@ import {
   Text,
   KeyboardAvoidingView,
 } from "react-native";
-import React, { useState } from "react";
-import { FIREBASE_AUTH, FIREBASE_DB } from "../../firebaseConfig";
 import { doc, setDoc } from "firebase/firestore";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useNavigation } from "@react-navigation/native";
-import CustomButton from "../CustomButton";
 import AwesomeAlert from "react-native-awesome-alerts";
 import Spinner from "react-native-loading-spinner-overlay";
+
+import { FIREBASE_AUTH, FIREBASE_DB } from "../../firebaseConfig";
+import CustomButton from "../CustomButton";
 
 export default function Login() {
   const [email, setEmail] = useState("");

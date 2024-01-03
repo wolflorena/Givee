@@ -1,8 +1,9 @@
-import { TouchableOpacity, StyleSheet } from "react-native";
 import React from "react";
+import { TouchableOpacity, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faCircleChevronLeft } from "@fortawesome/free-solid-svg-icons/faCircleChevronLeft";
+
 import { useLoginUpdateContext } from "./LoginContext";
 
 export default function GoBackButton() {

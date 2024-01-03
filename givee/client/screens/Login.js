@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   View,
   Image,
@@ -6,15 +7,16 @@ import {
   Text,
   KeyboardAvoidingView,
 } from "react-native";
-import React, { useState } from "react";
-import { FIREBASE_AUTH, FIREBASE_DB } from "../../firebaseConfig";
-import { doc, getDoc } from "firebase/firestore";
+
 import { signInWithEmailAndPassword } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
 import { useNavigation } from "@react-navigation/native";
-import { useLoginUpdateContext } from "../LoginContext";
-import CustomButton from "../CustomButton";
 import AwesomeAlert from "react-native-awesome-alerts";
 import Spinner from "react-native-loading-spinner-overlay";
+
+import { FIREBASE_AUTH, FIREBASE_DB } from "../../firebaseConfig";
+import { useLoginUpdateContext } from "../LoginContext";
+import CustomButton from "../CustomButton";
 
 export default function Login() {
   const { userLoggedIn } = useLoginUpdateContext();

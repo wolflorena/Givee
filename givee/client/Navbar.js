@@ -1,5 +1,4 @@
 import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
-import { useLoginContext, useLoginUpdateContext } from "./LoginContext";
 import { useNavigation } from "@react-navigation/native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faShirt } from "@fortawesome/free-solid-svg-icons/faShirt";
@@ -10,6 +9,8 @@ import {
   faUser,
   faPuzzlePiece,
 } from "@fortawesome/free-solid-svg-icons";
+
+import { useLoginContext, useLoginUpdateContext } from "./LoginContext";
 
 export default function Navbar() {
   const navigation = useNavigation();

@@ -1,9 +1,8 @@
 import React from "react";
 import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useLoginContext, useLoginUpdateContext } from "../LoginContext";
-import { useNavigation } from "@react-navigation/native";
 import Navbar from "../Navbar";
-import { useFocusEffect } from "@react-navigation/native";
 
 export default function Home() {
   const { currentUser } = useLoginContext();

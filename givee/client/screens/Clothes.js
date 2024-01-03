@@ -1,11 +1,13 @@
 import React from "react";
-import { View, StyleSheet, KeyboardAvoidingView } from "react-native";
-import NavBar from "../Navbar";
-import Title from "../Title";
+import { StyleSheet, KeyboardAvoidingView } from "react-native";
+
+import { useFocusEffect } from "@react-navigation/native";
+
 import DonationForm from "../DonationForm";
 import GoBackButton from "../GoBackButton";
+import NavBar from "../Navbar";
+import Title from "../Title";
 import { useLoginUpdateContext } from "../LoginContext";
-import { useFocusEffect } from "@react-navigation/native";
 
 export default function Clothes() {
   const { navBarButtonsPressHandler } = useLoginUpdateContext();

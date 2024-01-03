@@ -1,5 +1,6 @@
-import { View, Image, StyleSheet, Text } from "react-native";
 import React from "react";
+import { View, Image, StyleSheet, Text } from "react-native";
+
 import Navbar from "../Navbar";
 
 export default function SuccessfulDonation() {

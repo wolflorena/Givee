@@ -1,11 +1,13 @@
-import { View, TextInput, Text, StyleSheet } from "react-native";
 import React, { useState } from "react";
-import CustomButton from "../CustomButton";
-import { FIREBASE_AUTH } from "../../firebaseConfig";
+import { View, TextInput, Text, StyleSheet } from "react-native";
+
 import { sendPasswordResetEmail } from "firebase/auth";
 import { useNavigation } from "@react-navigation/native";
 import AwesomeAlert from "react-native-awesome-alerts";
 import Spinner from "react-native-loading-spinner-overlay";
+
+import { FIREBASE_AUTH } from "../../firebaseConfig";
+import CustomButton from "../CustomButton";
 
 export default function ChangePassword() {
   const [email, setEmail] = useState("");

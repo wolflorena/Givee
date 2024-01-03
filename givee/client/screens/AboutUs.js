@@ -1,3 +1,4 @@
+import React from "react";
 import {
   View,
   Text,
@@ -5,9 +6,9 @@ import {
   TouchableOpacity,
   Linking,
 } from "react-native";
-import React from "react";
-import { useLoginUpdateContext } from "../LoginContext";
+
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { useFocusEffect } from "@react-navigation/native";
 import {
   faTshirt,
   faAppleWhole,
@@ -18,9 +19,10 @@ import {
   faTwitter,
   faInstagram,
 } from "@fortawesome/free-brands-svg-icons";
-import Navbar from "../Navbar";
-import { useFocusEffect } from "@react-navigation/native";
+
+import { useLoginUpdateContext } from "../LoginContext";
 import GoBackButton from "../GoBackButton";
+import Navbar from "../Navbar";
 
 export default function AboutUs() {
   const { navBarButtonsPressHandler } = useLoginUpdateContext();
