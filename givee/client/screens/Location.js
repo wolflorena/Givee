@@ -4,6 +4,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   FlatList,
+  Image,
 } from "react-native";
 import React, { useState, useCallback, useEffect } from "react";
 import {
@@ -130,93 +131,111 @@ export default function Location({ route }) {
       <Title text="Location" />
       <View style={styles.centersContent}>
         <View style={styles.centers}>
-          <FlatList
-            data={centersData}
-            keyExtractor={(center) => center.id}
-            renderItem={({ item }) => (
-              <View>
-                <TouchableOpacity
-                  style={[
-                    styles.centerCard,
-                    item.id === selectedCenter ? styles.selected : null,
-                  ]}
-                  onPress={() => {
-                    setSelectedCenter(
-                      selectedCenter === item.id ? "" : item.id
-                    );
-                  }}
-                >
-                  <View style={styles.centerData}>
-                    <View style={styles.firstSectionData}>
-                      <Text style={styles.centerField}>
-                        <Text style={{ fontWeight: "bold" }}>
-                          Address {"\n"}
-                        </Text>
-                        {item.address}
-                      </Text>
-                      <Text style={styles.centerField}>
-                        <Text style={{ fontWeight: "bold" }}>Phone {"\n"}</Text>
-                        {item.phone}
-                      </Text>
-                    </View>
-                    <View style={styles.secondSectionData}>
-                      <Text style={styles.centerField}>
-                        <Text style={{ fontWeight: "bold" }}>
-                          {calculateDistance(
-                            currentLocation.latitude,
-                            currentLocation.longitude,
-                            item.latitude,
-                            item.longitude
-                          )}{" "}
-                          km
-                        </Text>
-                      </Text>
-                    </View>
-                  </View>
-                </TouchableOpacity>
-                {selectedCenter && selectedCenter === item.id && (
-                  <View style={styles.mapContainer}>
-                    <MapView
-                      style={styles.map}
-                      initialRegion={{
-                        latitude: item.latitude,
-                        longitude: item.longitude,
-                        latitudeDelta: 0.03,
-                        longitudeDelta: 0.03,
+          {centersData.length === 0 ? (
+            <View style={styles.emptyContainer}>
+              <Image
+                source={require("../../assets/noCenters.png")}
+                style={styles.emptyImage}
+              />
+              <Text style={styles.emptyText}>No centers. 🙁</Text>
+            </View>
+          ) : (
+            <View style={styles.containerSmall}>
+              <FlatList
+                data={centersData}
+                keyExtractor={(center) => center.id}
+                renderItem={({ item }) => (
+                  <View>
+                    <TouchableOpacity
+                      style={[
+                        styles.centerCard,
+                        item.id === selectedCenter ? styles.selected : null,
+                      ]}
+                      onPress={() => {
+                        setSelectedCenter(
+                          selectedCenter === item.id ? "" : item.id
+                        );
                       }}
-                      provider="google"
                     >
-                      <Marker
-                        coordinate={{
-                          latitude: item.latitude,
-                          longitude: item.longitude,
-                        }}
-                      >
-                        <Callout style={styles.calloutContainer}>
-                          <Text>{item.address}</Text>
-                        </Callout>
-                      </Marker>
+                      <View style={styles.centerData}>
+                        <View style={styles.firstSectionData}>
+                          <Text style={styles.centerField}>
+                            <Text style={{ fontWeight: "bold" }}>
+                              Address {"\n"}
+                            </Text>
+                            {item.address}
+                          </Text>
+                          <Text style={styles.centerField}>
+                            <Text style={{ fontWeight: "bold" }}>
+                              Phone {"\n"}
+                            </Text>
+                            {item.phone}
+                          </Text>
+                        </View>
+                        <View style={styles.secondSectionData}>
+                          <Text style={styles.centerField}>
+                            <Text style={{ fontWeight: "bold" }}>
+                              {calculateDistance(
+                                currentLocation.latitude,
+                                currentLocation.longitude,
+                                item.latitude,
+                                item.longitude
+                              )}{" "}
+                              km
+                            </Text>
+                          </Text>
+                        </View>
+                      </View>
+                    </TouchableOpacity>
+                    {selectedCenter && selectedCenter === item.id && (
+                      <View style={styles.mapContainer}>
+                        <MapView
+                          style={styles.map}
+                          initialRegion={{
+                            latitude: item.latitude,
+                            longitude: item.longitude,
+                            latitudeDelta: 0.03,
+                            longitudeDelta: 0.03,
+                          }}
+                          provider="google"
+                        >
+                          <Marker
+                            coordinate={{
+                              latitude: item.latitude,
+                              longitude: item.longitude,
+                            }}
+                          >
+                            <Callout style={styles.calloutContainer}>
+                              <Text>{item.address}</Text>
+                            </Callout>
+                          </Marker>
 
-                      <Marker
-                        pinColor="black"
-                        coordinate={{
-                          latitude: currentLocation.latitude,
-                          longitude: currentLocation.longitude,
-                        }}
-                      >
-                        <Callout style={styles.calloutContainer}>
-                          <Text>You</Text>
-                        </Callout>
-                      </Marker>
-                    </MapView>
+                          <Marker
+                            pinColor="black"
+                            coordinate={{
+                              latitude: currentLocation.latitude,
+                              longitude: currentLocation.longitude,
+                            }}
+                          >
+                            <Callout style={styles.calloutContainer}>
+                              <Text>You</Text>
+                            </Callout>
+                          </Marker>
+                        </MapView>
+                      </View>
+                    )}
                   </View>
                 )}
-              </View>
-            )}
-          ></FlatList>
+              ></FlatList>
+              <CustomButton
+                text="Donate"
+                size="large"
+                onPress={submitDonation}
+              />
+            </View>
+          )}
         </View>
       </View>
-      <CustomButton text="Donate" size="large" onPress={submitDonation} />
     </View>
   );
 }
@@ -226,6 +245,24 @@ const styles = StyleSheet.create({
     backgroundColor: "#1f1f1f",
     alignItems: "center",
     flex: 1,
+  },
+  emptyContainer: {
+    width: 350,
+    height: 600,
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 50,
+  },
+  containerSmall: {
+    flex: 1,
+  },
+  emptyImage: {
+    height: 250,
+    width: 250,
+  },
+  emptyText: {
+    color: "#DDB31B",
+    fontSize: 25,
   },
   centersContent: {
     justifyContent: "space-between",

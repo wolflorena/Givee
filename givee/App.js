@@ -3,6 +3,8 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { AdminProvider } from "./admin/AdminContext";
 import { LoginProvider } from "./client/LoginContext";
+import { FIREBASE_AUTH } from "./firebaseConfig";
+
 import Login from "./client/screens/Login";
 import Signup from "./client/screens/Signup";
 import Clothes from "./client/screens/Clothes";
@@ -29,7 +31,6 @@ import AboutUs from "./client/screens/AboutUs";
 import ChangePassword from "./client/screens/ChangePassword";
 import Chat from "./client/screens/Chat";
 import AdminChat from "./admin/screens/AdminChat";
-import { FIREBASE_AUTH } from "./firebaseConfig";
 
 const Stack = createNativeStackNavigator();
 

@@ -61,7 +61,7 @@ export default function Centers() {
         {donationsData.length === 0 ? (
           <View style={styles.emptyContainer}>
             <Image
-              source={require("../../assets/noDonations.png")} // Update with your image path
+              source={require("../../assets/noDonations.png")}
               style={styles.emptyImage}
             />
             <Text style={styles.emptyText}>No donations made yet. 🙁</Text>
