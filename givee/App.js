@@ -3,6 +3,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { AdminProvider } from "./admin/AdminContext";
 import { LoginProvider } from "./client/LoginContext";
+import { ThemeProvider } from "./client/ThemeContext";
 import { FIREBASE_AUTH } from "./firebaseConfig";
 
 import Login from "./client/screens/Login";
@@ -47,149 +48,152 @@ export default function App() {
   }, []);
 
   return (
-    <NavigationContainer>
-      <AdminProvider>
-        <LoginProvider>
-          <Stack.Navigator initialRouteName="Settings">
-            {/* <Stack.Navigator initialRouteName={isUserLoggedIn ? "Home" : "Login"}> */}
-            <Stack.Screen
-              name="Login"
-              component={Login}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="ChangePassword"
-              component={ChangePassword}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="Signup"
-              component={Signup}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="Home"
-              component={Home}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="Clothes"
-              component={Clothes}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="Food"
-              component={Food}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="Toys"
-              component={Toys}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="Profile"
-              component={Profile}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="History"
-              component={History}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="Chat"
-              component={Chat}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="AboutUs"
-              component={AboutUs}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="Location"
-              component={Location}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="Settings"
-              component={Settings}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="SuccessfulDonation"
-              component={SuccessfulDonation}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="AdminHome"
-              component={AdminHome}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="AdminUsers"
-              component={AdminUsers}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="AdminDonations"
-              component={AdminDonations}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="AdminCenters"
-              component={AdminCenters}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="AdminCampaigns"
-              component={AdminCampaigns}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="CenterData"
-              component={CenterData}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="CenterForm"
-              component={CenterForm}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="CampaignForm"
-              component={CampaignForm}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="DonationData"
-              component={DonationData}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="CampaignData"
-              component={CampaignData}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="EditCenter"
-              component={EditCenter}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="EditCampaign"
-              component={EditCampaign}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="AdminChat"
-              component={AdminChat}
-              options={{ headerShown: false }}
-            />
-          </Stack.Navigator>
-        </LoginProvider>
-      </AdminProvider>
-    </NavigationContainer>
+    <ThemeProvider>
+      <NavigationContainer>
+        <AdminProvider>
+          <LoginProvider>
+            <Stack.Navigator
+              initialRouteName={isUserLoggedIn ? "Home" : "Login"}
+            >
+              <Stack.Screen
+                name="Login"
+                component={Login}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="ChangePassword"
+                component={ChangePassword}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="Signup"
+                component={Signup}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="Home"
+                component={Home}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="Clothes"
+                component={Clothes}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="Food"
+                component={Food}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="Toys"
+                component={Toys}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="Profile"
+                component={Profile}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="History"
+                component={History}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="Chat"
+                component={Chat}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="AboutUs"
+                component={AboutUs}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="Location"
+                component={Location}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="Settings"
+                component={Settings}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="SuccessfulDonation"
+                component={SuccessfulDonation}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="AdminHome"
+                component={AdminHome}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="AdminUsers"
+                component={AdminUsers}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="AdminDonations"
+                component={AdminDonations}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="AdminCenters"
+                component={AdminCenters}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="AdminCampaigns"
+                component={AdminCampaigns}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="CenterData"
+                component={CenterData}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="CenterForm"
+                component={CenterForm}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="CampaignForm"
+                component={CampaignForm}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="DonationData"
+                component={DonationData}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="CampaignData"
+                component={CampaignData}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="EditCenter"
+                component={EditCenter}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="EditCampaign"
+                component={EditCampaign}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="AdminChat"
+                component={AdminChat}
+                options={{ headerShown: false }}
+              />
+            </Stack.Navigator>
+          </LoginProvider>
+        </AdminProvider>
+      </NavigationContainer>
+    </ThemeProvider>
   );
 }

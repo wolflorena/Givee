@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import {
@@ -13,12 +13,15 @@ import { useNavigation, useFocusEffect } from "@react-navigation/native";
 
 import Navbar from "../Navbar";
 import { useLoginUpdateContext } from "../LoginContext";
+import { ThemeContext } from "../ThemeContext";
 import { FIREBASE_AUTH } from "../../firebaseConfig";
 
 export default function Profile() {
   const navigation = useNavigation();
   const { userLoggedOut } = useLoginUpdateContext();
   const { navBarButtonsPressHandler } = useLoginUpdateContext();
+  const { theme } = useContext(ThemeContext);
+  const styles = getStyles(theme);
   const [selectedOption, setSelectedOption] = useState("");
   const auth = FIREBASE_AUTH;
 
@@ -82,37 +85,38 @@ export default function Profile() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "#1f1f1f",
-    alignItems: "center",
-    flex: 1,
-  },
-  icon: {
-    color: "#ddb31b",
-    marginTop: 200,
-  },
-  options: {
-    marginTop: 50,
-    width: 200,
-    gap: 25,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  optionContainer: {
-    width: 200,
-    gap: 20,
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  optionLabel: {
-    color: "#eaebed",
-    fontSize: 25,
-  },
-  optionIcon: {
-    color: "#eaebed",
-  },
-  selected: {
-    color: "#ddb31b",
-  },
-});
+const getStyles = (theme) =>
+  StyleSheet.create({
+    container: {
+      backgroundColor: theme === "dark" ? "#1f1f1f" : "#eaebed",
+      alignItems: "center",
+      flex: 1,
+    },
+    icon: {
+      color: "#ddb31b",
+      marginTop: 200,
+    },
+    options: {
+      marginTop: 50,
+      width: 200,
+      gap: 25,
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    optionContainer: {
+      width: 200,
+      gap: 20,
+      flexDirection: "row",
+      alignItems: "center",
+    },
+    optionLabel: {
+      color: theme === "dark" ? "#eaebed" : "#1f1f1f",
+      fontSize: 25,
+    },
+    optionIcon: {
+      color: theme === "dark" ? "#eaebed" : "#1f1f1f",
+    },
+    selected: {
+      color: "#ddb31b",
+    },
+  });

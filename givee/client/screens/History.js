@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useContext } from "react";
 import {
   View,
   StyleSheet,
@@ -16,6 +16,7 @@ import NavBar from "../Navbar";
 import GoBackButton from "../GoBackButton";
 import Title from "../Title";
 import { useLoginContext, useLoginUpdateContext } from "../LoginContext";
+import { ThemeContext } from "../ThemeContext";
 import { FIREBASE_DB } from "../../firebaseConfig";
 
 export default function Centers() {
@@ -23,6 +24,8 @@ export default function Centers() {
   const [loading, setLoading] = useState(false);
   const { currentUser } = useLoginContext();
   const { navBarButtonsPressHandler } = useLoginUpdateContext();
+  const { theme } = useContext(ThemeContext);
+  const styles = getStyles(theme);
 
   useEffect(() => {
     StatusBar.setBarStyle("light-content");
@@ -109,55 +112,56 @@ export default function Centers() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "#1f1f1f",
-    alignItems: "center",
-    flex: 1,
-  },
-  donationsContent: {
-    justifyContent: "space-between",
-    height: 600,
-    width: 380,
-    padding: 15,
-  },
-  donations: {
-    marginVertical: 10,
-    height: 600,
-    width: 350,
-  },
-  donationCard: {
-    backgroundColor: "#eaebed",
-    marginVertical: 10,
-    flexDirection: "row",
-    alignItems: "center",
-    borderRadius: 10,
-    height: 120,
-    width: 350,
-    padding: 5,
-  },
+const getStyles = (theme) =>
+  StyleSheet.create({
+    container: {
+      backgroundColor: theme === "dark" ? "#1f1f1f" : "#eaebed",
+      alignItems: "center",
+      flex: 1,
+    },
+    donationsContent: {
+      justifyContent: "space-between",
+      height: 600,
+      width: 380,
+      padding: 15,
+    },
+    donations: {
+      marginVertical: 10,
+      height: 600,
+      width: 350,
+    },
+    donationCard: {
+      backgroundColor: theme === "dark" ? "#eaebed" : "#a6a6a6",
+      marginVertical: 10,
+      flexDirection: "row",
+      alignItems: "center",
+      borderRadius: 10,
+      height: 120,
+      width: 350,
+      padding: 5,
+    },
 
-  donationField: {
-    fontSize: 15,
-  },
-  donationData: {
-    height: 100,
-    width: 250,
-    justifyContent: "space-evenly",
-  },
-  emptyContainer: {
-    width: 350,
-    height: 600,
-    justifyContent: "center",
-    alignItems: "center",
-    gap: 50,
-  },
-  emptyImage: {
-    height: 250,
-    width: 250,
-  },
-  emptyText: {
-    color: "#DDB31B",
-    fontSize: 25,
-  },
-});
+    donationField: {
+      fontSize: 15,
+    },
+    donationData: {
+      height: 100,
+      width: 250,
+      justifyContent: "space-evenly",
+    },
+    emptyContainer: {
+      width: 350,
+      height: 600,
+      justifyContent: "center",
+      alignItems: "center",
+      gap: 50,
+    },
+    emptyImage: {
+      height: 250,
+      width: 250,
+    },
+    emptyText: {
+      color: "#DDB31B",
+      fontSize: 25,
+    },
+  });

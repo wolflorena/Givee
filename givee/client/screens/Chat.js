@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useContext } from "react";
 import { View, StyleSheet } from "react-native";
 import {
   GiftedChat,
@@ -16,12 +16,15 @@ import {
 } from "firebase/firestore";
 
 import { useLoginContext } from "../LoginContext";
+import { ThemeContext } from "../ThemeContext";
 import { FIREBASE_DB } from "../../firebaseConfig";
 import GoBackButton from "../GoBackButton";
 
 export default function Chat() {
   const [messages, setMessages] = useState([]);
   const { currentUser } = useLoginContext();
+  const { theme } = useContext(ThemeContext);
+  const styles = getStyles(theme);
   const db = FIREBASE_DB;
 
   useEffect(() => {
@@ -125,7 +128,7 @@ export default function Chat() {
       <InputToolbar
         {...props}
         containerStyle={{
-          backgroundColor: "#1f1f1f",
+          backgroundColor: theme === "dark" ? "#1f1f1f" : "#eaebed",
           borderTopColor: "#e2e2e2",
           borderTopWidth: 1,
           padding: 8,
@@ -197,12 +200,13 @@ export default function Chat() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "#1f1f1f",
-    justifyContent: "space-between",
-    paddingLeft: 10,
-    paddingRight: 10,
-    flex: 1,
-  },
-});
+const getStyles = (theme) =>
+  StyleSheet.create({
+    container: {
+      backgroundColor: theme === "dark" ? "#1f1f1f" : "#eaebed",
+      justifyContent: "space-between",
+      paddingLeft: 10,
+      paddingRight: 10,
+      flex: 1,
+    },
+  });

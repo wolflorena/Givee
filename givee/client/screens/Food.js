@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { StyleSheet, KeyboardAvoidingView } from "react-native";
 
 import { useFocusEffect } from "@react-navigation/native";
@@ -8,9 +8,12 @@ import GoBackButton from "../GoBackButton";
 import NavBar from "../Navbar";
 import Title from "../Title";
 import { useLoginUpdateContext } from "../LoginContext";
+import { ThemeContext } from "../ThemeContext";
 
 export default function Food() {
   const { navBarButtonsPressHandler } = useLoginUpdateContext();
+  const { theme } = useContext(ThemeContext);
+  const styles = getStyles(theme);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -29,10 +32,11 @@ export default function Food() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "#1f1f1f",
-    alignItems: "center",
-    flex: 1,
-  },
-});
+const getStyles = (theme) =>
+  StyleSheet.create({
+    container: {
+      backgroundColor: theme === "dark" ? "#1f1f1f" : "#eaebed",
+      alignItems: "center",
+      flex: 1,
+    },
+  });

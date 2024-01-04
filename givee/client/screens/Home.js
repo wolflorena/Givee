@@ -1,13 +1,15 @@
-import React from "react";
+import React, { useContext } from "react";
 import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useLoginContext, useLoginUpdateContext } from "../LoginContext";
+import { ThemeContext } from "../ThemeContext";
 import Navbar from "../Navbar";
 
 export default function Home() {
   const { currentUser } = useLoginContext();
   const { navBarButtonsPressHandler } = useLoginUpdateContext();
-
+  const { theme } = useContext(ThemeContext);
+  const styles = getStyles(theme);
   const navigation = useNavigation();
 
   useFocusEffect(
@@ -108,56 +110,58 @@ export default function Home() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    paddingHorizontal: 25,
-    backgroundColor: "#1f1f1f",
-    alignItems: "center",
-    flex: 1,
-  },
-  welcomeMessage: {
-    marginTop: 20,
-    fontSize: 20,
-    color: "#a6a6a6",
-  },
-  welcomeName: {
-    color: "#eaebed",
-    fontWeight: "bold",
-  },
-  goBackButton: {
-    marginTop: 70,
-    marginRight: 330,
-  },
-  menuContainer: {
-    marginTop: 20,
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 30,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  selectionContainer: {
-    backgroundColor: "green",
-    width: 155,
-    height: 155,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 15,
-    gap: 10,
-  },
-  logo: {
-    resizeMode: "stretch",
-    width: 50,
-    height: 50,
-  },
-  logoText: {
-    fontSize: 15,
-  },
-  circle: {
-    borderRadius: 50,
-    height: 75,
-    width: 75,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});
+const getStyles = (theme) =>
+  StyleSheet.create({
+    container: {
+      paddingHorizontal: 25,
+      backgroundColor: theme === "dark" ? "#1f1f1f" : "#eaebed",
+      alignItems: "center",
+      flex: 1,
+    },
+    welcomeMessage: {
+      marginTop: 20,
+      fontSize: 20,
+      color: theme === "dark" ? "#a6a6a6" : "#1f1f1f",
+    },
+    welcomeName: {
+      color: theme === "dark" ? "#eaebed" : "#1f1f1f",
+      fontWeight: "bold",
+    },
+    goBackButton: {
+      marginTop: 70,
+      marginRight: 330,
+    },
+    menuContainer: {
+      marginTop: 20,
+      flexDirection: "row",
+      flexWrap: "wrap",
+      gap: 30,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    selectionContainer: {
+      width: 155,
+      height: 155,
+      justifyContent: "center",
+      alignItems: "center",
+      borderRadius: 15,
+      gap: 10,
+      borderColor: theme === "dark" ? "" : "#1f1f1f",
+      borderWidth: 0.2,
+    },
+    logo: {
+      resizeMode: "stretch",
+      width: 50,
+      height: 50,
+    },
+    logoText: {
+      fontSize: 15,
+    },
+    circle: {
+      borderRadius: 50,
+      height: 75,
+      width: 75,
+      justifyContent: "center",
+      alignItems: "center",
+    },
+  });

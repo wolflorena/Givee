@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useContext } from "react";
 import {
   View,
   Text,
@@ -27,6 +27,7 @@ import GoBackButton from "../GoBackButton";
 import CustomButton from "../CustomButton";
 import Title from "../Title";
 import { useLoginContext } from "../LoginContext";
+import { ThemeContext } from "../ThemeContext";
 
 export default function Location({ route }) {
   let formData = route.params;
@@ -35,6 +36,8 @@ export default function Location({ route }) {
   const [loading, setLoading] = useState(false);
   const { currentUser } = useLoginContext();
   const navigation = useNavigation();
+  const { theme } = useContext(ThemeContext);
+  const styles = getStyles(theme);
 
   const [currentLocation, setCurrentLocation] = useState({
     latitude: null,
@@ -276,83 +279,84 @@ export default function Location({ route }) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "#1f1f1f",
-    alignItems: "center",
-    flex: 1,
-  },
-  customMarker: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    backgroundColor: "blue",
-  },
-  emptyContainer: {
-    width: 350,
-    height: 600,
-    justifyContent: "center",
-    alignItems: "center",
-    gap: 50,
-  },
-  containerSmall: {
-    flex: 1,
-  },
-  emptyImage: {
-    height: 250,
-    width: 250,
-  },
-  emptyText: {
-    color: "#DDB31B",
-    fontSize: 25,
-  },
-  centersContent: {
-    justifyContent: "space-between",
-    height: 600,
-    width: 380,
-    paddingHorizontal: 15,
-  },
-  centers: {
-    height: 600,
-    width: 350,
-  },
-  centerCard: {
-    backgroundColor: "#eaebed",
-    marginVertical: 10,
-    flexDirection: "row",
-    alignItems: "center",
-    borderRadius: 10,
-    height: 120,
-    width: 350,
-    padding: 5,
-    justifyContent: "center",
-  },
-  centerField: {
-    fontSize: 15,
-  },
-  centerData: {
-    height: 120,
-    width: 320,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  selected: {
-    backgroundColor: "#ddb31b",
-  },
-  firstSectionData: {
-    height: 120,
-    width: 250,
-    flexDirection: "column",
-    justifyContent: "space-evenly",
-  },
-  map: {
-    width: "100%",
-    height: "100%",
-  },
-  mapContainer: {
-    width: 350,
-    height: 300,
-    marginVertical: 10,
-  },
-});
+const getStyles = (theme) =>
+  StyleSheet.create({
+    container: {
+      backgroundColor: theme === "dark" ? "#1f1f1f" : "#eaebed",
+      alignItems: "center",
+      flex: 1,
+    },
+    customMarker: {
+      width: 10,
+      height: 10,
+      borderRadius: 5,
+      backgroundColor: "blue",
+    },
+    emptyContainer: {
+      width: 350,
+      height: 600,
+      justifyContent: "center",
+      alignItems: "center",
+      gap: 50,
+    },
+    containerSmall: {
+      flex: 1,
+    },
+    emptyImage: {
+      height: 250,
+      width: 250,
+    },
+    emptyText: {
+      color: "#DDB31B",
+      fontSize: 25,
+    },
+    centersContent: {
+      justifyContent: "space-between",
+      height: 600,
+      width: 380,
+      paddingHorizontal: 15,
+    },
+    centers: {
+      height: 600,
+      width: 350,
+    },
+    centerCard: {
+      backgroundColor: "#a6a6a6",
+      marginVertical: 10,
+      flexDirection: "row",
+      alignItems: "center",
+      borderRadius: 10,
+      height: 120,
+      width: 350,
+      padding: 5,
+      justifyContent: "center",
+    },
+    centerField: {
+      fontSize: 15,
+    },
+    centerData: {
+      height: 120,
+      width: 320,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+    },
+    selected: {
+      backgroundColor: "#ddb31b",
+    },
+    firstSectionData: {
+      height: 120,
+      width: 250,
+      flexDirection: "column",
+      justifyContent: "space-evenly",
+    },
+    map: {
+      width: "100%",
+      height: "100%",
+    },
+    mapContainer: {
+      width: 350,
+      height: 300,
+      marginVertical: 10,
+    },
+  });

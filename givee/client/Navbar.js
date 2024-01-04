@@ -1,3 +1,4 @@
+import React, { useContext } from "react";
 import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
@@ -11,11 +12,14 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 import { useLoginContext, useLoginUpdateContext } from "./LoginContext";
+import { ThemeContext } from "./ThemeContext";
 
 export default function Navbar() {
   const navigation = useNavigation();
   const { navBarButtons } = useLoginContext();
   const { navBarButtonsPressHandler } = useLoginUpdateContext();
+  const { theme } = useContext(ThemeContext);
+  const styles = getStyles(theme);
 
   const renderNavbarButton = (buttonType, faIcon, label) => {
     const isPressed = navBarButtons[buttonType];
@@ -57,26 +61,27 @@ export default function Navbar() {
   );
 }
 
-const styles = StyleSheet.create({
-  navbar: {
-    marginBottom: 25,
-    height: 50,
-    width: 350,
-    alignItems: "center",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    bottom: 0,
-    position: "absolute",
-  },
-  navbarText: {
-    fontSize: 10,
-    color: "#eaebed",
-  },
-  navbarIcon: {
-    marginBottom: 5,
-    color: "#eaebed",
-  },
-  navbarButton: {
-    alignItems: "center",
-  },
-});
+const getStyles = (theme) =>
+  StyleSheet.create({
+    navbar: {
+      marginBottom: 25,
+      height: 50,
+      width: 350,
+      alignItems: "center",
+      flexDirection: "row",
+      justifyContent: "space-between",
+      bottom: 0,
+      position: "absolute",
+    },
+    navbarText: {
+      fontSize: 10,
+      color: theme === "dark" ? "#eaebed" : "#1f1f1f",
+    },
+    navbarIcon: {
+      marginBottom: 5,
+      color: theme === "dark" ? "#eaebed" : "#1f1f1f",
+    },
+    navbarButton: {
+      alignItems: "center",
+    },
+  });

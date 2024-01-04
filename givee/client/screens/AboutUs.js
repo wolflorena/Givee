@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   View,
   Text,
@@ -21,11 +21,14 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 
 import { useLoginUpdateContext } from "../LoginContext";
+import { ThemeContext } from "../ThemeContext";
 import GoBackButton from "../GoBackButton";
 import Navbar from "../Navbar";
 
 export default function AboutUs() {
   const { navBarButtonsPressHandler } = useLoginUpdateContext();
+  const { theme } = useContext(ThemeContext);
+  const styles = getStyles(theme);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -122,54 +125,55 @@ export default function AboutUs() {
   );
 }
 
-const styles = StyleSheet.create({
-  containerFull: {
-    backgroundColor: "#1f1f1f",
-    alignItems: "center",
-    flex: 1,
-  },
-  container: {
-    backgroundColor: "#1f1f1f",
-    alignItems: "center",
-    justifyContent: "center",
-    flex: 1,
-    padding: 20,
-  },
-  headerText: {
-    color: "#ddb31b",
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 10,
-  },
-  text: {
-    color: "#eaebed",
-    fontSize: 16,
-    textAlign: "justify",
-    marginBottom: 10,
-  },
-  iconContainer: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    width: "60%",
-    marginBottom: 10,
-  },
-  icon: {
-    color: "#ddb31b",
-  },
-  footer: {
-    flexDirection: "row",
-    justifyContent: "space-evenly",
-    alignItems: "center",
-    width: "60%",
-    paddingTop: 20,
-    paddingBottom: 20,
-  },
-  socialIcon: {
-    color: "#eaebed",
-    marginHorizontal: 10,
-  },
-  footerText: {
-    paddingTop: 20,
-    fontSize: 18,
-  },
-});
+const getStyles = (theme) =>
+  StyleSheet.create({
+    containerFull: {
+      backgroundColor: theme === "dark" ? "#1f1f1f" : "#eaebed",
+      alignItems: "center",
+      flex: 1,
+    },
+    container: {
+      backgroundColor: theme === "dark" ? "#1f1f1f" : "#eaebed",
+      alignItems: "center",
+      justifyContent: "center",
+      flex: 1,
+      padding: 20,
+    },
+    headerText: {
+      color: "#ddb31b",
+      fontSize: 20,
+      fontWeight: "bold",
+      marginBottom: 10,
+    },
+    text: {
+      color: theme === "dark" ? "#eaebed" : "#1f1f1f",
+      fontSize: 16,
+      textAlign: "justify",
+      marginBottom: 10,
+    },
+    iconContainer: {
+      flexDirection: "row",
+      justifyContent: "space-around",
+      width: "60%",
+      marginBottom: 10,
+    },
+    icon: {
+      color: "#ddb31b",
+    },
+    footer: {
+      flexDirection: "row",
+      justifyContent: "space-evenly",
+      alignItems: "center",
+      width: "60%",
+      paddingTop: 20,
+      paddingBottom: 20,
+    },
+    socialIcon: {
+      color: theme === "dark" ? "#eaebed" : "#1f1f1f",
+      marginHorizontal: 10,
+    },
+    footerText: {
+      paddingTop: 20,
+      fontSize: 18,
+    },
+  });

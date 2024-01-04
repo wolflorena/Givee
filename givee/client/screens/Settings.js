@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   View,
   TextInput,
@@ -6,6 +6,7 @@ import {
   Alert,
   Text,
   TouchableOpacity,
+  Switch,
   FlatList,
 } from "react-native";
 import { getAuth, updateProfile } from "firebase/auth";
@@ -13,6 +14,10 @@ import { doc, updateDoc } from "firebase/firestore";
 import { FIREBASE_DB } from "../../firebaseConfig";
 import CustomButton from "../CustomButton";
 import Navbar from "../Navbar";
+import { ThemeContext } from "../ThemeContext";
+import { useLoginUpdateContext } from "../LoginContext";
+import { useFocusEffect } from "@react-navigation/native";
+import GoBackButton from "../GoBackButton";
 
 export default function Settings() {
   const [fullName, setFullName] = useState("");
@@ -20,6 +25,10 @@ export default function Settings() {
   const [selectedId, setSelectedId] = useState(null);
   const auth = getAuth();
   const user = auth.currentUser;
+  const { theme, toggleTheme } = useContext(ThemeContext);
+  const { navBarButtonsPressHandler } = useLoginUpdateContext();
+  const styles = getStyles(theme);
+  const isDarkMode = theme === "dark";
 
   useEffect(() => {
     if (user) {
@@ -27,6 +36,12 @@ export default function Settings() {
       setEditingFullName(user.displayName || "");
     }
   }, [user]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      navBarButtonsPressHandler("myProfileIsPressed");
+    }, [])
+  );
 
   const handleUpdate = async () => {
     try {
@@ -40,8 +55,8 @@ export default function Settings() {
           fullName: editingFullName,
         });
 
-        setFullName(editingFullName); // Actualizați starea fullName pentru a reflecta modificarea
-        setSelectedId(null); // Opțional, pentru a ascunde inputul
+        setFullName(editingFullName);
+        setSelectedId(null);
 
         Alert.alert("Succes", "Numele a fost actualizat");
       }
@@ -55,14 +70,18 @@ export default function Settings() {
       <TouchableOpacity
         style={styles.item}
         onPress={() => {
-          setSelectedId(item.id);
-          setEditingFullName(fullName);
+          if (selectedId === item.id) {
+            setSelectedId(null);
+          } else {
+            setSelectedId(item.id);
+            setEditingFullName(fullName);
+          }
         }}
       >
-        <Text>{item.title}</Text>
-        <Text>{fullName}</Text>
+        <Text style={styles.text}>{item.title}</Text>
+        <Text style={styles.text}>{fullName}</Text>
       </TouchableOpacity>
-      {selectedId === item.id && (
+      {selectedId && selectedId === item.id && (
         <View style={styles.itemModify}>
           <TextInput
             style={styles.input}
@@ -73,6 +92,12 @@ export default function Settings() {
           <CustomButton text="Modify" size="little" onPress={handleUpdate} />
         </View>
       )}
+      <View style={styles.item}>
+        <Text style={styles.text}>
+          {isDarkMode ? "Dark Mode" : "Light Mode"}
+        </Text>
+        <Switch value={isDarkMode} onValueChange={toggleTheme} />
+      </View>
     </View>
   );
 
@@ -80,6 +105,7 @@ export default function Settings() {
 
   return (
     <View style={styles.container}>
+      <GoBackButton />
       <FlatList
         style={styles.settingsList}
         data={settingsOptions}
@@ -87,46 +113,52 @@ export default function Settings() {
         keyExtractor={(item) => item.id}
         extraData={selectedId}
       />
+
       <Navbar />
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "#1f1f1f",
-    alignItems: "center",
-    justifyContent: "center",
-    flex: 1,
-  },
-  settingsList: {
-    marginTop: 100,
-  },
-  item: {
-    backgroundColor: "#eaebed",
-    marginVertical: 10,
-    flexDirection: "row",
-    borderRadius: 10,
-    height: 50,
-    width: 350,
-    padding: 10,
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  itemModify: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    padding: 10,
-  },
-  input: {
-    marginVertical: 4,
-    height: 50,
-    borderWidth: 1,
-    borderRadius: 15,
-    padding: 10,
-    borderColor: "#a6a6a6",
-    color: "#a6a6a6",
-    width: 200,
-  },
-});
+const getStyles = (theme) =>
+  StyleSheet.create({
+    container: {
+      backgroundColor: theme === "dark" ? "#1f1f1f" : "#eaebed",
+      alignItems: "center",
+      justifyContent: "center",
+      flex: 1,
+    },
+    settingsList: {
+      marginTop: 10,
+      height: 50,
+    },
+    item: {
+      backgroundColor: theme === "dark" ? "#eaebed" : "#1f1f1f",
+      marginVertical: 10,
+      flexDirection: "row",
+      borderRadius: 10,
+      height: 50,
+      width: 350,
+      padding: 10,
+      justifyContent: "space-between",
+      alignItems: "center",
+    },
+    text: {
+      color: theme === "dark" ? "#1f1f1f" : "#eaebed",
+    },
+    itemModify: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      padding: 10,
+    },
+    input: {
+      marginVertical: 4,
+      height: 50,
+      borderWidth: 1,
+      borderRadius: 15,
+      padding: 10,
+      borderColor: theme === "dark" ? "#a6a6a6" : "#1f1f1f",
+      color: theme === "dark" ? "#a6a6a6" : "#1f1f1f",
+      width: 200,
+    },
+  });

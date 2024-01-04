@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { View, TextInput, Text, StyleSheet } from "react-native";
 
 import { sendPasswordResetEmail } from "firebase/auth";
@@ -7,6 +7,7 @@ import AwesomeAlert from "react-native-awesome-alerts";
 import Spinner from "react-native-loading-spinner-overlay";
 
 import { FIREBASE_AUTH } from "../../firebaseConfig";
+import { ThemeContext } from "../ThemeContext";
 import CustomButton from "../CustomButton";
 
 export default function ChangePassword() {
@@ -15,6 +16,8 @@ export default function ChangePassword() {
   const [showNoAccountAlert, setshowNoAccountAlert] = useState(false);
   const [showInvalidEmail, setShowInvalidEmail] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { theme } = useContext(ThemeContext);
+  const styles = getStyles(theme);
 
   const auth = FIREBASE_AUTH;
   const navigation = useNavigation();
@@ -43,6 +46,7 @@ export default function ChangePassword() {
         color="#ddb31b"
         overlayColor="rgba(0,0,0,0.5)"
       />
+
       <AwesomeAlert
         show={showSuccessAlert}
         showProgress={false}
@@ -51,12 +55,14 @@ export default function ChangePassword() {
         closeOnTouchOutside={true}
         closeOnHardwareBackPress={false}
         showConfirmButton={true}
-        confirmText="Ok"
+        confirmText="OK"
         confirmButtonColor="rgba(221, 179, 27,0.7)"
         alertContainerStyle={{ backgroundColor: "rgba(31,31,31,0.5)" }}
-        contentContainerStyle={{ backgroundColor: "#1f1f1f" }}
+        contentContainerStyle={{
+          backgroundColor: theme === "dark" ? "#1f1f1f" : "#eaebed",
+        }}
         titleStyle={{ color: "#ddb31b" }}
-        messageStyle={{ color: "#eaebed" }}
+        messageStyle={{ color: theme === "dark" ? "#eaebed" : "#1f1f1f" }}
         onConfirmPressed={() => {
           setShowSuccessAlert(false);
         }}
@@ -69,12 +75,14 @@ export default function ChangePassword() {
         closeOnTouchOutside={true}
         closeOnHardwareBackPress={false}
         showConfirmButton={true}
-        confirmText="Ok"
+        confirmText="OK"
         confirmButtonColor="rgba(221, 179, 27,0.7)"
         alertContainerStyle={{ backgroundColor: "rgba(31,31,31,0.5)" }}
-        contentContainerStyle={{ backgroundColor: "#1f1f1f" }}
+        contentContainerStyle={{
+          backgroundColor: theme === "dark" ? "#1f1f1f" : "#eaebed",
+        }}
         titleStyle={{ color: "#ddb31b" }}
-        messageStyle={{ color: "#eaebed" }}
+        messageStyle={{ color: theme === "dark" ? "#eaebed" : "#1f1f1f" }}
         onConfirmPressed={() => {
           setshowNoAccountAlert(false);
         }}
@@ -86,11 +94,13 @@ export default function ChangePassword() {
         closeOnTouchOutside={true}
         closeOnHardwareBackPress={false}
         showConfirmButton={true}
-        confirmText="Ok"
+        confirmText="OK"
         confirmButtonColor="rgba(221, 179, 27,0.7)"
         alertContainerStyle={{ backgroundColor: "rgba(31,31,31,0.5)" }}
-        contentContainerStyle={{ backgroundColor: "#1f1f1f" }}
-        titleStyle={{ color: "#eaebed" }}
+        contentContainerStyle={{
+          backgroundColor: theme === "dark" ? "#1f1f1f" : "#eaebed",
+        }}
+        titleStyle={{ color: theme === "dark" ? "#eaebed" : "#1f1f1f" }}
         onConfirmPressed={() => {
           setShowInvalidEmail(false);
         }}
@@ -103,7 +113,7 @@ export default function ChangePassword() {
           value={email}
           style={styles.input}
           placeholder="Email"
-          placeholderTextColor={"#a6a6a6"}
+          placeholderTextColor={theme === "dark" ? "#a6a6a6" : "#1f1f1f"}
           autoCapitalize="none"
           onChangeText={(text) => setEmail(text)}
         ></TextInput>
@@ -127,40 +137,41 @@ export default function ChangePassword() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "#1f1f1f",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 50,
-    flex: 1,
-  },
-  inputContainer: {
-    alignItems: "center",
-    marginBottom: 20,
-    gap: 20,
-  },
-  input: {
-    marginVertical: 4,
-    height: 40,
-    width: 200,
-    borderWidth: 1,
-    borderRadius: 15,
-    padding: 10,
-    borderColor: "#a6a6a6",
-    color: "#a6a6a6",
-  },
-  text: {
-    color: "#eaebed",
-    textAlign: "center",
-    marginVertical: 5,
-  },
-  firstText: {
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  loginContainer: {
-    position: "absolute",
-    bottom: 50,
-  },
-});
+const getStyles = (theme) =>
+  StyleSheet.create({
+    container: {
+      backgroundColor: theme === "dark" ? "#1f1f1f" : "#eaebed",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: 50,
+      flex: 1,
+    },
+    inputContainer: {
+      alignItems: "center",
+      marginBottom: 20,
+      gap: 20,
+    },
+    input: {
+      marginVertical: 4,
+      height: 40,
+      width: 200,
+      borderWidth: 1,
+      borderRadius: 15,
+      padding: 10,
+      borderColor: theme === "dark" ? "#a6a6a6" : "#1f1f1f",
+      color: theme === "dark" ? "#a6a6a6" : "#1f1f1f",
+    },
+    text: {
+      color: theme === "dark" ? "#eaebed" : "#1f1f1f",
+      textAlign: "center",
+      marginVertical: 5,
+    },
+    firstText: {
+      fontSize: 18,
+      fontWeight: "bold",
+    },
+    loginContainer: {
+      position: "absolute",
+      bottom: 50,
+    },
+  });

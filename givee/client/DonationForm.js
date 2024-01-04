@@ -1,14 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { View, TextInput, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import AwesomeAlert from "react-native-awesome-alerts";
 
 import CustomButton from "./CustomButton";
+import { ThemeContext } from "./ThemeContext";
 
 export default function DonationForm(props) {
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
   const [showAlert, setShowAlert] = useState(false);
+  const { theme } = useContext(ThemeContext);
+  const styles = getStyles(theme);
   const type = props.product;
   const navigation = useNavigation();
 
@@ -22,12 +25,14 @@ export default function DonationForm(props) {
         closeOnTouchOutside={true}
         closeOnHardwareBackPress={false}
         showConfirmButton={true}
-        confirmText="Ok"
+        confirmText="OK"
         confirmButtonColor="rgba(221, 179, 27,0.7)"
         alertContainerStyle={{ backgroundColor: "rgba(31,31,31,0.5)" }}
-        contentContainerStyle={{ backgroundColor: "#1f1f1f" }}
+        contentContainerStyle={{
+          backgroundColor: theme === "dark" ? "#1f1f1f" : "#eaebed",
+        }}
         titleStyle={{ color: "#ddb31b" }}
-        messageStyle={{ color: "#eaebed" }}
+        messageStyle={{ color: theme === "dark" ? "#eaebed" : "#1f1f1f" }}
         onConfirmPressed={() => {
           setShowAlert(false);
         }}
@@ -36,7 +41,7 @@ export default function DonationForm(props) {
         value={amount}
         style={styles.input}
         placeholder={`Amount of ${props.product}`}
-        placeholderTextColor={"#a6a6a6"}
+        placeholderTextColor={theme === "dark" ? "#a6a6a6" : "#1f1f1f"}
         autoCapitalize="none"
         onChangeText={(text) => setAmount(text)}
       ></TextInput>
@@ -44,7 +49,7 @@ export default function DonationForm(props) {
         value={description}
         style={[styles.input, styles.secondInput]}
         placeholder={`${props.product} Description`}
-        placeholderTextColor={"#a6a6a6"}
+        placeholderTextColor={theme === "dark" ? "#a6a6a6" : "#1f1f1f"}
         autoCapitalize="none"
         multiline
         onChangeText={(text) => setDescription(text)}
@@ -66,21 +71,22 @@ export default function DonationForm(props) {
   );
 }
 
-const styles = StyleSheet.create({
-  input: {
-    marginVertical: 15,
-    height: 50,
-    borderWidth: 1,
-    borderRadius: 15,
-    padding: 10,
-    width: 350,
-    borderColor: "#a6a6a6",
-    color: "#a6a6a6",
-    fontSize: 20,
-  },
-  secondInput: {
-    height: 150,
-    paddingTop: 15,
-    marginBottom: 20,
-  },
-});
+const getStyles = (theme) =>
+  StyleSheet.create({
+    input: {
+      marginVertical: 15,
+      height: 50,
+      borderWidth: 1,
+      borderRadius: 15,
+      padding: 10,
+      width: 350,
+      borderColor: theme === "dark" ? "#a6a6a6" : "#1f1f1f",
+      color: theme === "dark" ? "#a6a6a6" : "#1f1f1f",
+      fontSize: 20,
+    },
+    secondInput: {
+      height: 150,
+      paddingTop: 15,
+      marginBottom: 20,
+    },
+  });
