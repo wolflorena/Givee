@@ -12,6 +12,7 @@ import { faHeart } from "@fortawesome/free-solid-svg-icons/faHeart";
 
 import { useNavigation } from "@react-navigation/native";
 import { StatusBar } from "react-native";
+import { faLink } from "@fortawesome/free-solid-svg-icons";
 
 export default function CampaignData({ route }) {
   const db = FIREBASE_DB;
@@ -78,6 +79,14 @@ export default function CampaignData({ route }) {
             size={20}
           />
           <Text style={styles.campaignText}>{campaignData.expireDate}</Text>
+        </View>
+        <View style={styles.campaignData}>
+          <FontAwesomeIcon
+            style={styles.campaignIcon}
+            icon={faLink}
+            size={20}
+          />
+          <Text style={styles.campaignText}>{campaignData.link}</Text>
         </View>
       </View>
     </View>

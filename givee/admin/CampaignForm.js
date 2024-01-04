@@ -19,6 +19,7 @@ import { faCircleChevronLeft } from "@fortawesome/free-solid-svg-icons/faCircleC
 import AwesomeAlert from "react-native-awesome-alerts";
 
 import { useNavigation } from "@react-navigation/native";
+import { faLink } from "@fortawesome/free-solid-svg-icons";
 
 export default function CampaignForm() {
   const db = FIREBASE_DB;
@@ -30,6 +31,7 @@ export default function CampaignForm() {
     name: "",
     description: "",
     expireDate: null,
+    link: "",
   });
 
   const addCampaignHandler = async () => {
@@ -134,6 +136,25 @@ export default function CampaignForm() {
               autoCapitalize="none"
               onChangeText={(expireDate) =>
                 setCampaignData({ ...campaignData, expireDate: expireDate })
+              }
+            ></TextInput>
+          </View>
+
+          <View style={styles.inputContainer}>
+            <FontAwesomeIcon
+              style={styles.campaignIcon}
+              icon={faLink}
+              size={20}
+            />
+
+            <TextInput
+              value={campaignData.link}
+              style={styles.input}
+              placeholder={"Link"}
+              placeholderTextColor={"#a6a6a6"}
+              autoCapitalize="none"
+              onChangeText={(link) =>
+                setCampaignData({ ...campaignData, link: link })
               }
             ></TextInput>
           </View>

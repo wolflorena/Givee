@@ -1,15 +1,28 @@
-import React, { useContext } from "react";
-import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
+import React, { useContext, useEffect, useState } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Image,
+  ImageBackground,
+  Linking,
+} from "react-native";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useLoginContext, useLoginUpdateContext } from "../LoginContext";
 import { ThemeContext } from "../ThemeContext";
 import Navbar from "../Navbar";
+import { FIREBASE_DB } from "../../firebaseConfig";
+import { collection, query, getDocs, orderBy, limit } from "firebase/firestore";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { faClock } from "@fortawesome/free-solid-svg-icons/";
 
 export default function Home() {
   const { currentUser } = useLoginContext();
   const { navBarButtonsPressHandler } = useLoginUpdateContext();
   const { theme } = useContext(ThemeContext);
   const styles = getStyles(theme);
+  const [campaign, setCampaign] = useState(null);
   const navigation = useNavigation();
 
   useFocusEffect(
@@ -17,6 +30,58 @@ export default function Home() {
       navBarButtonsPressHandler("homeIsPressed");
     }, [])
   );
+
+  useEffect(() => {
+    const getCampaignData = async () => {
+      try {
+        const db = FIREBASE_DB;
+        // Asumând că `expireDate` este un câmp în documentele tale
+        const q = query(
+          collection(db, "campaigns"),
+          orderBy("expireDate"),
+          limit(1)
+        );
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+          const campaignData = querySnapshot.docs[0].data();
+          setCampaign(campaignData);
+        } else {
+          // Gestionează cazul în care nu există campanii
+          console.log("No campaigns found");
+        }
+      } catch (error) {
+        console.error("Error fetching campaign data: ", error);
+      }
+    };
+
+    getCampaignData();
+  }, []);
+
+  const convertToDate = (dateString) => {
+    const [day, month, year] = dateString.split(".");
+    return new Date(`${year}-${month}-${day}`);
+  };
+
+  const calculateDaysLeft = (expireDateString) => {
+    const expireDate = convertToDate(expireDateString);
+    const currentDate = new Date();
+    const differenceInTime = expireDate - currentDate;
+    const differenceInDays = Math.ceil(differenceInTime / (1000 * 3600 * 24));
+    return differenceInDays;
+  };
+
+  const openLink = () => {
+    const url = campaign.link;
+
+    Linking.canOpenURL(url).then((supported) => {
+      if (supported) {
+        Linking.openURL(url);
+      } else {
+        console.log("Don't know how to open URI: " + url);
+      }
+    });
+  };
 
   const renderContainer = (
     buttonType,
@@ -104,6 +169,31 @@ export default function Home() {
           )}
         </View>
       </View>
+      <TouchableOpacity onPress={openLink}>
+        <ImageBackground
+          source={require("../../assets/campaignBackground.png")}
+          resizeMode="stretch"
+          style={styles.campaignCard}
+        >
+          {campaign && (
+            <>
+              <Text style={styles.campaignTitle}>{campaign.name}</Text>
+              <Text style={styles.campaignText}>{campaign.description}</Text>
+              <View style={styles.campaignFooter}>
+                <Text style={styles.campaignText}>
+                  Click for more details...
+                </Text>
+                <View style={styles.campaignDate}>
+                  <FontAwesomeIcon icon={faClock} size={16} color="#eaebed" />
+                  <Text style={styles.campaignText}>
+                    {`${calculateDaysLeft(campaign.expireDate)} days to go`}
+                  </Text>
+                </View>
+              </View>
+            </>
+          )}
+        </ImageBackground>
+      </TouchableOpacity>
 
       <Navbar />
     </View>
@@ -163,5 +253,33 @@ const getStyles = (theme) =>
       width: 75,
       justifyContent: "center",
       alignItems: "center",
+    },
+    campaignCard: {
+      marginTop: 30,
+      height: 100,
+      width: 350,
+      borderRadius: 15,
+      padding: 10,
+      justifyContent: "center",
+      overflow: "hidden",
+      gap: 5,
+    },
+    campaignTitle: {
+      fontWeight: "500",
+      fontSize: 20,
+      color: "#1BDDAF",
+    },
+    campaignText: {
+      color: "#eaebed",
+    },
+    campaignFooter: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+    },
+    campaignDate: {
+      flexDirection: "row",
+      justifyContent: "flex-end",
+      gap: 7,
     },
   });
