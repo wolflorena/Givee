@@ -9,10 +9,10 @@ import { faCircleChevronLeft } from "@fortawesome/free-solid-svg-icons/faCircleC
 import { faAudioDescription } from "@fortawesome/free-solid-svg-icons/faAudioDescription";
 import { faCalendarDays } from "@fortawesome/free-solid-svg-icons/faCalendarDays";
 import { faHeart } from "@fortawesome/free-solid-svg-icons/faHeart";
+import { faLink } from "@fortawesome/free-solid-svg-icons";
 
 import { useNavigation } from "@react-navigation/native";
 import { StatusBar } from "react-native";
-import { faLink } from "@fortawesome/free-solid-svg-icons";
 
 export default function CampaignData({ route }) {
   const db = FIREBASE_DB;

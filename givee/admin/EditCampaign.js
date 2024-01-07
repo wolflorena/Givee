@@ -16,6 +16,7 @@ import { faAudioDescription } from "@fortawesome/free-solid-svg-icons/faAudioDes
 import { faCalendarDays } from "@fortawesome/free-solid-svg-icons/faCalendarDays";
 import { faHeart } from "@fortawesome/free-solid-svg-icons/faHeart";
 import { faCircleChevronLeft } from "@fortawesome/free-solid-svg-icons/faCircleChevronLeft";
+import { faLink } from "@fortawesome/free-solid-svg-icons";
 import AwesomeAlert from "react-native-awesome-alerts";
 
 import { useNavigation } from "@react-navigation/native";
@@ -28,6 +29,7 @@ export default function EditCampaign({ route }) {
     name: "",
     description: "",
     expireDate: null,
+    link: "",
   });
 
   const campaignId = route.params ? route.params.campaignId : null;
@@ -151,6 +153,22 @@ export default function EditCampaign({ route }) {
               onChangeText={(expireDate) =>
                 setCampaignData({ ...campaignData, expireDate: expireDate })
               }
+            ></TextInput>
+          </View>
+          <View style={styles.inputContainer}>
+            <FontAwesomeIcon
+              style={styles.campaignIcon}
+              icon={faLink}
+              size={20}
+            />
+
+            <TextInput
+              value={campaignData.link}
+              style={styles.input}
+              placeholder={"Link"}
+              placeholderTextColor={"#a6a6a6"}
+              autoCapitalize="none"
+              onChangeText={(link) => setCampaignData({ ...link, link: link })}
             ></TextInput>
           </View>
         </View>

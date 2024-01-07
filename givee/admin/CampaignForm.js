@@ -16,10 +16,10 @@ import { faAudioDescription } from "@fortawesome/free-solid-svg-icons/faAudioDes
 import { faCalendarDays } from "@fortawesome/free-solid-svg-icons/faCalendarDays";
 import { faHeart } from "@fortawesome/free-solid-svg-icons/faHeart";
 import { faCircleChevronLeft } from "@fortawesome/free-solid-svg-icons/faCircleChevronLeft";
+import { faLink } from "@fortawesome/free-solid-svg-icons";
 import AwesomeAlert from "react-native-awesome-alerts";
 
 import { useNavigation } from "@react-navigation/native";
-import { faLink } from "@fortawesome/free-solid-svg-icons";
 
 export default function CampaignForm() {
   const db = FIREBASE_DB;
