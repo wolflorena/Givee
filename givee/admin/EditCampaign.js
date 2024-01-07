@@ -20,10 +20,14 @@ import { faLink } from "@fortawesome/free-solid-svg-icons";
 import AwesomeAlert from "react-native-awesome-alerts";
 
 import { useNavigation } from "@react-navigation/native";
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 export default function EditCampaign({ route }) {
   const db = FIREBASE_DB;
   const navigation = useNavigation();
+
+  const [showPicker, setShowPicker] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   const [campaignData, setCampaignData] = useState({
     name: "",
@@ -48,7 +52,19 @@ export default function EditCampaign({ route }) {
       const docSnap = await getDoc(docRef);
 
       if (docSnap.exists()) {
+        const campaignDataFromFirebase = docSnap.data();
         setCampaignData(docSnap.data());
+
+        const formattedExpireDate = campaignDataFromFirebase.expireDate
+          ? new Date(
+              campaignDataFromFirebase.expireDate.replace(
+                /(\d{2})\.(\d{2})\.(\d{4})/,
+                "$3-$2-$1"
+              )
+            )
+          : new Date();
+
+        setSelectedDate(formattedExpireDate);
       } else {
         console.log("No such document!");
       }
@@ -61,6 +77,22 @@ export default function EditCampaign({ route }) {
     const campaignRef = doc(db, "campaigns", campaignId);
     await updateDoc(campaignRef, campaignData);
     navigation.navigate("AdminCampaigns");
+  };
+
+  const formatExpireDate = async (date) => {
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const year = date.getFullYear();
+    return `${day}.${month}.${year}`;
+  };
+
+  const dateChangeHandler = async (event, date) => {
+    setShowPicker(false);
+    if (date) {
+      setSelectedDate(date);
+      const formattedExpireDate = await formatExpireDate(date);
+      setCampaignData({ ...campaignData, expireDate: formattedExpireDate });
+    }
   };
 
   return (
@@ -159,24 +191,6 @@ export default function EditCampaign({ route }) {
           <View style={styles.inputContainer}>
             <FontAwesomeIcon
               style={styles.campaignIcon}
-              icon={faCalendarDays}
-              size={20}
-            />
-
-            <TextInput
-              value={campaignData.expireDate}
-              style={styles.input}
-              placeholder={"Expire date: DD.MM.YY"}
-              placeholderTextColor={"#a6a6a6"}
-              autoCapitalize="none"
-              onChangeText={(expireDate) =>
-                setCampaignData({ ...campaignData, expireDate: expireDate })
-              }
-            ></TextInput>
-          </View>
-          <View style={styles.inputContainer}>
-            <FontAwesomeIcon
-              style={styles.campaignIcon}
               icon={faLink}
               size={20}
             />
@@ -189,6 +203,32 @@ export default function EditCampaign({ route }) {
               autoCapitalize="none"
               onChangeText={(link) => setCampaignData({ ...link, link: link })}
             ></TextInput>
+          </View>
+
+          <View style={styles.inputContainer}>
+            <FontAwesomeIcon
+              style={styles.campaignIcon}
+              icon={faCalendarDays}
+              size={20}
+            />
+
+            <TouchableOpacity
+              onPress={() => setShowPicker(true)}
+              style={styles.datePickerContainer}
+            >
+              <Text style={styles.datePickerInput}>
+                {selectedDate.toDateString()}
+              </Text>
+              {showPicker && (
+                <DateTimePicker
+                  value={selectedDate}
+                  mode="date"
+                  display="spinner"
+                  onChange={dateChangeHandler}
+                  minimumDate={new Date()}
+                />
+              )}
+            </TouchableOpacity>
           </View>
         </View>
 
@@ -265,5 +305,12 @@ const styles = StyleSheet.create({
     marginTop: 12,
     marginRight: 10,
     color: "#ddb31b",
+  },
+  datePickerContainer: {
+    justifyContent: "space-between",
+  },
+  datePickerInput: {
+    marginTop: 15,
+    color: "#ffffff",
   },
 });

@@ -20,6 +20,7 @@ import { faLink } from "@fortawesome/free-solid-svg-icons";
 import AwesomeAlert from "react-native-awesome-alerts";
 
 import { useNavigation } from "@react-navigation/native";
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 export default function CampaignForm() {
   const db = FIREBASE_DB;
@@ -27,6 +28,9 @@ export default function CampaignForm() {
 
   const [showAlertAdd, setShowAlertAdd] = useState(false);
   const [showAlertRequired, setShowAlertRequired] = useState(false);
+
+  const [showPicker, setShowPicker] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   const [campaignData, setCampaignData] = useState({
     name: "",
@@ -44,6 +48,22 @@ export default function CampaignForm() {
       console.log("Campaign added successfully!");
     } catch (error) {
       console.error("Error added campaign:", error);
+    }
+  };
+
+  const formatExpireDate = async (date) => {
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const year = date.getFullYear();
+    return `${day}.${month}.${year}`;
+  };
+
+  const dateChangeHandler = async (event, date) => {
+    setShowPicker(false);
+    if (date) {
+      setSelectedDate(date);
+      const formattedExpireDate = await formatExpireDate(date);
+      setCampaignData({ ...campaignData, expireDate: formattedExpireDate });
     }
   };
 
@@ -143,25 +163,6 @@ export default function CampaignForm() {
           <View style={styles.inputContainer}>
             <FontAwesomeIcon
               style={styles.campaignIcon}
-              icon={faCalendarDays}
-              size={20}
-            />
-
-            <TextInput
-              value={campaignData.expireDate}
-              style={styles.input}
-              placeholder={"Expire date: DD.MM.YY"}
-              placeholderTextColor={"#a6a6a6"}
-              autoCapitalize="none"
-              onChangeText={(expireDate) =>
-                setCampaignData({ ...campaignData, expireDate: expireDate })
-              }
-            ></TextInput>
-          </View>
-
-          <View style={styles.inputContainer}>
-            <FontAwesomeIcon
-              style={styles.campaignIcon}
               icon={faLink}
               size={20}
             />
@@ -176,6 +177,32 @@ export default function CampaignForm() {
                 setCampaignData({ ...campaignData, link: link })
               }
             ></TextInput>
+          </View>
+
+          <View style={styles.inputContainer}>
+            <FontAwesomeIcon
+              style={styles.campaignIcon}
+              icon={faCalendarDays}
+              size={20}
+            />
+
+            <TouchableOpacity
+              onPress={() => setShowPicker(true)}
+              style={styles.datePickerContainer}
+            >
+              <Text style={styles.datePickerInput}>
+                {selectedDate.toDateString()}
+              </Text>
+              {showPicker && (
+                <DateTimePicker
+                  value={selectedDate}
+                  mode="date"
+                  display="spinner"
+                  onChange={dateChangeHandler}
+                  minimumDate={new Date()}
+                />
+              )}
+            </TouchableOpacity>
           </View>
         </View>
 
@@ -252,5 +279,12 @@ const styles = StyleSheet.create({
     marginTop: 12,
     marginRight: 10,
     color: "#ddb31b",
+  },
+  datePickerContainer: {
+    justifyContent: "space-between",
+  },
+  datePickerInput: {
+    marginTop: 15,
+    color: "#ffffff",
   },
 });
