@@ -26,6 +26,7 @@ export default function CampaignForm() {
   const navigation = useNavigation();
 
   const [showAlertAdd, setShowAlertAdd] = useState(false);
+  const [showAlertRequired, setShowAlertRequired] = useState(false);
 
   const [campaignData, setCampaignData] = useState({
     name: "",
@@ -71,6 +72,24 @@ export default function CampaignForm() {
         }}
         onCancelPressed={() => {
           setShowAlertAdd(false);
+        }}
+      />
+      <AwesomeAlert
+        show={showAlertRequired}
+        showProgress={false}
+        title="All fields are required"
+        message="Please fill in all the fields."
+        closeOnTouchOutside={true}
+        closeOnHardwareBackPress={false}
+        showConfirmButton={true}
+        confirmText="Ok"
+        confirmButtonColor="rgba(221, 179, 27,0.7)"
+        alertContainerStyle={{ backgroundColor: "rgba(31,31,31,0.5)" }}
+        contentContainerStyle={{ backgroundColor: "#1f1f1f" }}
+        titleStyle={{ color: "#ddb31b" }}
+        messageStyle={{ color: "#eaebed" }}
+        onConfirmPressed={() => {
+          setShowAlertRequired(false);
         }}
       />
       <TouchableOpacity
@@ -164,7 +183,16 @@ export default function CampaignForm() {
           <TouchableOpacity
             style={styles.addCampaignButton}
             onPress={() => {
-              setShowAlertAdd(true);
+              if (
+                !campaignData.name ||
+                !campaignData.description ||
+                campaignData.expireDate === null ||
+                !campaignData.link
+              ) {
+                setShowAlertRequired(true);
+              } else {
+                setShowAlertAdd(true);
+              }
             }}
           >
             <Text style={{ fontWeight: "bold" }}>Add Campaign</Text>

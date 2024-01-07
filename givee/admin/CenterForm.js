@@ -27,6 +27,7 @@ export default function CenterForm() {
   const navigation = useNavigation();
 
   const [showAlertAdd, setShowAlertAdd] = useState(false);
+  const [showAlertRequired, setShowAlertRequired] = useState(false);
 
   const [pin, setPin] = useState({
     latitude: 45.7538355,
@@ -111,6 +112,24 @@ export default function CenterForm() {
         }}
         onCancelPressed={() => {
           setShowAlertAdd(false);
+        }}
+      />
+      <AwesomeAlert
+        show={showAlertRequired}
+        showProgress={false}
+        title="All fields are required"
+        message="Please fill in all the fields."
+        closeOnTouchOutside={true}
+        closeOnHardwareBackPress={false}
+        showConfirmButton={true}
+        confirmText="Ok"
+        confirmButtonColor="rgba(221, 179, 27,0.7)"
+        alertContainerStyle={{ backgroundColor: "rgba(31,31,31,0.5)" }}
+        contentContainerStyle={{ backgroundColor: "#1f1f1f" }}
+        titleStyle={{ color: "#ddb31b" }}
+        messageStyle={{ color: "#eaebed" }}
+        onConfirmPressed={() => {
+          setShowAlertRequired(false);
         }}
       />
       <TouchableOpacity
@@ -270,7 +289,17 @@ export default function CenterForm() {
           <TouchableOpacity
             style={styles.addCenterButton}
             onPress={() => {
-              setShowAlertAdd(true);
+              if (
+                !centerData.address ||
+                !centerData.phone ||
+                centerData.latitude === null ||
+                centerData.longitude === null ||
+                centerData.type.length === 0
+              ) {
+                setShowAlertRequired(true);
+              } else {
+                setShowAlertAdd(true);
+              }
             }}
           >
             <Text style={{ fontWeight: "bold" }}>Add Center</Text>
