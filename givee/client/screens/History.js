@@ -3,42 +3,59 @@ import {
   View,
   StyleSheet,
   FlatList,
-  TouchableOpacity,
   Text,
   Image,
   StatusBar,
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
-import { collection, query, getDocs } from "firebase/firestore";
+import DropDownPicker from "react-native-dropdown-picker";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import {
+  faShirt,
+  faUtensils,
+  faFootball,
+  faClock,
+  faCheck,
+  faXmark,
+  faSpinner,
+} from "@fortawesome/free-solid-svg-icons";
+import { collection, query, getDocs, getDoc, doc } from "firebase/firestore";
 import Spinner from "react-native-loading-spinner-overlay";
 
+import { FIREBASE_DB } from "../../firebaseConfig";
 import NavBar from "../Navbar";
 import GoBackButton from "../GoBackButton";
-import Title from "../Title";
 import { useLoginContext, useLoginUpdateContext } from "../LoginContext";
 import { ThemeContext } from "../ThemeContext";
-import { FIREBASE_DB } from "../../firebaseConfig";
 
 export default function Centers() {
   const [donationsData, setDonationsData] = useState([]);
+  const [centerData, setCenterData] = useState([]);
+
   const [loading, setLoading] = useState(false);
+
+  const [selectedStatus, setSelectedStatus] = useState("all");
+  const [dropdownIsOpen, setDropdownIsOpen] = useState(false);
+
   const { currentUser } = useLoginContext();
   const { navBarButtonsPressHandler } = useLoginUpdateContext();
   const { theme } = useContext(ThemeContext);
+
   const styles = getStyles(theme);
 
   useEffect(() => {
     StatusBar.setBarStyle("light-content");
-    getDonations();
-  }, []);
+    getDonations(selectedStatus);
+  }, [selectedStatus]);
 
   useFocusEffect(
     React.useCallback(() => {
       navBarButtonsPressHandler("myProfileIsPressed");
-    }, [])
+      getDonations(selectedStatus);
+    }, [selectedStatus])
   );
 
-  const getDonations = useCallback(async () => {
+  const getDonations = useCallback(async (status) => {
     setLoading(true);
     try {
       const db = FIREBASE_DB;
@@ -50,18 +67,128 @@ export default function Centers() {
       querySnapshot.forEach((doc) => {
         const { timestamp, ...donation } = doc.data();
         if (doc.data().userEmail === currentUser.email) {
-          const formattedTimestamp = timestamp.toDate().toString();
-          data.push({ id: doc.id, ...donation, timestamp: formattedTimestamp });
+          const date = timestamp.toDate();
+          const formattedTimestamp = `${date
+            .getDate()
+            .toString()
+            .padStart(2, "0")}.${(date.getMonth() + 1)
+            .toString()
+            .padStart(2, "0")}.${date.getFullYear()} - ${date
+            .getHours()
+            .toString()
+            .padStart(2, "0")}:${date
+            .getMinutes()
+            .toString()
+            .padStart(2, "0")}`;
+
+          getCenter(doc.data().centerId);
+
+          data.push({
+            id: doc.id,
+            ...donation,
+            timestamp: formattedTimestamp,
+            centerAddress: centerData.address,
+          });
         }
       });
 
-      setDonationsData(data);
+      let filteredData;
+
+      if (status === "all") {
+        filteredData = data;
+      } else {
+        filteredData = data.filter((donation) => donation.status === status);
+      }
+
+      const sortedData = filteredData.sort((a, b) => {
+        if (a.status === "pending" && b.status !== "pending") {
+          return -1;
+        } else if (a.status !== "pending" && b.status === "pending") {
+          return 1;
+        } else {
+          return 0;
+        }
+      });
+
+      setDonationsData(sortedData);
       setLoading(false);
     } catch (error) {
       setLoading(false);
       console.error("Error fetching data:", error);
     }
   });
+
+  const getCenter = useCallback(async (centerId) => {
+    try {
+      const db = FIREBASE_DB;
+      const docRef = doc(db, "centers", centerId);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        setCenterData(docSnap.data());
+      } else {
+        console.log("No such document!");
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  });
+
+  const donationIcon = (type) => (
+    <View>
+      {type === "toys" && (
+        <FontAwesomeIcon
+          style={styles.donationIcon}
+          icon={faFootball}
+          size={25}
+        />
+      )}
+
+      {type === "clothes" && (
+        <FontAwesomeIcon style={styles.donationIcon} icon={faShirt} size={25} />
+      )}
+
+      {type === "food" && (
+        <FontAwesomeIcon
+          style={styles.donationIcon}
+          icon={faUtensils}
+          size={25}
+        />
+      )}
+    </View>
+  );
+
+  const statusIcon = (status) => (
+    <View>
+      {status === "completed" && (
+        <FontAwesomeIcon style={styles.statusIcon} icon={faCheck} size={25} />
+      )}
+
+      {status === "pending" && (
+        <FontAwesomeIcon style={styles.statusIcon} icon={faSpinner} size={25} />
+      )}
+
+      {status === "canceled" && (
+        <FontAwesomeIcon style={styles.statusIcon} icon={faXmark} size={25} />
+      )}
+    </View>
+  );
+
+  const renderEmptyMessage = () => {
+    switch (selectedStatus) {
+      case "all":
+        return "You don't have donations yet. 😔";
+      case "pending":
+        return "You don't have pending donations. 😊";
+      case "completed":
+        return "You don't have completed donations. 😔";
+      case "canceled":
+        return "You don't have canceled donations. 😊";
+      default:
+        return "";
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Spinner
@@ -70,15 +197,38 @@ export default function Centers() {
         overlayColor="rgba(0,0,0,0.5)"
       />
       <GoBackButton />
-      <Title text="My Donations" />
-      <View style={styles.donationsContainer}>
+      <View style={styles.header}>
+        <Text style={styles.title}>My donations</Text>
+        <View>
+          <DropDownPicker
+            items={[
+              { label: "All", value: "all" },
+              { label: "Pending", value: "pending" },
+              { label: "Completed", value: "completed" },
+              { label: "Canceled", value: "canceled" },
+            ]}
+            open={dropdownIsOpen}
+            setOpen={() => setDropdownIsOpen(!dropdownIsOpen)}
+            value={selectedStatus}
+            setValue={(val) => setSelectedStatus(val)}
+            style={styles.dropdown}
+            textStyle={{ color: "black", fontSize: 15, fontWeight: "500" }}
+            dropDownContainerStyle={{
+              backgroundColor: theme === "dark" ? "#eaebed" : "#a6a6a6",
+              width: 130,
+              zIndex: 100,
+            }}
+          />
+        </View>
+      </View>
+      <View>
         {donationsData.length === 0 ? (
           <View style={styles.emptyContainer}>
             <Image
               source={require("../../assets/noDonations.png")}
               style={styles.emptyImage}
             />
-            <Text style={styles.emptyText}>No donations made yet. 🙁</Text>
+            <Text style={styles.emptyText}>{renderEmptyMessage()}</Text>
           </View>
         ) : (
           <View style={styles.donations}>
@@ -86,22 +236,30 @@ export default function Centers() {
               data={donationsData}
               keyExtractor={(donation) => donation.id}
               renderItem={({ item }) => (
-                <TouchableOpacity style={styles.donationCard}>
+                <View style={styles.donationCard}>
+                  {donationIcon(item.type)}
                   <View style={styles.donationData}>
+                    <View style={styles.donationField}>
+                      <FontAwesomeIcon icon={faClock} size={16} />
+                      <Text style={styles.donationField}>{item.timestamp}</Text>
+                    </View>
                     <Text style={styles.donationField}>
-                      <Text style={{ fontWeight: "bold" }}>Donation: </Text>
-                      {item.type}
+                      <Text style={{ fontWeight: "bold" }}>Address: </Text>
+                      {item.centerAddress}
                     </Text>
                     <Text style={styles.donationField}>
-                      <Text style={{ fontWeight: "bold" }}>Time: </Text>
-                      {item.timestamp}
-                    </Text>
-                    <Text style={styles.donationField}>
-                      <Text style={{ fontWeight: "bold" }}>Status: </Text>
-                      {item.status}
+                      <Text style={{ fontWeight: "bold" }}>Details: </Text>
+                      {item.description}
                     </Text>
                   </View>
-                </TouchableOpacity>
+                  <View style={styles.statusContainer}>
+                    {statusIcon(item.status)}
+                    <Text style={{ fontSize: 12 }}>
+                      {item.status.charAt(0).toUpperCase() +
+                        item.status.slice(1)}
+                    </Text>
+                  </View>
+                </View>
               )}
             ></FlatList>
           </View>
@@ -118,6 +276,23 @@ const getStyles = (theme) =>
       backgroundColor: theme === "dark" ? "#1f1f1f" : "#eaebed",
       alignItems: "center",
       flex: 1,
+    },
+    title: {
+      color: theme === "dark" ? "#eaebed" : "#1f1f1f",
+      fontSize: 30,
+    },
+    dropdown: {
+      backgroundColor: theme === "dark" ? "#eaebed" : "#a6a6a6",
+      width: 130,
+      zIndex: 100,
+    },
+    header: {
+      paddingTop: 10,
+      width: 350,
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      zIndex: 1,
     },
     donationsContent: {
       justifyContent: "space-between",
@@ -143,11 +318,15 @@ const getStyles = (theme) =>
 
     donationField: {
       fontSize: 15,
+      alignItems: "center",
+      flexDirection: "row",
+      gap: 5,
     },
     donationData: {
       height: 100,
-      width: 250,
+      width: 220,
       justifyContent: "space-evenly",
+      alignItems: "flex-start",
     },
     emptyContainer: {
       width: 350,
@@ -163,5 +342,18 @@ const getStyles = (theme) =>
     emptyText: {
       color: "#DDB31B",
       fontSize: 25,
+      textAlign: "center",
+    },
+    statusContainer: {
+      width: 80,
+      alignItems: "center",
+      gap: 5,
+    },
+    donationIcon: {
+      color: "#1f1f1f",
+      marginHorizontal: 12,
+    },
+    timeIcon: {
+      width: 1,
     },
   });

@@ -8,7 +8,12 @@ import {
   Image,
   StatusBar,
 } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import MapView, { Marker, Callout } from "react-native-maps";
+import * as ExpoLocation from "expo-location";
 import Svg, { Ellipse } from "react-native-svg";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { faLocationDot, faPhone } from "@fortawesome/free-solid-svg-icons";
 import {
   collection,
   query,
@@ -17,9 +22,6 @@ import {
   doc,
   setDoc,
 } from "firebase/firestore";
-import { useNavigation } from "@react-navigation/native";
-import MapView, { Marker, Callout } from "react-native-maps";
-import * as ExpoLocation from "expo-location";
 import Spinner from "react-native-loading-spinner-overlay";
 
 import { FIREBASE_DB } from "../../firebaseConfig";
@@ -198,13 +200,24 @@ export default function Location({ route }) {
                       <View style={styles.centerData}>
                         <View style={styles.firstSectionData}>
                           <Text style={styles.centerField}>
+                            <FontAwesomeIcon
+                              style={styles.donationIcon}
+                              icon={faLocationDot}
+                              size={15}
+                            />
                             <Text style={{ fontWeight: "bold" }}>
                               Address {"\n"}
                             </Text>
                             {item.address}
                           </Text>
                           <Text style={styles.centerField}>
+                            <FontAwesomeIcon
+                              style={styles.donationIcon}
+                              icon={faPhone}
+                              size={15}
+                            />
                             <Text style={{ fontWeight: "bold" }}>
+                              {" "}
                               Phone {"\n"}
                             </Text>
                             {item.phone}

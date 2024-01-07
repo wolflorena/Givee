@@ -35,7 +35,6 @@ export default function Home() {
     const getCampaignData = async () => {
       try {
         const db = FIREBASE_DB;
-        // Asumând că `expireDate` este un câmp în documentele tale
         const q = query(
           collection(db, "campaigns"),
           orderBy("expireDate"),
@@ -47,7 +46,6 @@ export default function Home() {
           const campaignData = querySnapshot.docs[0].data();
           setCampaign(campaignData);
         } else {
-          // Gestionează cazul în care nu există campanii
           console.log("No campaigns found");
         }
       } catch (error) {
