@@ -15,7 +15,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faCircleChevronLeft } from "@fortawesome/free-solid-svg-icons/faCircleChevronLeft";
 
 import { useNavigation } from "@react-navigation/native";
-import { GiftedChat } from "react-native-gifted-chat";
+import {
+  GiftedChat,
+  InputToolbar,
+  Bubble,
+  Time,
+} from "react-native-gifted-chat";
 
 export default function AdminChat({ route }) {
   const db = FIREBASE_DB;
@@ -86,6 +91,64 @@ export default function AdminChat({ route }) {
     [db, recipientEmail]
   );
 
+  const renderInputToolbar = (props) => {
+    return (
+      <InputToolbar
+        {...props}
+        containerStyle={{
+          backgroundColor: "#1f1f1f",
+          borderTopColor: "#e2e2e2",
+          borderTopWidth: 1,
+          padding: 8,
+        }}
+      />
+    );
+  };
+
+  const renderChatFooter = () => {
+    return <View style={{ height: 20 }} />;
+  };
+
+  const renderBubble = (props) => {
+    return (
+      <Bubble
+        {...props}
+        wrapperStyle={{
+          right: {
+            backgroundColor: "#ddb31b",
+          },
+          left: {
+            backgroundColor: "#a6a6a6",
+          },
+        }}
+        textStyle={{
+          right: {
+            color: "#1f1f1f",
+          },
+          left: {
+            color: "#1f1f1f",
+          },
+        }}
+      />
+    );
+  };
+
+  const renderTime = (props) => {
+    return (
+      <Time
+        {...props}
+        timeTextStyle={{
+          right: {
+            color: "#1f1f1f",
+          },
+          left: {
+            color: "#1f1f1f",
+          },
+        }}
+      />
+    );
+  };
+
   return (
     <View style={styles.container}>
       <TouchableOpacity
@@ -106,6 +169,10 @@ export default function AdminChat({ route }) {
           _id: "andreeacgabor@gmail.com",
           name: "Andreea Gabor",
         }}
+        renderInputToolbar={renderInputToolbar}
+        renderChatFooter={renderChatFooter}
+        renderBubble={renderBubble}
+        renderTime={renderTime}
       />
     </View>
   );
@@ -113,7 +180,8 @@ export default function AdminChat({ route }) {
 
 const styles = StyleSheet.create({
   container: {
-    paddingBottom: 55,
+    paddingLeft: 10,
+    paddingRight: 10,
     backgroundColor: "#1f1f1f",
     justifyContent: "space-between",
     flex: 1,
