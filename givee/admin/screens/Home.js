@@ -323,12 +323,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   homeContent: {
+    justifyContent: "space-between",
     height: 680,
     width: 380,
     padding: 15,
   },
   welcomeMessage: {
-    marginTop: 20,
     fontSize: 20,
     color: "#a6a6a6",
   },
@@ -345,7 +345,7 @@ const styles = StyleSheet.create({
   },
   donations: {
     marginVertical: 10,
-    height: 620,
+    height: 590,
     width: 350,
   },
   donationCard: {
@@ -413,7 +413,6 @@ const styles = StyleSheet.create({
   logoutButton: {
     backgroundColor: "#ddb31b",
     width: 90,
-    marginTop: 20,
     height: 35,
     borderRadius: 10,
     alignItems: "center",
@@ -422,5 +421,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "center",
+    height: 60,
   },
 });
