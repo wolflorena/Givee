@@ -1,4 +1,10 @@
-import React, { useState, useCallback, useEffect, useContext } from "react";
+import React, {
+  useState,
+  useCallback,
+  useEffect,
+  useContext,
+  useFocusEffect,
+} from "react";
 import {
   View,
   Text,
@@ -48,6 +54,11 @@ export default function Location({ route }) {
 
   useEffect(() => {
     StatusBar.setBarStyle("light-content");
+    getCurrentLocationAsync();
+    getCenters();
+  }, []);
+
+  useFocusEffect(() => {
     getCurrentLocationAsync();
     getCenters();
   }, []);

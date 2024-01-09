@@ -133,6 +133,9 @@ export default function Chat() {
           borderTopWidth: 1,
           padding: 8,
         }}
+        textInputStyle={{
+          color: theme === "dark" ? "#eaebed" : "#1f1f1f",
+        }}
       />
     );
   };

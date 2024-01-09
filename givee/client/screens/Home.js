@@ -37,7 +37,7 @@ export default function Home() {
         const db = FIREBASE_DB;
         const q = query(
           collection(db, "campaigns"),
-          orderBy("expireDate"),
+          orderBy("expireDate", "desc"),
           limit(1)
         );
         const querySnapshot = await getDocs(q);

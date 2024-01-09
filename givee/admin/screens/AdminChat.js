@@ -101,6 +101,9 @@ export default function AdminChat({ route }) {
           borderTopWidth: 1,
           padding: 8,
         }}
+        textInputStyle={{
+          color: "#eaebed",
+        }}
       />
     );
   };
