@@ -195,8 +195,8 @@ const styles = StyleSheet.create({
   },
   mapContainer: {
     width: 350,
-    height: 350,
-    marginTop: 20,
+    height: 300,
+    marginTop: 30,
   },
   centerTextLabel: {
     color: "#ffffff",
@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
   },
   centerDetailsImageContainer: {
     width: 500,
-    height: 160,
+    height: 190,
     justifyContent: "center",
     alignItems: "center",
   },

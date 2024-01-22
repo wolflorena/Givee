@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { View, StyleSheet, Text, TouchableOpacity, Image } from "react-native";
 
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { FIREBASE_DB } from "../firebaseConfig";
@@ -7,7 +7,8 @@ import { FIREBASE_DB } from "../firebaseConfig";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faCircleChevronLeft } from "@fortawesome/free-solid-svg-icons/faCircleChevronLeft";
 import { faAudioDescription } from "@fortawesome/free-solid-svg-icons/faAudioDescription";
-import { faCalendarDays } from "@fortawesome/free-solid-svg-icons/faCalendarDays";
+import { faHourglassStart } from "@fortawesome/free-solid-svg-icons/faHourglassStart";
+import { faHourglassEnd } from "@fortawesome/free-solid-svg-icons/faHourglassEnd";
 import { faHeart } from "@fortawesome/free-solid-svg-icons/faHeart";
 import { faLink } from "@fortawesome/free-solid-svg-icons";
 
@@ -55,6 +56,13 @@ export default function CampaignData({ route }) {
         />
       </TouchableOpacity>
 
+      <View style={styles.campaignDetailsImageContainer}>
+        <Image
+          source={require("../assets/campaignDetails.png")}
+          style={styles.campaignDetailsImage}
+        />
+      </View>
+
       <View style={styles.campaignContent}>
         <View style={styles.campaignData}>
           <FontAwesomeIcon
@@ -62,7 +70,10 @@ export default function CampaignData({ route }) {
             icon={faHeart}
             size={20}
           />
-          <Text style={styles.campaignText}>{campaignData.name}</Text>
+          <View style={styles.campaignInfo}>
+            <Text style={styles.campaignTextLabel}>Name</Text>
+            <Text style={styles.campaignText}>{campaignData.name}</Text>
+          </View>
         </View>
         <View style={styles.campaignData}>
           <FontAwesomeIcon
@@ -70,23 +81,46 @@ export default function CampaignData({ route }) {
             icon={faAudioDescription}
             size={20}
           />
-          <Text style={styles.campaignText}>{campaignData.description}</Text>
+          <View style={styles.campaignInfo}>
+            <Text style={styles.campaignTextLabel}>Description</Text>
+            <Text style={styles.campaignText}>{campaignData.description}</Text>
+          </View>
         </View>
+
         <View style={styles.campaignData}>
           <FontAwesomeIcon
             style={styles.campaignIcon}
-            icon={faCalendarDays}
+            icon={faHourglassStart}
             size={20}
           />
-          <Text style={styles.campaignText}>{campaignData.expireDate}</Text>
+          <View style={styles.campaignInfo}>
+            <Text style={styles.campaignTextLabel}>Start Date</Text>
+            <Text style={styles.campaignText}>{campaignData.startDate}</Text>
+          </View>
         </View>
+
+        <View style={styles.campaignData}>
+          <FontAwesomeIcon
+            style={styles.campaignIcon}
+            icon={faHourglassEnd}
+            size={20}
+          />
+          <View style={styles.campaignInfo}>
+            <Text style={styles.campaignTextLabel}>End Date</Text>
+            <Text style={styles.campaignText}>{campaignData.expireDate}</Text>
+          </View>
+        </View>
+
         <View style={styles.campaignData}>
           <FontAwesomeIcon
             style={styles.campaignIcon}
             icon={faLink}
             size={20}
           />
-          <Text style={styles.campaignText}>{campaignData.link}</Text>
+          <View style={styles.campaignInfo}>
+            <Text style={styles.campaignTextLabel}>Link</Text>
+            <Text style={styles.campaignText}>{campaignData.link}</Text>
+          </View>
         </View>
       </View>
     </View>
@@ -121,8 +155,28 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   campaignData: {
+    alignItems: "center",
     flexDirection: "row",
     marginVertical: 10,
     marginRight: 20,
+  },
+  campaignDetailsImageContainer: {
+    width: 500,
+    height: 250,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  campaignDetailsImage: {
+    width: 153,
+    height: 165,
+  },
+  campaignTextLabel: {
+    color: "#ffffff",
+    fontSize: 15,
+    marginLeft: 10,
+    fontWeight: "bold",
+  },
+  campaignInfo: {
+    alignItems: "flex-start",
   },
 });

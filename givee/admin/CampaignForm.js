@@ -13,7 +13,8 @@ import { FIREBASE_DB } from "../firebaseConfig";
 
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faAudioDescription } from "@fortawesome/free-solid-svg-icons/faAudioDescription";
-import { faCalendarDays } from "@fortawesome/free-solid-svg-icons/faCalendarDays";
+import { faHourglassStart } from "@fortawesome/free-solid-svg-icons/faHourglassStart";
+import { faHourglassEnd } from "@fortawesome/free-solid-svg-icons/faHourglassEnd";
 import { faHeart } from "@fortawesome/free-solid-svg-icons/faHeart";
 import { faCircleChevronLeft } from "@fortawesome/free-solid-svg-icons/faCircleChevronLeft";
 import { faLink } from "@fortawesome/free-solid-svg-icons";
@@ -29,12 +30,16 @@ export default function CampaignForm() {
   const [showAlertAdd, setShowAlertAdd] = useState(false);
   const [showAlertRequired, setShowAlertRequired] = useState(false);
 
-  const [showPicker, setShowPicker] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [showStartDatePicker, setShowStartDatePicker] = useState(false);
+  const [showExpireDatePicker, setShowExpireDatePicker] = useState(false);
+
+  const [selectedStartDate, setSelectedStartDate] = useState(new Date());
+  const [selectedExpireDate, setSelectedExpireDate] = useState(new Date());
 
   const [campaignData, setCampaignData] = useState({
     name: "",
     description: "",
+    startDate: null,
     expireDate: null,
     link: "",
   });
@@ -51,19 +56,28 @@ export default function CampaignForm() {
     }
   };
 
-  const formatExpireDate = async (date) => {
+  const formatDate = async (date) => {
     const day = date.getDate().toString().padStart(2, "0");
     const month = (date.getMonth() + 1).toString().padStart(2, "0");
     const year = date.getFullYear();
     return `${day}.${month}.${year}`;
   };
 
-  const dateChangeHandler = async (event, date) => {
-    setShowPicker(false);
+  const expireDateChangeHandler = async (event, date) => {
+    setShowExpireDatePicker(false);
     if (date) {
-      setSelectedDate(date);
-      const formattedExpireDate = await formatExpireDate(date);
+      setSelectedExpireDate(date);
+      const formattedExpireDate = await formatDate(date);
       setCampaignData({ ...campaignData, expireDate: formattedExpireDate });
+    }
+  };
+
+  const startDateChangeHandler = async (event, date) => {
+    setShowStartDatePicker(false);
+    if (date) {
+      setSelectedStartDate(date);
+      const formattedStartDate = await formatDate(date);
+      setCampaignData({ ...campaignData, startDate: formattedStartDate });
     }
   };
 
@@ -179,27 +193,59 @@ export default function CampaignForm() {
             ></TextInput>
           </View>
 
-          <View style={styles.inputContainer}>
-            <FontAwesomeIcon
-              style={styles.campaignIcon}
-              icon={faCalendarDays}
-              size={20}
-            />
+          <View style={styles.dateContainer}>
+            <View style={styles.dateLabel}>
+              <FontAwesomeIcon
+                style={styles.dateIcon}
+                icon={faHourglassStart}
+                size={20}
+              />
+              <Text style={styles.dateText}>Sart Date</Text>
+            </View>
 
             <TouchableOpacity
-              onPress={() => setShowPicker(true)}
+              onPress={() => setShowStartDatePicker(true)}
               style={styles.datePickerContainer}
             >
               <Text style={styles.datePickerInput}>
-                {selectedDate.toDateString()}
+                {selectedStartDate.toDateString()}
               </Text>
-              {showPicker && (
+              {showStartDatePicker && (
                 <DateTimePicker
-                  value={selectedDate}
+                  value={selectedStartDate}
                   mode="date"
                   display="spinner"
-                  onChange={dateChangeHandler}
+                  onChange={startDateChangeHandler}
                   minimumDate={new Date()}
+                />
+              )}
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.dateContainer}>
+            <View style={styles.dateLabel}>
+              <FontAwesomeIcon
+                style={styles.dateIcon}
+                icon={faHourglassEnd}
+                size={20}
+              />
+              <Text style={styles.dateText}>End Date</Text>
+            </View>
+
+            <TouchableOpacity
+              onPress={() => setShowExpireDatePicker(true)}
+              style={styles.datePickerContainer}
+            >
+              <Text style={styles.datePickerInput}>
+                {selectedExpireDate.toDateString()}
+              </Text>
+              {showExpireDatePicker && (
+                <DateTimePicker
+                  value={selectedExpireDate}
+                  mode="date"
+                  display="spinner"
+                  onChange={expireDateChangeHandler}
+                  minimumDate={selectedStartDate}
                 />
               )}
             </TouchableOpacity>
@@ -286,5 +332,18 @@ const styles = StyleSheet.create({
   datePickerInput: {
     marginTop: 15,
     color: "#ffffff",
+  },
+  dateContainer: { marginBottom: 20 },
+  dateLabel: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  dateIcon: {
+    marginRight: 10,
+    color: "#ddb31b",
+  },
+  dateText: {
+    color: "#a6a6a6",
+    fontWeight: "bold",
   },
 });
