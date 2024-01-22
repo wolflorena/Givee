@@ -5,6 +5,7 @@ import {
   Text,
   TouchableOpacity,
   FlatList,
+  ActivityIndicator,
 } from "react-native";
 
 import { collection, query, getDocs } from "firebase/firestore";
@@ -69,14 +70,11 @@ export default function Donations() {
       let filteredData;
 
       if (status === "all") {
-        // If 'All' is selected, show all donations without filtering
         filteredData = data;
       } else {
-        // Filter donations based on the selected status
         filteredData = data.filter((donation) => donation.status === status);
       }
 
-      // Sort the filtered data
       const sortedData = filteredData.sort((a, b) => {
         if (a.status === "pending" && b.status !== "pending") {
           return -1;

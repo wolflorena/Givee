@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { View, StyleSheet, Text, TouchableOpacity, Image } from "react-native";
 
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { FIREBASE_DB } from "../firebaseConfig";
@@ -103,14 +103,20 @@ export default function DonationData({ route }) {
             icon={faCheck}
             size={20}
           />
-          <Text style={styles.donationText}>Completed</Text>
+          <View style={styles.donationInfo}>
+            <Text style={styles.donationTextLabel}>Status</Text>
+            <Text style={styles.donationText}>Completed</Text>
+          </View>
         </View>
       )}
 
       {status === "canceled" && (
         <View style={styles.donationData}>
           <FontAwesomeIcon style={styles.donationIcon} icon={faBan} size={20} />
-          <Text style={styles.donationText}>Canceled</Text>
+          <View style={styles.donationInfo}>
+            <Text style={styles.donationTextLabel}>Status</Text>
+            <Text style={styles.donationText}>Canceled</Text>
+          </View>
         </View>
       )}
     </View>
@@ -184,6 +190,27 @@ export default function DonationData({ route }) {
         />
       </TouchableOpacity>
 
+      <View style={styles.donationImageContainer}>
+        {donationData.status === "pending" ? (
+          <Image
+            source={require("../assets/pendingDonation.png")}
+            style={styles.pendingDonationImage}
+          />
+        ) : donationData.status === "completed" ? (
+          <Image
+            source={require("../assets/completedDonation.png")}
+            style={styles.completedDonationImage}
+          />
+        ) : (
+          donationData.status === "canceled" && (
+            <Image
+              source={require("../assets/canceledDonation.png")}
+              style={styles.canceledDonationImage}
+            />
+          )
+        )}
+      </View>
+
       <View style={styles.donationContent}>
         <View style={styles.donationData}>
           <FontAwesomeIcon
@@ -191,7 +218,10 @@ export default function DonationData({ route }) {
             icon={faUser}
             size={20}
           />
-          <Text style={styles.donationText}>{donationData.userEmail}</Text>
+          <View style={styles.donationInfo}>
+            <Text style={styles.donationTextLabel}>Client Email</Text>
+            <Text style={styles.donationText}>{donationData.userEmail}</Text>
+          </View>
         </View>
         <View style={styles.donationData}>
           <FontAwesomeIcon
@@ -199,7 +229,10 @@ export default function DonationData({ route }) {
             icon={faMapPin}
             size={20}
           />
-          <Text style={styles.donationText}>{centerData.address}</Text>
+          <View style={styles.donationInfo}>
+            <Text style={styles.donationTextLabel}>Donation Center</Text>
+            <Text style={styles.donationText}>{centerData.address}</Text>
+          </View>
         </View>
         <View style={styles.donationData}>
           <FontAwesomeIcon
@@ -207,7 +240,10 @@ export default function DonationData({ route }) {
             icon={faListOl}
             size={20}
           />
-          <Text style={styles.donationText}>{donationData.amount}</Text>
+          <View style={styles.donationInfo}>
+            <Text style={styles.donationTextLabel}>Amount</Text>
+            <Text style={styles.donationText}>{donationData.amount}</Text>
+          </View>
         </View>
         <View style={styles.donationData}>
           <FontAwesomeIcon
@@ -215,33 +251,35 @@ export default function DonationData({ route }) {
             icon={faAudioDescription}
             size={20}
           />
-          <Text style={styles.donationText}>{donationData.description}</Text>
+          <View style={styles.donationInfo}>
+            <Text style={styles.donationTextLabel}>Description</Text>
+            <Text style={styles.donationText}>{donationData.description}</Text>
+          </View>
         </View>
-        <View>
-          {donationData.status === "pending" ? (
-            <View style={styles.donationButtons}>
-              <TouchableOpacity
-                style={styles.completedButton}
-                onPress={() => {
-                  setShowAlertComplete(true);
-                }}
-              >
-                <Text style={styles.completeTextButton}>Complete</Text>
-              </TouchableOpacity>
 
-              <TouchableOpacity
-                style={styles.canceledButton}
-                onPress={() => {
-                  setShowAlertCancel(true);
-                }}
-              >
-                <Text style={styles.cancelTextButton}>Cancel</Text>
-              </TouchableOpacity>
-            </View>
-          ) : (
-            <View>{statusType(donationData.status)}</View>
-          )}
-        </View>
+        {donationData.status === "pending" ? (
+          <View style={styles.donationButtons}>
+            <TouchableOpacity
+              style={styles.completedButton}
+              onPress={() => {
+                setShowAlertComplete(true);
+              }}
+            >
+              <Text style={styles.completeTextButton}>Complete</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.canceledButton}
+              onPress={() => {
+                setShowAlertCancel(true);
+              }}
+            >
+              <Text style={styles.cancelTextButton}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <View>{statusType(donationData.status)}</View>
+        )}
       </View>
     </View>
   );
@@ -275,6 +313,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   donationData: {
+    alignItems: "center",
     flexDirection: "row",
     marginVertical: 10,
     marginRight: 20,
@@ -282,7 +321,6 @@ const styles = StyleSheet.create({
   completedButton: {
     backgroundColor: "#50C878",
     width: 120,
-    marginTop: 20,
     height: 40,
     borderRadius: 10,
     alignItems: "center",
@@ -302,7 +340,6 @@ const styles = StyleSheet.create({
   canceledButton: {
     backgroundColor: "#D2042D",
     width: 120,
-    marginTop: 20,
     height: 40,
     borderRadius: 10,
     alignItems: "center",
@@ -310,5 +347,36 @@ const styles = StyleSheet.create({
   },
   donationButtons: {
     flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    height: 50,
+    marginTop: 80,
+  },
+  donationImageContainer: {
+    width: 500,
+    height: 250,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  completedDonationImage: {
+    width: 220,
+    height: 170,
+  },
+  canceledDonationImage: {
+    width: 178,
+    height: 200,
+  },
+  pendingDonationImage: {
+    width: 280,
+    height: 125,
+  },
+  donationTextLabel: {
+    color: "#ffffff",
+    fontSize: 15,
+    marginLeft: 10,
+    fontWeight: "bold",
+  },
+  donationInfo: {
+    alignItems: "flex-start",
   },
 });

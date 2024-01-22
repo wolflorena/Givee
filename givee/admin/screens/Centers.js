@@ -246,7 +246,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     borderRadius: 10,
-    height: 110,
+    height: 115,
     width: 350,
   },
   centerIcon: {
@@ -274,6 +274,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     width: 80,
     height: 20,
+    marginVertical: 5,
   },
   deleteCenterButton: {
     backgroundColor: "#D2042D",

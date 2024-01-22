@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { View, StyleSheet, Text, TouchableOpacity, Image } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 
 import { doc, getDoc } from "firebase/firestore";
@@ -89,6 +89,12 @@ export default function CenterData({ route }) {
           size={25}
         />
       </TouchableOpacity>
+      <View style={styles.centerDetailsImageContainer}>
+        <Image
+          source={require("../assets/centerDetails.png")}
+          style={styles.centerDetailsImage}
+        />
+      </View>
       <View style={styles.centerContent}>
         <View style={styles.centerData}>
           <FontAwesomeIcon
@@ -96,11 +102,17 @@ export default function CenterData({ route }) {
             icon={faMapPin}
             size={20}
           />
-          <Text style={styles.centerText}>{centerData.address}</Text>
+          <View style={styles.centerInfo}>
+            <Text style={styles.centerTextLabel}>Address</Text>
+            <Text style={styles.centerText}>{centerData.address}</Text>
+          </View>
         </View>
         <View style={styles.centerData}>
           <FontAwesomeIcon style={styles.centerIcon} icon={faPhone} size={20} />
-          <Text style={styles.centerText}>{centerData.phone}</Text>
+          <View style={styles.centerInfo}>
+            <Text style={styles.centerTextLabel}>Phone</Text>
+            <Text style={styles.centerText}>{centerData.phone}</Text>
+          </View>
         </View>
         <View style={styles.donationType}>
           {centerData.type &&
@@ -163,6 +175,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   centerData: {
+    alignItems: "center",
     flexDirection: "row",
     marginVertical: 10,
     marginRight: 20,
@@ -182,7 +195,26 @@ const styles = StyleSheet.create({
   },
   mapContainer: {
     width: 350,
-    height: 500,
-    marginTop: 30,
+    height: 350,
+    marginTop: 20,
+  },
+  centerTextLabel: {
+    color: "#ffffff",
+    fontSize: 15,
+    marginLeft: 10,
+    fontWeight: "bold",
+  },
+  centerInfo: {
+    alignItems: "flex-start",
+  },
+  centerDetailsImageContainer: {
+    width: 500,
+    height: 160,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  centerDetailsImage: {
+    width: 160,
+    height: 140,
   },
 });

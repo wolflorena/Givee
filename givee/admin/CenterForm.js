@@ -239,6 +239,7 @@ export default function CenterForm() {
                   ...prevData,
                   latitude: newPin.latitude,
                   longitude: newPin.longitude,
+                  address: details.formatted_address,
                 }));
               }}
               query={{
@@ -248,7 +249,7 @@ export default function CenterForm() {
             />
             <MapView
               style={styles.map}
-              initialRegion={{
+              region={{
                 latitude: pin.latitude,
                 longitude: pin.longitude,
                 latitudeDelta: 0.05,
@@ -274,11 +275,28 @@ export default function CenterForm() {
                     longitude: newPin.longitude,
                   }));
 
-                  setCenterData((prevData) => ({
-                    ...prevData,
+                  const newLocation = {
                     latitude: newPin.latitude,
                     longitude: newPin.longitude,
-                  }));
+                  };
+
+                  const apiKey = "AIzaSyBh4e7r-F87Yy5bbWVmG_jRJfL8dPabl2I";
+                  fetch(
+                    `https://maps.googleapis.com/maps/api/geocode/json?latlng=${newLocation.latitude},${newLocation.longitude}&key=${apiKey}`
+                  )
+                    .then((response) => response.json())
+                    .then((data) => {
+                      const address = data.results[0].formatted_address;
+                      setCenterData((prevData) => ({
+                        ...prevData,
+                        latitude: newLocation.latitude,
+                        longitude: newLocation.longitude,
+                        address: address,
+                      }));
+                    })
+                    .catch((error) => {
+                      console.error("Error fetching address:", error);
+                    });
                 }}
               ></Marker>
             </MapView>
