@@ -5,7 +5,6 @@ import {
   Text,
   TouchableOpacity,
   FlatList,
-  ActivityIndicator,
 } from "react-native";
 
 import { collection, query, getDocs } from "firebase/firestore";

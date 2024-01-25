@@ -19,6 +19,7 @@ import { faPenToSquare } from "@fortawesome/free-solid-svg-icons/faPenToSquare";
 import { faFaceFrown } from "@fortawesome/free-solid-svg-icons/faFaceFrown";
 import AwesomeAlert from "react-native-awesome-alerts";
 
+import DropDownPicker from "react-native-dropdown-picker";
 import { useFocusEffect } from "@react-navigation/native";
 import { useNavigation } from "@react-navigation/native";
 import { StatusBar } from "react-native";
@@ -36,6 +37,8 @@ export default function Campaigns() {
   const [showAlertDelete, setShowAlertDelete] = useState(false);
 
   const [selectedCampaignId, setSelectedCampaignId] = useState(null);
+  const [selectedStatus, setSelectedStatus] = useState("all");
+  const [dropdownIsOpen, setDropdownIsOpen] = useState(false);
 
   useEffect(() => {
     StatusBar.setBarStyle("light-content");
@@ -92,6 +95,51 @@ export default function Campaigns() {
     navigation.navigate("EditCampaign", { campaignId });
   };
 
+  const getStatus = (startDate, expireDate) => {
+    const currentDate = new Date();
+    const startDateObj = parseDate(startDate);
+    const expireDateObj = parseDate(expireDate);
+
+    if (currentDate < startDateObj) {
+      return {
+        status: "UPCOMING",
+        backgroundColor: "#ffd7b5",
+        color: "#FFA500",
+        borderColor: "#FFA500",
+      };
+    } else if (currentDate >= startDateObj && currentDate <= expireDateObj) {
+      return {
+        status: "ON-GOING",
+        backgroundColor: "#cdffcd",
+        color: "#0BDA51",
+        borderColor: "#0BDA51",
+      };
+    } else {
+      return {
+        status: "EXPIRED",
+        backgroundColor: "#FFCCCB",
+        color: "#ff0000",
+        borderColor: "#ff0000",
+      };
+    }
+  };
+
+  const parseDate = (dateString) => {
+    const [day, month, year] = dateString.split(".");
+    return new Date(year, month - 1, day);
+  };
+
+  const filteredCampaigns = campaignsData.filter((campaign) => {
+    if (selectedStatus === "all") {
+      return true;
+    } else {
+      return (
+        getStatus(campaign.startDate, campaign.expireDate).status ===
+        selectedStatus.toUpperCase()
+      );
+    }
+  });
+
   return (
     <View style={styles.container}>
       <AwesomeAlert
@@ -133,21 +181,43 @@ export default function Campaigns() {
       </TouchableOpacity>
       <View style={styles.campaignsContent}>
         <View style={styles.header}>
-          <Text style={styles.pageTitle}>Campaigns</Text>
-          <TouchableOpacity onPress={() => addCampaignHandler()}>
-            <FontAwesomeIcon
-              style={styles.addCampaignIcon}
-              icon={faPlus}
-              size={25}
+          <View style={styles.titleHeader}>
+            <Text style={styles.pageTitle}>Campaigns</Text>
+            <TouchableOpacity onPress={() => addCampaignHandler()}>
+              <FontAwesomeIcon
+                style={styles.addCampaignIcon}
+                icon={faPlus}
+                size={25}
+              />
+            </TouchableOpacity>
+          </View>
+          <View>
+            <DropDownPicker
+              items={[
+                { label: "All", value: "all" },
+                { label: "Upcoming", value: "upcoming" },
+                { label: "On-going", value: "ongoing" },
+                { label: "Expired", value: "expired" },
+              ]}
+              open={dropdownIsOpen}
+              setOpen={() => setDropdownIsOpen(!dropdownIsOpen)}
+              value={selectedStatus}
+              setValue={(val) => setSelectedStatus(val)}
+              style={styles.dropdown}
+              textStyle={{ color: "black", fontSize: 15, fontWeight: "500" }}
+              dropDownContainerStyle={{
+                backgroundColor: "#D3D3D3",
+                width: 130,
+              }}
             />
-          </TouchableOpacity>
+          </View>
         </View>
 
         <View style={styles.campaigns}>
-          {campaignsData.length ? (
+          {filteredCampaigns.length ? (
             <FlatList
               keyExtractor={(campaign) => campaign.id}
-              data={campaignsData}
+              data={filteredCampaigns}
               renderItem={({ item }) => (
                 <TouchableOpacity
                   style={styles.campaignCard}
@@ -159,16 +229,29 @@ export default function Campaigns() {
                     size={30}
                   />
                   <View style={styles.campaignData}>
-                    <View style={styles.campaignContent}>
+                    <View>
                       <Text style={styles.campaignField}>
                         <Text style={{ fontWeight: "bold" }}>Name {"\n"}</Text>
                         {item.name}
                       </Text>
-                      <Text style={styles.campaignField}>
-                        <Text style={{ fontWeight: "bold" }}>
-                          Expire Date {"\n"}
-                        </Text>
-                        {item.expireDate}
+                      <Text
+                        style={[
+                          styles.campaignStatusField,
+                          {
+                            color: getStatus(item.startDate, item.expireDate)
+                              .color,
+                            backgroundColor: getStatus(
+                              item.startDate,
+                              item.expireDate
+                            ).backgroundColor,
+                            borderColor: getStatus(
+                              item.startDate,
+                              item.expireDate
+                            ).borderColor,
+                          },
+                        ]}
+                      >
+                        {getStatus(item.startDate, item.expireDate).status}
                       </Text>
                     </View>
 
@@ -238,6 +321,7 @@ const styles = StyleSheet.create({
     color: "#ddb31b",
     fontWeight: "bold",
     fontSize: 25,
+    marginRight: 10,
   },
   goBackButton: {
     marginTop: 70,
@@ -278,8 +362,10 @@ const styles = StyleSheet.create({
     color: "#ddb31b",
   },
   header: {
+    alignItems: "center",
     flexDirection: "row",
     justifyContent: "space-between",
+    zIndex: 1,
   },
   campaignsButtons: {
     flexDirection: "row",
@@ -317,5 +403,24 @@ const styles = StyleSheet.create({
     marginTop: 20,
     color: "#ffffff",
     fontSize: 18,
+  },
+  campaignStatusField: {
+    fontSize: 14,
+    fontWeight: 800,
+    marginTop: 10,
+    borderWidth: 1,
+    borderRadius: 5,
+    textAlign: "center",
+    paddingVertical: 2,
+    width: 110,
+  },
+  dropdown: {
+    backgroundColor: "#D3D3D3",
+    width: 130,
+    zIndex: 100,
+  },
+  titleHeader: {
+    flexDirection: "row",
+    alignItems: "center",
   },
 });
