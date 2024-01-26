@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { StyleSheet, KeyboardAvoidingView } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 import { useFocusEffect } from "@react-navigation/native";
 
@@ -22,12 +22,12 @@ export default function Clothes() {
   );
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior="height">
+    <View style={styles.container} behavior="height">
       <GoBackButton />
       <Title text="Donate clothes" />
       <DonationForm product="clothes" />
       <NavBar style={styles.nav} />
-    </KeyboardAvoidingView>
+    </View>
   );
 }
 

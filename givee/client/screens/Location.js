@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useCallback,
-  useEffect,
-  useContext,
-  useFocusEffect,
-} from "react";
+import React, { useState, useCallback, useEffect, useContext } from "react";
 import {
   View,
   Text,
@@ -15,6 +9,7 @@ import {
   StatusBar,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect } from "@react-navigation/native";
 import MapView, { Marker, Callout } from "react-native-maps";
 import * as ExpoLocation from "expo-location";
 import Svg, { Ellipse } from "react-native-svg";
@@ -58,10 +53,12 @@ export default function Location({ route }) {
     getCenters();
   }, []);
 
-  useFocusEffect(() => {
-    getCurrentLocationAsync();
-    getCenters();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      getCurrentLocationAsync();
+      getCenters();
+    }, [])
+  );
 
   const getCenters = useCallback(async () => {
     setLoading(true);

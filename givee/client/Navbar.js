@@ -65,7 +65,7 @@ const getStyles = (theme) =>
   StyleSheet.create({
     navbar: {
       marginBottom: 25,
-      height: 50,
+      height: 20,
       width: 350,
       alignItems: "center",
       flexDirection: "row",
