@@ -8,7 +8,13 @@ import {
   faCommentDots,
   faGear,
   faRightFromBracket,
+  faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
+import {
+  faFacebookF,
+  faTwitter,
+  faInstagram,
+} from "@fortawesome/free-brands-svg-icons";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 
 import Navbar from "../Navbar";
@@ -40,7 +46,7 @@ export default function Profile() {
   const renderOption = (faIcon, label, path) => {
     return (
       <TouchableOpacity
-        style={styles.optionContainer}
+        style={styles.optionButton}
         onPress={() => {
           setSelectedOption(label);
           if (label === "Log Out") {
@@ -51,28 +57,47 @@ export default function Profile() {
           setSelectedOption("");
         }}
       >
+        <View style={styles.optionContainer}>
+          <View
+            style={[
+              styles.iconCircle,
+              label === selectedOption ? styles.selectedCircle : null,
+              label === "Log Out" ? styles.logoutCircle : null,
+            ]}
+          >
+            <FontAwesomeIcon
+              style={[
+                styles.optionIcon,
+                label === selectedOption ? styles.selected : null,
+              ]}
+              icon={faIcon}
+              size={20}
+            />
+          </View>
+          <Text
+            style={[
+              styles.optionLabel,
+              label === selectedOption ? styles.selected : null,
+            ]}
+          >
+            {label}
+          </Text>
+        </View>
         <FontAwesomeIcon
-          style={[
-            styles.optionIcon,
-            label === selectedOption ? styles.selected : null,
-          ]}
-          icon={faIcon}
-          size={20}
-        />
-        <Text
           style={[
             styles.optionLabel,
             label === selectedOption ? styles.selected : null,
           ]}
-        >
-          {label}
-        </Text>
+          icon={faChevronRight}
+          size={20}
+        />
       </TouchableOpacity>
     );
   };
   return (
     <View style={styles.container}>
-      <FontAwesomeIcon icon={faCircleUser} size={150} style={styles.icon} />
+      <Text style={styles.title}>My profile</Text>
+      <FontAwesomeIcon icon={faCircleUser} size={125} style={styles.icon} />
       <View style={styles.options}>
         {renderOption(faInfo, "About us", "AboutUs")}
         {renderOption(faClockRotateLeft, "My Donations", "History")}
@@ -80,6 +105,7 @@ export default function Profile() {
         {renderOption(faGear, "Settings", "Settings")}
         {renderOption(faRightFromBracket, "Log Out", "Login")}
       </View>
+
       <Navbar />
     </View>
   );
@@ -92,20 +118,40 @@ const getStyles = (theme) =>
       alignItems: "center",
       flex: 1,
     },
+    title: {
+      color: theme === "dark" ? "#eaebed" : "#1f1f1f",
+      fontSize: 30,
+      marginTop: 100,
+    },
+    iconCircle: {
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      backgroundColor: "#ddb31b",
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    logoutCircle: {
+      backgroundColor: "#BB342F",
+    },
     icon: {
       color: "#ddb31b",
-      marginTop: 200,
+      marginTop: 30,
     },
     options: {
-      marginTop: 50,
+      marginTop: 70,
       width: 200,
       gap: 25,
       justifyContent: "center",
       alignItems: "center",
     },
     optionContainer: {
-      width: 200,
+      width: 250,
       gap: 20,
+      flexDirection: "row",
+      alignItems: "center",
+    },
+    optionButton: {
       flexDirection: "row",
       alignItems: "center",
     },
@@ -114,7 +160,7 @@ const getStyles = (theme) =>
       fontSize: 25,
     },
     optionIcon: {
-      color: theme === "dark" ? "#eaebed" : "#1f1f1f",
+      color: theme === "dark" ? "#1f1f1f" : "#eaebed",
     },
     selected: {
       color: "#ddb31b",
