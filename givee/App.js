@@ -33,6 +33,7 @@ import ChangePassword from "./client/screens/ChangePassword";
 import Chat from "./client/screens/Chat";
 import AdminChat from "./admin/screens/AdminChat";
 import Settings from "./client/screens/Settings";
+import AllCampaigns from "./client/screens/AllCampaigns";
 
 const Stack = createNativeStackNavigator();
 
@@ -123,6 +124,11 @@ export default function App() {
               <Stack.Screen
                 name="SuccessfulDonation"
                 component={SuccessfulDonation}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="AllCampaigns"
+                component={AllCampaigns}
                 options={{ headerShown: false }}
               />
               <Stack.Screen

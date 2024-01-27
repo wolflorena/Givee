@@ -92,15 +92,7 @@ export default function Centers() {
         }
       });
 
-      let filteredData;
-
-      if (status === "all") {
-        filteredData = data;
-      } else {
-        filteredData = data.filter((donation) => donation.status === status);
-      }
-
-      const sortedData = filteredData.sort((a, b) => {
+      const sortedData = data.sort((a, b) => {
         if (a.status === "pending" && b.status !== "pending") {
           return -1;
         } else if (a.status !== "pending" && b.status === "pending") {
@@ -189,6 +181,14 @@ export default function Centers() {
     }
   };
 
+  const filteredDonations = donationsData.filter((donation) => {
+    if (selectedStatus === "all") {
+      return true;
+    } else {
+      return donation.status === selectedStatus;
+    }
+  });
+
   return (
     <View style={styles.container}>
       <Spinner
@@ -222,7 +222,7 @@ export default function Centers() {
         </View>
       </View>
       <View>
-        {donationsData.length === 0 ? (
+        {filteredDonations.length === 0 ? (
           <View style={styles.emptyContainer}>
             <Image
               source={require("../../assets/noDonations.png")}
@@ -233,7 +233,7 @@ export default function Centers() {
         ) : (
           <View style={styles.donations}>
             <FlatList
-              data={donationsData}
+              data={filteredDonations}
               keyExtractor={(donation) => donation.id}
               renderItem={({ item }) => (
                 <View style={styles.donationCard}>

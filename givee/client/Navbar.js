@@ -64,8 +64,8 @@ export default function Navbar() {
 const getStyles = (theme) =>
   StyleSheet.create({
     navbar: {
-      marginBottom: 25,
-      height: 20,
+      marginBottom: 30,
+      height: 25,
       width: 350,
       alignItems: "center",
       flexDirection: "row",

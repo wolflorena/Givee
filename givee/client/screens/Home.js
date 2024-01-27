@@ -28,33 +28,41 @@ export default function Home() {
   useFocusEffect(
     React.useCallback(() => {
       navBarButtonsPressHandler("homeIsPressed");
+      getCampaignData();
     }, [])
   );
 
   useEffect(() => {
-    const getCampaignData = async () => {
-      try {
-        const db = FIREBASE_DB;
-        const q = query(
-          collection(db, "campaigns"),
-          orderBy("expireDate", "desc"),
-          limit(1)
-        );
-        const querySnapshot = await getDocs(q);
-
-        if (!querySnapshot.empty) {
-          const campaignData = querySnapshot.docs[0].data();
-          setCampaign(campaignData);
-        } else {
-          console.log("No campaigns found");
-        }
-      } catch (error) {
-        console.error("Error fetching campaign data: ", error);
-      }
-    };
-
     getCampaignData();
   }, []);
+
+  const getCampaignData = async () => {
+    try {
+      const db = FIREBASE_DB;
+      const q = query(collection(db, "campaigns"));
+      const querySnapshot = await getDocs(q);
+
+      let campaignWithLeastDaysLeft = null;
+      let leastDaysLeft = Infinity;
+
+      querySnapshot.forEach((doc) => {
+        const campaignData = doc.data();
+        const daysLeft = calculateDaysLeft(campaignData.expireDate);
+        if (daysLeft < leastDaysLeft && daysLeft >= 0) {
+          leastDaysLeft = daysLeft;
+          campaignWithLeastDaysLeft = campaignData;
+        }
+      });
+
+      if (campaignWithLeastDaysLeft) {
+        setCampaign(campaignWithLeastDaysLeft);
+      } else {
+        console.log("No campaigns found");
+      }
+    } catch (error) {
+      console.error("Error fetching campaign data: ", error);
+    }
+  };
 
   const convertToDate = (dateString) => {
     const [day, month, year] = dateString.split(".");
@@ -193,6 +201,15 @@ export default function Home() {
         </ImageBackground>
       </TouchableOpacity>
 
+      <Text
+        style={styles.seeAllText}
+        onPress={() => {
+          navigation.navigate("AllCampaigns");
+        }}
+      >
+        See all campaigns
+      </Text>
+
       <Navbar />
     </View>
   );
@@ -279,5 +296,11 @@ const getStyles = (theme) =>
       flexDirection: "row",
       justifyContent: "flex-end",
       gap: 7,
+    },
+    seeAllText: {
+      marginLeft: 215,
+      marginTop: 10,
+      fontSize: 15,
+      color: theme === "dark" ? "#eaebed" : "#1f1f1f",
     },
   });
