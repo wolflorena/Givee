@@ -53,7 +53,24 @@ export default function AllCampaigns() {
       const data = [];
 
       querySnapshot.forEach((doc) => {
-        data.push({ id: doc.id, ...doc.data() });
+        const campaign = { id: doc.id, ...doc.data() };
+        const statusResult = getStatus(campaign.startDate, campaign.expireDate);
+        campaign.status = statusResult.status;
+        data.push(campaign);
+      });
+
+      data.sort((a, b) => {
+        const statusOrder = { ONGOING: 1, UPCOMING: 2, EXPIRED: 3 };
+        if (statusOrder[a.status] !== statusOrder[b.status]) {
+          return statusOrder[a.status] - statusOrder[b.status];
+        } else {
+          if (a.status === "ONGOING" || a.status === "UPCOMING") {
+            return convertToDate(a.startDate) - convertToDate(b.startDate);
+          } else if (a.status === "EXPIRED") {
+            return convertToDate(b.expireDate) - convertToDate(a.expireDate);
+          }
+        }
+        return 0;
       });
 
       setCampaignsData(data);
@@ -108,6 +125,32 @@ export default function AllCampaigns() {
         return "There are no expired campaigns. 😊";
       default:
         return "";
+    }
+  };
+
+  const renderRemainingTime = (startDate, endDate) => {
+    const statusResult = getStatus(startDate, endDate);
+    switch (statusResult.status) {
+      case "ONGOING":
+        return (
+          <Text style={styles.endDate}>
+            Ends in {calculateDaysLeft(endDate)} days
+          </Text>
+        );
+      case "EXPIRED":
+        return (
+          <Text style={[styles.endedCampaign, styles.endDate]}>
+            Ended {Math.abs(calculateDaysLeft(endDate))} days ago
+          </Text>
+        );
+      case "UPCOMING":
+        return (
+          <Text style={styles.endDate}>
+            Starts in {calculateDaysLeft(startDate)} days
+          </Text>
+        );
+      default:
+        return null;
     }
   };
 
@@ -229,6 +272,7 @@ export default function AllCampaigns() {
                   }}
                 >
                   <View style={styles.dateContainer}>
+                    <Text style={styles.fromText}>From</Text>
                     <Text style={styles.dayText}>
                       {parseDateForDisplay(item.startDate).day}
                     </Text>
@@ -245,17 +289,7 @@ export default function AllCampaigns() {
                     >
                       {item.description}
                     </Text>
-
-                    {calculateDaysLeft(item.expireDate) > 0 ? (
-                      <Text style={styles.endDate}>
-                        Ends in {calculateDaysLeft(item.expireDate)} days
-                      </Text>
-                    ) : (
-                      <Text style={[styles.endedCampaign, styles.endDate]}>
-                        Ended {Math.abs(calculateDaysLeft(item.expireDate))}{" "}
-                        days ago
-                      </Text>
-                    )}
+                    {renderRemainingTime(item.startDate, item.expireDate)}
                   </View>
                 </TouchableOpacity>
               )}
@@ -303,7 +337,7 @@ const getStyles = (theme) =>
       flexDirection: "row",
       borderRadius: 10,
       gap: 5,
-      height: 150,
+      height: 125,
       width: 350,
       padding: 10,
     },
@@ -314,6 +348,11 @@ const getStyles = (theme) =>
       backgroundColor: theme === "dark" ? "#1f1f1f" : "#a6a6a6",
       borderRadius: 10,
       padding: 5,
+    },
+    fromText: {
+      fontSize: 15,
+      color: theme === "dark" ? "#a6a6a6" : "#1f1f1f",
+      fontWeight: "500",
     },
     dayText: {
       fontSize: 35,

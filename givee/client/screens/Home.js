@@ -16,6 +16,7 @@ import { FIREBASE_DB } from "../../firebaseConfig";
 import { collection, query, getDocs, orderBy, limit } from "firebase/firestore";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faClock } from "@fortawesome/free-solid-svg-icons/";
+import Spinner from "react-native-loading-spinner-overlay";
 
 export default function Home() {
   const { currentUser } = useLoginContext();
@@ -23,6 +24,7 @@ export default function Home() {
   const { theme } = useContext(ThemeContext);
   const styles = getStyles(theme);
   const [campaign, setCampaign] = useState(null);
+  const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
 
   useFocusEffect(
@@ -37,6 +39,7 @@ export default function Home() {
   }, []);
 
   const getCampaignData = async () => {
+    setLoading(true);
     try {
       const db = FIREBASE_DB;
       const q = query(collection(db, "campaigns"));
@@ -55,11 +58,14 @@ export default function Home() {
       });
 
       if (campaignWithLeastDaysLeft) {
+        setLoading(false);
         setCampaign(campaignWithLeastDaysLeft);
       } else {
+        setLoading(false);
         console.log("No campaigns found");
       }
     } catch (error) {
+      setLoading(false);
       console.error("Error fetching campaign data: ", error);
     }
   };
@@ -132,6 +138,11 @@ export default function Home() {
   };
   return (
     <View style={styles.container}>
+      <Spinner
+        visible={loading}
+        color="#ddb31b"
+        overlayColor="rgba(0,0,0,0.5)"
+      />
       <View>
         <TouchableOpacity style={styles.goBackButton}></TouchableOpacity>
         <View style={styles.messageContainer}>

@@ -288,14 +288,10 @@ export default function Location({ route }) {
                   </View>
                 )}
               ></FlatList>
-              <CustomButton
-                text="Donate"
-                size="large"
-                onPress={submitDonation}
-              />
             </View>
           )}
         </View>
+        <CustomButton text="Donate" size="large" onPress={submitDonation} />
       </View>
 
       {centersData.length === 0 ? <Navbar /> : ""}
