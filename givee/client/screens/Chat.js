@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useCallback, useContext } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Text } from "react-native";
 import {
   GiftedChat,
   InputToolbar,
   Bubble,
   Time,
+  Send,
 } from "react-native-gifted-chat";
 import {
   doc,
@@ -135,6 +136,7 @@ export default function Chat() {
         }}
         textInputStyle={{
           color: theme === "dark" ? "#eaebed" : "#1f1f1f",
+          fontSize: 15,
         }}
       />
     );
@@ -183,6 +185,19 @@ export default function Chat() {
       />
     );
   };
+
+  const renderSendButton = (props) => {
+    return (
+      <Send
+        {...props}
+        textStyle={{ color: "#eaebed" }}
+        containerStyle={{
+          backgroundColor: "transparent",
+          fontSize: 15,
+        }}
+      ></Send>
+    );
+  };
   return (
     <View style={styles.container}>
       <GoBackButton />
@@ -198,6 +213,7 @@ export default function Chat() {
         renderChatFooter={renderChatFooter}
         renderBubble={renderBubble}
         renderTime={renderTime}
+        renderSend={renderSendButton}
       />
     </View>
   );
@@ -211,5 +227,14 @@ const getStyles = (theme) =>
       paddingLeft: 10,
       paddingRight: 10,
       flex: 1,
+    },
+    sendButton: {
+      // marginRight: 10,
+      // marginBottom: 10,
+      // padding: 10,
+      backgroundColor: "red",
+    },
+    sendText: {
+      color: "red",
     },
   });

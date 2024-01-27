@@ -6,6 +6,7 @@ import {
   Text,
   Image,
   StatusBar,
+  TouchableOpacity,
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import DropDownPicker from "react-native-dropdown-picker";
@@ -17,7 +18,9 @@ import {
   faClock,
   faCheck,
   faXmark,
-  faSpinner,
+  faHourglassHalf,
+  faCalendar,
+  faChevronDown,
 } from "@fortawesome/free-solid-svg-icons";
 import { collection, query, getDocs, getDoc, doc } from "firebase/firestore";
 import Spinner from "react-native-loading-spinner-overlay";
@@ -36,6 +39,7 @@ export default function Centers() {
 
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [dropdownIsOpen, setDropdownIsOpen] = useState(false);
+  const [selectedCardId, setSelectedCardId] = useState(null);
 
   const { currentUser } = useLoginContext();
   const { navBarButtonsPressHandler } = useLoginUpdateContext();
@@ -69,24 +73,29 @@ export default function Centers() {
           const centerData = await getCenter(doc.data().centerId);
           if (centerData) {
             const date = timestamp.toDate();
-            const formattedTimestamp = `${date
+            const formattedDate = `${date
               .getDate()
               .toString()
               .padStart(2, "0")}.${(date.getMonth() + 1)
               .toString()
-              .padStart(2, "0")}.${date.getFullYear()} - ${date
+              .padStart(2, "0")}.${date.getFullYear()}`;
+            const formattedHour = `${date
               .getHours()
               .toString()
               .padStart(2, "0")}:${date
               .getMinutes()
               .toString()
               .padStart(2, "0")}`;
+            const description = doc.data().description;
+            const isDescriptionLong = isTextConsideredLong(description);
 
             data.push({
               id: doc.id,
               ...donation,
-              timestamp: formattedTimestamp,
+              date: formattedDate,
+              hour: formattedHour,
               centerAddress: centerData.address,
+              isDescriptionLong,
             });
           }
         }
@@ -138,23 +147,33 @@ export default function Centers() {
   const donationIcon = (type) => (
     <View>
       {type === "toys" && (
-        <FontAwesomeIcon
-          style={styles.donationIcon}
-          icon={faFootball}
-          size={25}
-        />
+        <View style={styles.iconCircle}>
+          <FontAwesomeIcon
+            style={styles.donationIcon}
+            icon={faFootball}
+            size={25}
+          />
+        </View>
       )}
 
       {type === "clothes" && (
-        <FontAwesomeIcon style={styles.donationIcon} icon={faShirt} size={25} />
+        <View style={styles.iconCircle}>
+          <FontAwesomeIcon
+            style={styles.donationIcon}
+            icon={faShirt}
+            size={25}
+          />
+        </View>
       )}
 
       {type === "food" && (
-        <FontAwesomeIcon
-          style={styles.donationIcon}
-          icon={faUtensils}
-          size={25}
-        />
+        <View style={styles.iconCircle}>
+          <FontAwesomeIcon
+            style={styles.donationIcon}
+            icon={faUtensils}
+            size={25}
+          />
+        </View>
       )}
     </View>
   );
@@ -166,7 +185,11 @@ export default function Centers() {
       )}
 
       {status === "pending" && (
-        <FontAwesomeIcon style={styles.statusIcon} icon={faSpinner} size={25} />
+        <FontAwesomeIcon
+          style={styles.statusIcon}
+          icon={faHourglassHalf}
+          size={25}
+        />
       )}
 
       {status === "canceled" && (
@@ -187,6 +210,16 @@ export default function Centers() {
         return "You don't have canceled donations. 😊";
       default:
         return "";
+    }
+  };
+
+  const isTextConsideredLong = (text) => {
+    return text.length > 50;
+  };
+
+  const handleSelectCard = (id, isDescriptionLong) => {
+    if (isDescriptionLong) {
+      setSelectedCardId(selectedCardId === id ? null : id);
     }
   };
 
@@ -237,21 +270,64 @@ export default function Centers() {
               data={donationsData}
               keyExtractor={(donation) => donation.id}
               renderItem={({ item }) => (
-                <View style={styles.donationCard}>
+                <TouchableOpacity
+                  style={[
+                    styles.donationCard,
+                    item.id === selectedCardId ? styles.expandedCard : null,
+                  ]}
+                  onPress={() =>
+                    handleSelectCard(item.id, item.isDescriptionLong)
+                  }
+                >
                   {donationIcon(item.type)}
-                  <View style={styles.donationData}>
+                  <View
+                    style={[
+                      styles.donationData,
+                      item.id === selectedCardId
+                        ? styles.expandedCardData
+                        : null,
+                    ]}
+                  >
                     <View style={styles.donationField}>
+                      <FontAwesomeIcon icon={faCalendar} size={16} />
+                      <Text style={styles.donationField}>{item.date}</Text>
+                      <Text>{"  "}</Text>
                       <FontAwesomeIcon icon={faClock} size={16} />
-                      <Text style={styles.donationField}>{item.timestamp}</Text>
+                      <Text style={styles.donationField}>{item.hour}</Text>
                     </View>
-                    <Text style={styles.donationField}>
+                    <Text
+                      style={styles.donationField}
+                      numberOfLines={item.id === selectedCardId ? undefined : 2}
+                      ellipsizeMode={
+                        item.id === selectedCardId ? undefined : "tail"
+                      }
+                    >
                       <Text style={{ fontWeight: "bold" }}>Address: </Text>
                       {item.centerAddress}
                     </Text>
-                    <Text style={styles.donationField}>
+                    <Text
+                      style={styles.donationField}
+                      numberOfLines={item.id === selectedCardId ? undefined : 2}
+                      ellipsizeMode={
+                        item.id === selectedCardId ? undefined : "tail"
+                      }
+                    >
                       <Text style={{ fontWeight: "bold" }}>Details: </Text>
                       {item.description}
                     </Text>
+                    {(isTextConsideredLong(item.description) ||
+                      isTextConsideredLong(item.centerAddress)) &&
+                    item.id !== selectedCardId ? (
+                      <Text>
+                        See more{"  "}
+                        <FontAwesomeIcon
+                          icon={faChevronDown}
+                          size={10}
+                        ></FontAwesomeIcon>
+                      </Text>
+                    ) : (
+                      ""
+                    )}
                   </View>
                   <View style={styles.statusContainer}>
                     {statusIcon(item.status)}
@@ -260,7 +336,7 @@ export default function Centers() {
                         item.status.slice(1)}
                     </Text>
                   </View>
-                </View>
+                </TouchableOpacity>
               )}
             ></FlatList>
           </View>
@@ -312,22 +388,23 @@ const getStyles = (theme) =>
       flexDirection: "row",
       alignItems: "center",
       borderRadius: 10,
-      height: 120,
+      height: 140,
       width: 350,
       padding: 5,
     },
-
     donationField: {
       fontSize: 15,
       alignItems: "center",
       flexDirection: "row",
-      gap: 5,
+      gap: 3,
     },
     donationData: {
       height: 100,
       width: 220,
       justifyContent: "space-evenly",
       alignItems: "flex-start",
+      marginLeft: 12,
+      gap: 10,
     },
     emptyContainer: {
       width: 350,
@@ -346,7 +423,7 @@ const getStyles = (theme) =>
       textAlign: "center",
     },
     statusContainer: {
-      width: 80,
+      width: 70,
       alignItems: "center",
       gap: 5,
     },
@@ -354,7 +431,20 @@ const getStyles = (theme) =>
       color: "#1f1f1f",
       marginHorizontal: 12,
     },
-    timeIcon: {
-      width: 1,
+    iconCircle: {
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      backgroundColor: "#ddb31b",
+      justifyContent: "center",
+      alignItems: "center",
+      marginLeft: 5,
+    },
+    expandedCard: {
+      height: 200,
+    },
+    expandedCardData: {
+      height: 200,
+      gap: 5,
     },
   });

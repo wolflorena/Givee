@@ -104,6 +104,7 @@ export default function DonationForm(props) {
           onChangeText={(text) => setDescription(text)}
           returnKeyType="done"
           blurOnSubmit={true}
+          maxLength={100}
           onSubmitEditing={() => {
             if (amount && description) {
               const formData = { amount, description, type };

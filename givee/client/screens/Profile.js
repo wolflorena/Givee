@@ -10,11 +10,6 @@ import {
   faRightFromBracket,
   faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
-import {
-  faFacebookF,
-  faTwitter,
-  faInstagram,
-} from "@fortawesome/free-brands-svg-icons";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 
 import Navbar from "../Navbar";
