@@ -31,6 +31,7 @@ import CustomButton from "../CustomButton";
 import Title from "../Title";
 import { useLoginContext } from "../LoginContext";
 import { ThemeContext } from "../ThemeContext";
+import Navbar from "../Navbar";
 
 export default function Location({ route }) {
   let formData = route.params;
@@ -296,6 +297,8 @@ export default function Location({ route }) {
           )}
         </View>
       </View>
+
+      {centersData.length === 0 ? <Navbar /> : ""}
     </View>
   );
 }

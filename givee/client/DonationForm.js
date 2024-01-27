@@ -30,6 +30,7 @@ export default function DonationForm(props) {
     if (props.product === "clothes") {
       return "(size, condition)";
     }
+    return "";
   }
 
   return (

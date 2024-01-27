@@ -61,38 +61,45 @@ export default function Centers() {
       const db = FIREBASE_DB;
       const q = query(collection(db, "donations"));
       const querySnapshot = await getDocs(q);
-
       const data = [];
 
-      querySnapshot.forEach((doc) => {
+      for (const doc of querySnapshot.docs) {
         const { timestamp, ...donation } = doc.data();
         if (doc.data().userEmail === currentUser.email) {
-          const date = timestamp.toDate();
-          const formattedTimestamp = `${date
-            .getDate()
-            .toString()
-            .padStart(2, "0")}.${(date.getMonth() + 1)
-            .toString()
-            .padStart(2, "0")}.${date.getFullYear()} - ${date
-            .getHours()
-            .toString()
-            .padStart(2, "0")}:${date
-            .getMinutes()
-            .toString()
-            .padStart(2, "0")}`;
+          const centerData = await getCenter(doc.data().centerId);
+          if (centerData) {
+            const date = timestamp.toDate();
+            const formattedTimestamp = `${date
+              .getDate()
+              .toString()
+              .padStart(2, "0")}.${(date.getMonth() + 1)
+              .toString()
+              .padStart(2, "0")}.${date.getFullYear()} - ${date
+              .getHours()
+              .toString()
+              .padStart(2, "0")}:${date
+              .getMinutes()
+              .toString()
+              .padStart(2, "0")}`;
 
-          getCenter(doc.data().centerId);
-
-          data.push({
-            id: doc.id,
-            ...donation,
-            timestamp: formattedTimestamp,
-            centerAddress: centerData.address,
-          });
+            data.push({
+              id: doc.id,
+              ...donation,
+              timestamp: formattedTimestamp,
+              centerAddress: centerData.address,
+            });
+          }
         }
-      });
+      }
+      let filteredData;
 
-      const sortedData = data.sort((a, b) => {
+      if (status === "all") {
+        filteredData = data;
+      } else {
+        filteredData = data.filter((donation) => donation.status === status);
+      }
+
+      const sortedData = filteredData.sort((a, b) => {
         if (a.status === "pending" && b.status !== "pending") {
           return -1;
         } else if (a.status !== "pending" && b.status === "pending") {
@@ -117,14 +124,16 @@ export default function Centers() {
       const docSnap = await getDoc(docRef);
 
       if (docSnap.exists()) {
-        setCenterData(docSnap.data());
+        return docSnap.data();
       } else {
         console.log("No such document!");
+        return null;
       }
     } catch (error) {
       console.error("Error fetching data:", error);
+      return null;
     }
-  });
+  }, []);
 
   const donationIcon = (type) => (
     <View>
@@ -181,14 +190,6 @@ export default function Centers() {
     }
   };
 
-  const filteredDonations = donationsData.filter((donation) => {
-    if (selectedStatus === "all") {
-      return true;
-    } else {
-      return donation.status === selectedStatus;
-    }
-  });
-
   return (
     <View style={styles.container}>
       <Spinner
@@ -222,7 +223,7 @@ export default function Centers() {
         </View>
       </View>
       <View>
-        {filteredDonations.length === 0 ? (
+        {donationsData.length === 0 ? (
           <View style={styles.emptyContainer}>
             <Image
               source={require("../../assets/noDonations.png")}
@@ -233,7 +234,7 @@ export default function Centers() {
         ) : (
           <View style={styles.donations}>
             <FlatList
-              data={filteredDonations}
+              data={donationsData}
               keyExtractor={(donation) => donation.id}
               renderItem={({ item }) => (
                 <View style={styles.donationCard}>

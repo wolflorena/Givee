@@ -71,7 +71,7 @@ export default function AllCampaigns() {
         selectedStatus.toUpperCase()
   );
 
-  const getStatus = (startDate, expireDate) => {
+  function getStatus(startDate, expireDate) {
     const currentDate = new Date();
     const startDateObj = convertToDate(startDate);
     const expireDateObj = convertToDate(expireDate);
@@ -89,12 +89,12 @@ export default function AllCampaigns() {
         status: "EXPIRED",
       };
     }
-  };
+  }
 
-  const convertToDate = (dateString) => {
+  function convertToDate(dateString) {
     const [day, month, year] = dateString.split(".");
     return new Date(`${year}-${month}-${day}`);
-  };
+  }
 
   const renderEmptyMessage = () => {
     switch (selectedStatus) {
