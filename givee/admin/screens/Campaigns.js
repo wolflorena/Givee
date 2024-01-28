@@ -241,7 +241,7 @@ export default function Campaigns() {
                     size={30}
                   />
                   <View style={styles.campaignData}>
-                    <View>
+                    <View style={styles.campaignDataContainer}>
                       <Text style={styles.campaignField}>
                         <Text style={{ fontWeight: "bold" }}>Name {"\n"}</Text>
                         {item.name}
@@ -419,7 +419,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   campaignStatusField: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: 800,
     marginTop: 10,
     borderWidth: 1,
@@ -436,5 +436,8 @@ const styles = StyleSheet.create({
   titleHeader: {
     flexDirection: "row",
     alignItems: "center",
+  },
+  campaignDataContainer: {
+    width: 200,
   },
 });
