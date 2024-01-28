@@ -182,7 +182,19 @@ export default function Location({ route }) {
                 source={require("../../assets/noCenters.png")}
                 style={styles.emptyImage}
               />
-              <Text style={styles.emptyText}>No centers. 🙁</Text>
+              <View style={styles.yellowTextContainer}>
+                <Text style={styles.yellowMessage}>
+                  No centers are currently seeking the items you're offering to
+                  donate. 😔
+                </Text>
+              </View>
+
+              <View style={styles.whiteTextContainer}>
+                <Text style={styles.whiteText}>
+                  Please consider checking other types of donations. Thank you
+                  for your willingness to help! ❤️
+                </Text>
+              </View>
             </View>
           ) : (
             <View style={styles.containerSmall}>
@@ -291,7 +303,11 @@ export default function Location({ route }) {
             </View>
           )}
         </View>
-        <CustomButton text="Donate" size="large" onPress={submitDonation} />
+        {centersData.length !== 0 ? (
+          <CustomButton text="Donate" size="large" onPress={submitDonation} />
+        ) : (
+          ""
+        )}
       </View>
 
       {centersData.length === 0 ? <Navbar /> : ""}
@@ -313,22 +329,38 @@ const getStyles = (theme) =>
       backgroundColor: "blue",
     },
     emptyContainer: {
-      width: 350,
-      height: 600,
-      justifyContent: "center",
+      paddingHorizontal: 25,
+      backgroundColor: theme === "dark" ? "#1f1f1f" : "#eaebed",
       alignItems: "center",
-      gap: 50,
+      justifyContent: "center",
+      flex: 1,
     },
     containerSmall: {
       flex: 1,
     },
     emptyImage: {
-      height: 250,
+      resizeMode: "stretch",
       width: 250,
+      height: 250,
+      marginBottom: 40,
     },
-    emptyText: {
-      color: "#DDB31B",
-      fontSize: 25,
+    yellowMessage: {
+      fontSize: 20,
+      color: "#ddb31b",
+      textAlign: "center",
+    },
+    yellowTextContainer: {
+      width: 320,
+      justifyContent: "center",
+      marginBottom: 20,
+    },
+    whiteText: {
+      color: theme === "dark" ? "#eaebed" : "#1f1f1f",
+      fontSize: 15,
+      textAlign: "center",
+    },
+    whiteTextContainer: {
+      width: 300,
     },
     centersContent: {
       justifyContent: "space-between",

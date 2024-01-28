@@ -1,5 +1,12 @@
 import React, { useState, useContext } from "react";
-import { View, TextInput, Text, StyleSheet } from "react-native";
+import {
+  View,
+  TextInput,
+  Text,
+  StyleSheet,
+  KeyboardAvoidingView,
+  Image,
+} from "react-native";
 
 import { sendPasswordResetEmail } from "firebase/auth";
 import { useNavigation } from "@react-navigation/native";
@@ -40,7 +47,7 @@ export default function ChangePassword() {
       });
   };
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView style={styles.container} behavior="padding">
       <Spinner
         visible={loading}
         color="#ddb31b"
@@ -105,10 +112,25 @@ export default function ChangePassword() {
           setShowInvalidEmail(false);
         }}
       />
-      <View style={styles.inputContainer}>
+      <View>
+        <Image
+          style={styles.logo}
+          source={
+            theme === "dark"
+              ? require("../../assets/LogoLight.png")
+              : require("../../assets/LogoDark.png")
+          }
+        ></Image>
+      </View>
+      <View style={styles.textContainer}>
         <Text style={[styles.text, styles.firstText]}>
-          Write your email address
+          Change your <Text style={{ color: "#ddb31b" }}>password!</Text>
         </Text>
+        <Text style={[styles.text, styles.secondText]}>
+          Write down your email address.
+        </Text>
+      </View>
+      <View style={styles.inputContainer}>
         <TextInput
           value={email}
           style={styles.input}
@@ -119,11 +141,7 @@ export default function ChangePassword() {
         ></TextInput>
       </View>
 
-      <CustomButton
-        text="Change Password"
-        size="medium"
-        onPress={resetPassword}
-      />
+      <CustomButton text="Submit" onPress={resetPassword} />
 
       <View style={styles.loginContainer}>
         <Text
@@ -133,7 +151,7 @@ export default function ChangePassword() {
           Login here
         </Text>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -143,32 +161,40 @@ const getStyles = (theme) =>
       backgroundColor: theme === "dark" ? "#1f1f1f" : "#eaebed",
       alignItems: "center",
       justifyContent: "center",
-      gap: 50,
       flex: 1,
     },
-    inputContainer: {
+    logo: {
+      width: 250,
+      height: 100,
+      resizeMode: "stretch",
+      marginBottom: 30,
+    },
+    textContainer: {
+      justifyContent: "center",
       alignItems: "center",
-      marginBottom: 20,
-      gap: 20,
+      marginBottom: 80,
+    },
+    text: {
+      fontSize: 15,
+      color: theme === "dark" ? "#eaebed" : "#1f1f1f",
+    },
+    firstText: {
+      fontSize: 35,
+    },
+    secondText: {
+      fontSize: 20,
+    },
+    inputContainer: {
+      width: "80%",
     },
     input: {
       marginVertical: 4,
-      height: 40,
-      width: 200,
+      height: 50,
       borderWidth: 1,
       borderRadius: 15,
       padding: 10,
       borderColor: theme === "dark" ? "#a6a6a6" : "#1f1f1f",
       color: theme === "dark" ? "#a6a6a6" : "#1f1f1f",
-    },
-    text: {
-      color: theme === "dark" ? "#eaebed" : "#1f1f1f",
-      textAlign: "center",
-      marginVertical: 5,
-    },
-    firstText: {
-      fontSize: 18,
-      fontWeight: "bold",
     },
     loginContainer: {
       position: "absolute",

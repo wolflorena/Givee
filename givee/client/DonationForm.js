@@ -28,7 +28,23 @@ export default function DonationForm(props) {
 
   function addDescriptionDetails() {
     if (props.product === "clothes") {
-      return "(size, condition)";
+      return "(size, gender)";
+    }
+    if (props.product === "toys") {
+      return "(age, gender)";
+    }
+    return "";
+  }
+
+  function addAmountDetails() {
+    if (props.product === "clothes") {
+      return "Number of Clothing items";
+    }
+    if (props.product === "toys") {
+      return "Number of Toys";
+    }
+    if (props.product === "food") {
+      return "Weight of Food in Kg";
     }
     return "";
   }
@@ -79,12 +95,12 @@ export default function DonationForm(props) {
         <TextInput
           value={amount}
           style={styles.input}
-          placeholder={`Amount of ${props.product}`}
+          placeholder={`${addAmountDetails()}`}
           placeholderTextColor={theme === "dark" ? "#a6a6a6" : "#1f1f1f"}
           autoCapitalize="none"
           keyboardType="numeric"
           onChangeText={(text) => {
-            if (/^\d*$/.test(text)) {
+            if (/^\d*([.,]\d*)?$/.test(text) && text !== "." && text !== ",") {
               setAmount(text);
             } else {
               setShowNumericAlert(true);

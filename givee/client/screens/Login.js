@@ -171,7 +171,7 @@ const getStyles = (theme) =>
       width: 250,
       height: 100,
       resizeMode: "stretch",
-      marginBottom: 50,
+      marginBottom: 30,
     },
     textContainer: {
       justifyContent: "center",
@@ -183,10 +183,10 @@ const getStyles = (theme) =>
       color: theme === "dark" ? "#eaebed" : "#1f1f1f",
     },
     firstText: {
-      fontSize: 40,
+      fontSize: 35,
     },
     secondText: {
-      fontSize: 25,
+      fontSize: 20,
     },
     input: {
       marginVertical: 4,
