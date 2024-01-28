@@ -19,6 +19,7 @@ import { faPenToSquare } from "@fortawesome/free-solid-svg-icons/faPenToSquare";
 import { faFaceFrown } from "@fortawesome/free-solid-svg-icons/faFaceFrown";
 import AwesomeAlert from "react-native-awesome-alerts";
 
+import Spinner from "react-native-loading-spinner-overlay";
 import DropDownPicker from "react-native-dropdown-picker";
 import { useFocusEffect } from "@react-navigation/native";
 import { useNavigation } from "@react-navigation/native";
@@ -30,6 +31,8 @@ import NavBar from "../Navbar";
 export default function Campaigns() {
   const db = FIREBASE_DB;
   const navigation = useNavigation();
+
+  const [loading, setLoading] = useState(false);
 
   const [campaignsData, setCampaignsData] = useState([]);
   const { navBarButtonsPressHandler } = useAdminUpdateContext();
@@ -53,6 +56,8 @@ export default function Campaigns() {
   );
 
   const getCampaigns = useCallback(async () => {
+    setLoading(true);
+
     try {
       const q = query(collection(db, "campaigns"));
       const querySnapshot = await getDocs(q);
@@ -64,7 +69,9 @@ export default function Campaigns() {
       });
 
       setCampaignsData(data);
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       console.error("Error fetching data:", error);
     }
   });
@@ -142,6 +149,11 @@ export default function Campaigns() {
 
   return (
     <View style={styles.container}>
+      <Spinner
+        visible={loading}
+        color="#ddb31b"
+        overlayColor="rgba(0,0,0,0.5)"
+      />
       <AwesomeAlert
         show={showAlertDelete}
         showProgress={false}
@@ -214,7 +226,7 @@ export default function Campaigns() {
         </View>
 
         <View style={styles.campaigns}>
-          {filteredCampaigns.length ? (
+          {filteredCampaigns.length && !loading ? (
             <FlatList
               keyExtractor={(campaign) => campaign.id}
               data={filteredCampaigns}
@@ -285,16 +297,18 @@ export default function Campaigns() {
               )}
             ></FlatList>
           ) : (
-            <View style={styles.noContentMessage}>
-              <FontAwesomeIcon
-                style={styles.campaignIcon}
-                icon={faFaceFrown}
-                size={25}
-              />
-              <Text style={styles.noContentText}>
-                You don't have campaigns!
-              </Text>
-            </View>
+            !loading && (
+              <View style={styles.noContentMessage}>
+                <FontAwesomeIcon
+                  style={styles.campaignIcon}
+                  icon={faFaceFrown}
+                  size={25}
+                />
+                <Text style={styles.noContentText}>
+                  You don't have campaigns!
+                </Text>
+              </View>
+            )
           )}
         </View>
       </View>

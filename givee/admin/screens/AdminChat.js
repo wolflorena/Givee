@@ -14,6 +14,7 @@ import { FIREBASE_DB } from "../../firebaseConfig";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faCircleChevronLeft } from "@fortawesome/free-solid-svg-icons/faCircleChevronLeft";
 
+import Spinner from "react-native-loading-spinner-overlay";
 import { useNavigation } from "@react-navigation/native";
 import {
   GiftedChat,
@@ -26,6 +27,8 @@ export default function AdminChat({ route }) {
   const db = FIREBASE_DB;
   const navigation = useNavigation();
 
+  const [loading, setLoading] = useState(false);
+
   const [messages, setMessages] = useState([]);
   const recipientEmail = route.params ? route.params.email : null;
 
@@ -36,6 +39,8 @@ export default function AdminChat({ route }) {
 
   useEffect(() => {
     const fetchMessages = async () => {
+      setLoading(true);
+
       try {
         const messagesQuery = query(
           collection(db, "chats"),
@@ -57,7 +62,10 @@ export default function AdminChat({ route }) {
               new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
           )
         );
+
+        setLoading(false);
       } catch (error) {
+        setLoading(false);
         console.error("Eroare la recuperarea mesajelor: ", error);
       }
     };
@@ -154,6 +162,11 @@ export default function AdminChat({ route }) {
 
   return (
     <View style={styles.container}>
+      <Spinner
+        visible={loading}
+        color="#ddb31b"
+        overlayColor="rgba(0,0,0,0.5)"
+      />
       <TouchableOpacity
         style={styles.goBackButton}
         onPress={() => navigation.goBack()}

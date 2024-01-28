@@ -21,6 +21,7 @@ import { faBan } from "@fortawesome/free-solid-svg-icons/faBan";
 import { faFaceFrown } from "@fortawesome/free-solid-svg-icons/faFaceFrown";
 import AwesomeAlert from "react-native-awesome-alerts";
 
+import Spinner from "react-native-loading-spinner-overlay";
 import { useFocusEffect } from "@react-navigation/native";
 import { useNavigation } from "@react-navigation/native";
 import { StatusBar } from "react-native";
@@ -33,6 +34,8 @@ import { useLoginUpdateContext } from "../../client/LoginContext";
 export default function Home() {
   const db = FIREBASE_DB;
   const navigation = useNavigation();
+
+  const [loading, setLoading] = useState(false);
 
   const [donationsData, setDonationsData] = useState([]);
   const { currentUser } = useLoginContext();
@@ -58,6 +61,8 @@ export default function Home() {
   );
 
   const getDonations = useCallback(async () => {
+    setLoading(true);
+
     try {
       const q = query(collection(db, "donations"));
       const querySnapshot = await getDocs(q);
@@ -69,7 +74,9 @@ export default function Home() {
       });
 
       setDonationsData(data);
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       console.error("Error fetching data:", error);
     }
   });
@@ -156,6 +163,11 @@ export default function Home() {
 
   return (
     <View style={styles.container}>
+      <Spinner
+        visible={loading}
+        color="#ddb31b"
+        overlayColor="rgba(0,0,0,0.5)"
+      />
       <AwesomeAlert
         show={showAlertCancel}
         showProgress={false}
@@ -239,7 +251,8 @@ export default function Home() {
         </View>
 
         <View style={styles.donations}>
-          {donationsData.some((donation) => donation.status === "pending") ? (
+          {donationsData.some((donation) => donation.status === "pending") &&
+          !loading ? (
             <FlatList
               keyExtractor={(donation) => donation.id}
               data={donationsData}
@@ -296,16 +309,18 @@ export default function Home() {
               }}
             ></FlatList>
           ) : (
-            <View style={styles.noContentMessage}>
-              <FontAwesomeIcon
-                style={styles.donationIcon}
-                icon={faFaceFrown}
-                size={25}
-              />
-              <Text style={styles.noContentText}>
-                You don't have new donations!
-              </Text>
-            </View>
+            !loading && (
+              <View style={styles.noContentMessage}>
+                <FontAwesomeIcon
+                  style={styles.donationIcon}
+                  icon={faFaceFrown}
+                  size={25}
+                />
+                <Text style={styles.noContentText}>
+                  You don't have new donations!
+                </Text>
+              </View>
+            )
           )}
         </View>
       </View>

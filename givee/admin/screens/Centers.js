@@ -19,6 +19,7 @@ import { faPenToSquare } from "@fortawesome/free-solid-svg-icons/faPenToSquare";
 import { faFaceFrown } from "@fortawesome/free-solid-svg-icons/faFaceFrown";
 import AwesomeAlert from "react-native-awesome-alerts";
 
+import Spinner from "react-native-loading-spinner-overlay";
 import { useFocusEffect } from "@react-navigation/native";
 import { useNavigation } from "@react-navigation/native";
 import { StatusBar } from "react-native";
@@ -29,6 +30,8 @@ import NavBar from "../Navbar";
 export default function Centers() {
   const db = FIREBASE_DB;
   const navigation = useNavigation();
+
+  const [loading, setLoading] = useState(false);
 
   const [centersData, setCentersData] = useState([]);
   const { navBarButtonsPressHandler } = useAdminUpdateContext();
@@ -50,6 +53,8 @@ export default function Centers() {
   );
 
   const getCenters = useCallback(async () => {
+    setLoading(true);
+
     try {
       const q = query(collection(db, "centers"));
       const querySnapshot = await getDocs(q);
@@ -61,7 +66,9 @@ export default function Centers() {
       });
 
       setCentersData(data);
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       console.error("Error fetching data:", error);
     }
   });
@@ -94,6 +101,11 @@ export default function Centers() {
 
   return (
     <View style={styles.container}>
+      <Spinner
+        visible={loading}
+        color="#ddb31b"
+        overlayColor="rgba(0,0,0,0.5)"
+      />
       <AwesomeAlert
         show={showAlertDelete}
         showProgress={false}
@@ -144,7 +156,7 @@ export default function Centers() {
         </View>
 
         <View style={styles.centers}>
-          {centersData.length ? (
+          {centersData.length && !loading ? (
             <FlatList
               keyExtractor={(center) => center.id}
               data={centersData}
@@ -193,14 +205,18 @@ export default function Centers() {
               )}
             ></FlatList>
           ) : (
-            <View style={styles.noContentMessage}>
-              <FontAwesomeIcon
-                style={styles.centerIcon}
-                icon={faFaceFrown}
-                size={25}
-              />
-              <Text style={styles.noContentText}>You don't have centers!</Text>
-            </View>
+            !loading && (
+              <View style={styles.noContentMessage}>
+                <FontAwesomeIcon
+                  style={styles.centerIcon}
+                  icon={faFaceFrown}
+                  size={25}
+                />
+                <Text style={styles.noContentText}>
+                  You don't have centers!
+                </Text>
+              </View>
+            )
           )}
         </View>
       </View>

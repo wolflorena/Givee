@@ -15,6 +15,7 @@ import { faCircleChevronLeft } from "@fortawesome/free-solid-svg-icons/faCircleC
 import { faCircleUser } from "@fortawesome/free-solid-svg-icons/faCircleUser";
 import { faComment } from "@fortawesome/free-solid-svg-icons/faComment";
 
+import Spinner from "react-native-loading-spinner-overlay";
 import { useFocusEffect } from "@react-navigation/native";
 import { useNavigation } from "@react-navigation/native";
 import { StatusBar } from "react-native";
@@ -25,6 +26,8 @@ import NavBar from "../Navbar";
 export default function Users() {
   const db = FIREBASE_DB;
   const navigation = useNavigation();
+
+  const [loading, setLoading] = useState(false);
 
   const [usersData, setUsersData] = useState([]);
   const { navBarButtonsPressHandler } = useAdminUpdateContext();
@@ -41,6 +44,8 @@ export default function Users() {
   );
 
   const getUsers = useCallback(async () => {
+    setLoading(true);
+
     try {
       const q = query(collection(db, "users"));
       const querySnapshot = await getDocs(q);
@@ -52,7 +57,9 @@ export default function Users() {
       });
 
       setUsersData(data);
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       console.error("Error fetching data:", error);
     }
   });
@@ -63,6 +70,11 @@ export default function Users() {
 
   return (
     <View style={styles.container}>
+      <Spinner
+        visible={loading}
+        color="#ddb31b"
+        overlayColor="rgba(0,0,0,0.5)"
+      />
       <TouchableOpacity
         style={styles.goBackButton}
         onPress={() => navigation.goBack()}
