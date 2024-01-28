@@ -33,7 +33,6 @@ import { ThemeContext } from "../ThemeContext";
 
 export default function Centers() {
   const [donationsData, setDonationsData] = useState([]);
-  const [centerData, setCenterData] = useState([]);
 
   const [loading, setLoading] = useState(false);
 
@@ -256,7 +255,7 @@ export default function Centers() {
         </View>
       </View>
       <View>
-        {donationsData.length === 0 ? (
+        {donationsData.length === 0 && loading === false ? (
           <View style={styles.emptyContainer}>
             <Image
               source={require("../../assets/noDonations.png")}

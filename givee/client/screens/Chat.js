@@ -31,7 +31,7 @@ export default function Chat() {
   useEffect(() => {
     const initialMessage = {
       _id: 1,
-      text: "Hello!",
+      text: "Hello! What can we do for you?",
       createdAt: new Date().toISOString(),
       user: {
         _id: "andreeacgabor@gmail.com",
@@ -227,14 +227,5 @@ const getStyles = (theme) =>
       paddingLeft: 10,
       paddingRight: 10,
       flex: 1,
-    },
-    sendButton: {
-      // marginRight: 10,
-      // marginBottom: 10,
-      // padding: 10,
-      backgroundColor: "red",
-    },
-    sendText: {
-      color: "red",
     },
   });

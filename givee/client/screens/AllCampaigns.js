@@ -56,7 +56,14 @@ export default function AllCampaigns() {
         const campaign = { id: doc.id, ...doc.data() };
         const statusResult = getStatus(campaign.startDate, campaign.expireDate);
         campaign.status = statusResult.status;
-        data.push(campaign);
+        const daysSinceExpired = calculateDaysLeft(campaign.expireDate);
+        if (campaign.status == "EXPIRED" && Math.abs(daysSinceExpired) <= 30) {
+          data.push(campaign);
+        } else {
+          if (campaign.status !== "EXPIRED") {
+            data.push(campaign);
+          }
+        }
       });
 
       data.sort((a, b) => {
@@ -250,7 +257,7 @@ export default function AllCampaigns() {
         </View>
       </View>
       <View>
-        {filteredCampaigns.length === 0 ? (
+        {filteredCampaigns.length === 0 && loading === false ? (
           <View style={styles.emptyContainer}>
             <Image
               source={require("../../assets/noCampaign.png")}
@@ -337,7 +344,7 @@ const getStyles = (theme) =>
       flexDirection: "row",
       borderRadius: 10,
       gap: 5,
-      height: 125,
+      height: 135,
       width: 350,
       padding: 10,
     },

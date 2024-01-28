@@ -176,7 +176,7 @@ export default function Location({ route }) {
       <Title text="Location" />
       <View style={styles.centersContent}>
         <View style={styles.centers}>
-          {centersData.length === 0 ? (
+          {centersData.length === 0 && loading === false ? (
             <View style={styles.emptyContainer}>
               <Image
                 source={require("../../assets/noCenters.png")}
