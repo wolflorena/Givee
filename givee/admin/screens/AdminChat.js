@@ -21,6 +21,7 @@ import {
   InputToolbar,
   Bubble,
   Time,
+  Send,
 } from "react-native-gifted-chat";
 
 export default function AdminChat({ route }) {
@@ -160,6 +161,19 @@ export default function AdminChat({ route }) {
     );
   };
 
+  const renderSendButton = (props) => {
+    return (
+      <Send
+        {...props}
+        textStyle={{ color: "#eaebed" }}
+        containerStyle={{
+          backgroundColor: "transparent",
+          fontSize: 15,
+        }}
+      ></Send>
+    );
+  };
+
   return (
     <View style={styles.container}>
       <Spinner
@@ -189,6 +203,7 @@ export default function AdminChat({ route }) {
         renderChatFooter={renderChatFooter}
         renderBubble={renderBubble}
         renderTime={renderTime}
+        renderSend={renderSendButton}
       />
     </View>
   );
