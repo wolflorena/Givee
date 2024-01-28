@@ -7,7 +7,7 @@ import {
   FlatList,
 } from "react-native";
 
-import { collection, query, getDocs } from "firebase/firestore";
+import { collection, query, getDocs, where } from "firebase/firestore";
 import { FIREBASE_DB } from "../../firebaseConfig";
 
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
@@ -47,7 +47,7 @@ export default function Users() {
     setLoading(true);
 
     try {
-      const q = query(collection(db, "users"));
+      const q = query(collection(db, "users"), where("isAdmin", "==", false));
       const querySnapshot = await getDocs(q);
 
       const data = [];
